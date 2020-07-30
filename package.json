@@ -2,9 +2,9 @@
   "name": "aletavern",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./app/server.js",
     "scripts": {
-        "start": "node server.js"
+        "start": "node ./app/server.js"
     },
   "author": "",
   "license": "ISC",
