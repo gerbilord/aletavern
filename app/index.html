@@ -2,21 +2,104 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Sample Site</title>
+        <title>The Ale Tavern</title>
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
         <style>
          body { padding-top:50px; }
         </style>
+
     </head>
+
     <body>
 
         <div class="container">
             <div class="jumbotron text-center">
                 <h1>Future of Ale Tavern</h1>
-		<h3>A place to play games with friends, in person.</h3>
+		            <h3>A place to play games with friends, in person.</h3>
             </div>
         </div>
 
+        <div class="container">
+            <div class="jumbotron text-center">
+                <h4 id="rMessage"></h4>
+
+                <input id="sMessage" type="text" autocomplete="off">
+                <input id="sendMessage"type="button" name="submit" value="sendMessage()" onclick="sendMessage();" />
+                <input id="joinGame"type="button" name="submit" value="joinGame()" onclick="joinGame();" />
+                <input id="createGame"type="button" name="submit" value="createGame()" onclick="createGame();" />
+            </div>
+        </div>
+
+        <div class="container">
+            <ul id ="messages"></ul>
+        </div>
+
+
+
+
+        <script>
+         var wsPath = "ws://" +  window.location.host + "/game";
+         var gameWebSocket = new WebSocket(wsPath);
+         var input = document.getElementById("sMessage");
+         var output = document.getElementById("messages");
+
+         var global = this;
+
+
+         input.addEventListener("keydown", function(event){
+             if (event.keyCode === 13)
+             {
+                 event.preventDefault();
+                 document.getElementById("sendMessage").click();
+             }
+         });
+
+
+         function createGame(){
+             var createMessage = {type:"CREATEGAME"};
+             gameWebSocket.send(JSON.stringify(createMessage));
+
+         }
+
+         function joinGame(){
+             gameId = input.value;
+             var joinMessage = {type:"JOINGAME", gameId:gameId};
+             gameWebSocket.send(JSON.stringify(joinMessage));
+             input.value = '';
+         }
+
+         function sendMessage(){
+             console.log("sending message! to " + gameId);
+             var messageObj = {type:"MESSAGEALLGAME", gameId:gameId, msg:input.value}
+             gameWebSocket.send(JSON.stringify(messageObj));
+             input.value = '';
+         }
+
+
+         function renderNewMessage(msg){
+             console.log(msg);
+
+             msgObj = JSON.parse(msg);
+             if(msgObj.type == "CREATEGAME") { gameId = msgObj.gameId}
+
+             if(msgObj.type == "MESSAGE")
+             {
+                 var listNode = document.createElement("li");
+                 listNode.innerHTML = msgObj.msg;
+                 output.appendChild(listNode);
+
+             }
+
+         }
+
+         // Listen for messages
+         gameWebSocket.addEventListener('message', function (event) {
+             renderNewMessage(event.data);
+         });
+
+        </script>
+
     </body>
 </html>
+

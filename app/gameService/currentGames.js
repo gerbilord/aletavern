@@ -6,27 +6,27 @@ var moment = require('moment'); // require
 
 
 // This is esentailly the database of the app ;D
-var current_games = [];
+var currentGames = [];
 
 
 // ********************************* Public API ****************************************
-function addPlayerToGame(gameId, playerName, playerWs)
+function addPlayerToGame(gameId, playerWs)
 {
-    var game = current_games[gameId];
+    var game = currentGames[gameId];
 
     if(game != null && !game.hasPlayer(playerWs))
     {
-        game.addPlayer(new Player(playerName, playerWs));
+        game.addPlayer(new Player(playerWs));
     }
     else
     {
-        console.debug(`Cannot add Player {${playerName}, ${playerWs}} to Game ${game}`);
+        console.debug(`Cannot add PlayerWS: ${playerWs} to Game: ${game}`);
     }
 }
 
 function removePlayerFromGame(gameId, playerWs)
 {
-    var game = current_games[gameId];
+    var game = currentGames[gameId];
 
     if(game != null)
     {
@@ -36,17 +36,32 @@ function removePlayerFromGame(gameId, playerWs)
 
 function getPlayersInGame(gameId)
 {
-    var game = current_games[gameId];
+    var game = currentGames[gameId];
 
     if (game != null)
     {
         return game.players;
     }
+    console.log("Game is null");
+}
+
+function createGame(hostWs, hostName) // TODO error handeling. Collison detection.
+{
+    // create ID thats not taken.
+    var gameId = makeGameId();
+    currentGames[gameId] = new Game(gameId, new Player(hostWs));
+
+    return gameId;
+}
+
+function deleteGame(gameId)
+{
+    delete currentGames[gameId];
 }
 
 function startGame(gameId)
 {
-    var game = current_games[gameId];
+    var game = currentGames[gameId];
 
     if(!game.hasStartData)
     {
@@ -54,23 +69,28 @@ function startGame(gameId)
     }
 }
 
-function deleteGame(gameId)
-{
-    delete current_games[gameId];
-}
-
 function idInUse(gameId)
 {
-    return current_games[gameId] != undefined;
+    return currentGames[gameId] != undefined;
 }
 
+// PRIVATE HELPER FUNCTIONS
+function makeGameId() {
+    var result           = '';
+    var characters       = 'abcdefghijklmnopqrstuvwxyz';
+    var charactersLength = characters.length;
+    var length = 4;
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
 // ************************** Classes for module use only **************************
 class Player
 {
     // A player's ws also acts like their id.
-    constructor(name, ws)
+    constructor(ws)
     {
-        this.name = name;
         this.ws = ws;
     }
 }
@@ -79,10 +99,9 @@ class Game
 {
 
     // By convention this.players[0] is the host.
-    constructor(host, id, name)
+    constructor(id, host, name)
     {
         this.id = id;           // String
-        this.name = name;       // String
         this.players = [host];  // Array of Players
     }
 
@@ -130,3 +149,6 @@ class Game
     }
 
 }
+
+
+module.exports = { addPlayerToGame, removePlayerFromGame, getPlayersInGame, startGame, deleteGame, idInUse, createGame };
