@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "assert": "^2.0.0",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
-    "moment": "^2.27.0"
+    "moment": "^2.27.0",
+    "uuid": "^8.3.0"
   }
 }

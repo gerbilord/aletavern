@@ -1,0 +1,58 @@
+/* Expected message format of messages recieved in server*/
+
+{
+	type:   "TYPE",  // Required.
+
+  	playerId: "plID" // Optional for some types. (eg. JOINGAME)
+	
+	data: { ... }    // Optional, can be anything.
+}
+
+
+/* Format of all messages sent to client websockets */
+{
+	type:   "TYPE", // Return type. Can be different from type sent. E.g: MESSAGEALL => MESSAGE
+
+  	playerId: "plID" // player Id of who initiated the request. 
+	
+	status: "FAIL", // Holds final status of request.
+	
+	data: { ... }   // Optional, can be anything. (When type=MESSAGEONEGAME, you need to format data as: data = {recieverId, message})
+}
+
+
+// ************* Functions ******************* // TODO once functions are finalized (at least somewhat)
+
+function routeMessageType(ws, msg)
+
+
+        "JOINGAME":
+        joinGame(ws, msg);
+
+
+        "LEAVEGAME":
+        leaveGame(ws, msg);
+
+        "RECONNECTGAME":
+        reconnectToGame(ws, msg);
+  
+
+        "CREATEGAME":
+        createGame(ws, msg);
+
+
+        "DELETEGAME":
+        deleteGame(ws,msg);
+
+
+        "MESSAGEALLGAME":
+        messageAllPlayers(msg);
+
+
+        "MESSAGEONEGAME":
+        messageOnePlayer(msg);
+
+
+        "MESSAGEHOSTGAME":
+        messageHost(msg);
+

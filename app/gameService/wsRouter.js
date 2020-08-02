@@ -12,38 +12,74 @@ function giveMessage(ws, msg)
 }
 
 
-function joinGame(ws, msg){
-    // TODO add safety checks
-    gameService.addPlayerToGame( msg.gameId, ws);
+function joinGame(ws, {data:gameId}){ // TODO add safety checks in switch statement.
+    var newPlayer = gameService.addPlayerToGame(gameId, ws);
 
-    var msgObj = {type:"JOINGAME"};
-    ws.send(JSON.stringify(msgObj));
+    if (newPlayer)
+    {
+        let msgObj = {type:"JOINGAME", gameId: newPlayer.gameId, playerId:newPlayer.id, status:"SUCCESS"};
+        console.log(msgObj);
+        emitToGame(newPlayer.gameId, msgObj);
+    }
+    else
+    {
+        let msgObj = {type:"JOINGAME", gameId:msg.gameId, playerId:-1, status:"FAILURE"};
+        console.log(msgObj);
+        ws.send(msgObj); // can't use Player.send since failure.
+    }
+
 }
 
-function leaveGame(ws, msg){} // TODO
+function leaveGame(ws, msg){} // TODO is this even needed?
 
 function reconnectToGame(ws, msg){} // TODO
 
-function createGame(ws, msg)
+function createGame(ws)
 {
-    var gameId = gameService.createGame(ws, msg.name);
-    var msgObj = {type: "CREATEGAME", gameId:gameId};
-    ws.send(JSON.stringify(msgObj)); // TODO format
+    var newHost = gameService.createGame(ws);
+    var msgObj = {type: "CREATEGAME", gameId:newHost.gameId, playerId:newHost.id, status:"SUCCESS"};
+    console.log(msgObj);
+    newHost.send(msgObj);
 }
 
 function deleteGame(ws,msg){} // TODO
 
-function messageAllPlayers(ws, msg){
-    console.log("Messaging all players in " + msg.gameId);
-    var players = gameService.getPlayersInGame(msg.gameId);
+function messageAllPlayers({playerId:playerId, data:data}){
 
-    msgObj = {type:"MESSAGE", msg:msg.msg};
-    players.forEach(player => player.ws.send(JSON.stringify(msgObj))); //TODO don't send to self?
+    var sender = gameService.getPlayer(playerId);
+
+    var msgObj = {type:"MESSAGE", playerId:sender.id, status:"SUCCESS", data:data};
+    console.log(msgObj);
+
+    emitToGame(sender.gameId, msgObj);
 }
 
-function messageOnePlayer(ws, msg){}
+function emitToGame(gameId, msgObj){
+    var players = gameService.getPlayersInGame(gameId);
+    players.forEach(player => player.send(msgObj));
+}
 
-function messageHost(ws, msg){}
+function messageOnePlayer({playerId:senderId, data:{receiverId:receiverId, message:message}}){
+
+    var receiver = gameService.getPlayer(receiverId);
+
+    var msgObj = {type:"MESSAGE", playerId:senderId, status:"SUCCESS", data:message};
+    console.log(msgObj);
+    receiver.send(msgObj);
+}
+
+function messageHost(msg){
+
+    var sender = gameService.getPlayer(msg.playerId);
+
+    if(sender)
+    {
+        var gameId = sender.gameId;
+        var receiver = gameService.getHostOfGame(gameId);
+        msg.data = {receiverId: receiver.id, message:msg.data};
+        messageOnePlayer(msg);
+    }
+}
 
 function routeMessageType(ws, msg)
 {
@@ -63,7 +99,7 @@ function routeMessageType(ws, msg)
         break;
 
         case "CREATEGAME":
-        createGame(ws, msg);
+        createGame(ws);
         break;
 
         case "DELETEGAME":
@@ -71,7 +107,7 @@ function routeMessageType(ws, msg)
         break;
 
         case "MESSAGEALLGAME":
-        messageAllPlayers(ws, msg);
+        messageAllPlayers(msg);
         break;
 
         case "MESSAGEONEGAME":
@@ -79,7 +115,7 @@ function routeMessageType(ws, msg)
         break;
 
         case "MESSAGEHOSTGAME":
-        messageHost(ws, msg);
+        messageHost(msg);
         break;
 
         default:

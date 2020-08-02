@@ -25,7 +25,8 @@
                 <h4 id="rMessage"></h4>
 
                 <input id="sMessage" type="text" autocomplete="off">
-                <input id="sendMessage"type="button" name="submit" value="sendMessage()" onclick="sendMessage();" />
+                <input id="sendMessageToAll"type="button" name="submit" value="sendMessageToAll()" onclick="sendMessageToAll();" />
+                <input id="sendMessageToHost"type="button" name="submit" value="sendMessageToHost()" onclick="sendMessageToHost();" />
                 <input id="joinGame"type="button" name="submit" value="joinGame()" onclick="joinGame();" />
                 <input id="createGame"type="button" name="submit" value="createGame()" onclick="createGame();" />
             </div>
@@ -36,67 +37,81 @@
         </div>
 
 
-
-
         <script>
          var wsPath = "ws://" +  window.location.host + "/game";
          var gameWebSocket = new WebSocket(wsPath);
+
          var input = document.getElementById("sMessage");
          var output = document.getElementById("messages");
 
-         var global = this;
 
-
+         // ***************** Event listeners **********************************
+         // Pressing enter will default to "sendMessage()"
          input.addEventListener("keydown", function(event){
              if (event.keyCode === 13)
              {
                  event.preventDefault();
-                 document.getElementById("sendMessage").click();
+                 document.getElementById("sendMessageToAll").click();
              }
          });
 
+         // Listen for messages
+         gameWebSocket.addEventListener('message', newMessageHandler);
 
-         function createGame(){
-             var createMessage = {type:"CREATEGAME"};
-             gameWebSocket.send(JSON.stringify(createMessage));
+         function newMessageHandler(event){
 
-         }
+             msgObj = JSON.parse(event.data);
+             console.log(msgObj);
 
-         function joinGame(){
-             gameId = input.value;
-             var joinMessage = {type:"JOINGAME", gameId:gameId};
-             gameWebSocket.send(JSON.stringify(joinMessage));
-             input.value = '';
-         }
-
-         function sendMessage(){
-             console.log("sending message! to " + gameId);
-             var messageObj = {type:"MESSAGEALLGAME", gameId:gameId, msg:input.value}
-             gameWebSocket.send(JSON.stringify(messageObj));
-             input.value = '';
-         }
-
-
-         function renderNewMessage(msg){
-             console.log(msg);
-
-             msgObj = JSON.parse(msg);
-             if(msgObj.type == "CREATEGAME") { gameId = msgObj.gameId}
+             if(msgObj.type == "CREATEGAME")
+             {
+                 gameId = msgObj.data
+                 localStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
+             }
+             if(msgObj.type == "JOINGAME")
+             {
+                 gameId = msgObj.data
+                 localStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
+             }
 
              if(msgObj.type == "MESSAGE")
              {
                  var listNode = document.createElement("li");
-                 listNode.innerHTML = msgObj.msg;
+                 listNode.innerHTML = msgObj.data;
                  output.appendChild(listNode);
-
              }
-
          }
 
-         // Listen for messages
-         gameWebSocket.addEventListener('message', function (event) {
-             renderNewMessage(event.data);
-         });
+
+         // ********************* BUTTON FUNCTIONS *******************************
+         function createGame(){
+             var createMessageObj = {type:"CREATEGAME"};
+             gameWebSocket.send(JSON.stringify(createMessageObj));
+         }
+
+         function joinGame(){
+             var joinMessageObj = {type:"JOINGAME", data:getAndClearInput()};
+             gameWebSocket.send(JSON.stringify(joinMessageObj));
+         }
+
+         function sendMessageToAll(){
+             var sendMessageObj = {type:"MESSAGEALLGAME", playerId:localStorage.getItem("playerId"), data:getAndClearInput()}
+             gameWebSocket.send(JSON.stringify(sendMessageObj));
+         }
+
+         function sendMessageToHost(){
+             var sendMessageObj = {type:"MESSAGEHOSTGAME", playerId:localStorage.getItem("playerId"), data:getAndClearInput()}
+             gameWebSocket.send(JSON.stringify(sendMessageObj));
+         }
+
+
+
+         // ******************* HELPER FUNCTIONS *******************************
+         function getAndClearInput(){
+             var val = input.value;
+             input.value = "";
+             return val;
+         }
 
         </script>
 

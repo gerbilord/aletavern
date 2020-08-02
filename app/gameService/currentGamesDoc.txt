@@ -1,0 +1,11 @@
+function addPlayerToGame(gameId, playerWs)
+
+function removePlayerFromGame(gameId, playerWs)
+
+function getPlayersInGame(gameId)
+
+function createGame(hostWs, hostName)
+
+function deleteGame(gameId)
+
+function startGame(gameId)
