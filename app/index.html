@@ -38,11 +38,79 @@
 
 
         <script>
-         var wsPath = "ws://" +  window.location.host + "/game";
-         var gameWebSocket = new WebSocket(wsPath);
+
+
+         // ***************************************************************************************************
+         // ********************** Frontend GameWebSocket Api *************************************************
+         // ***************************************************************************************************
+         class GameWebSocket {
+
+             constructor(logging = false){
+                 var wsPath = "ws://" +  window.location.host + "/game";
+                 this.ws = new WebSocket(wsPath);
+                 this.ws.addEventListener('message', this.newMessageHandler.bind(this));
+                 this.logging = logging;
+             }
+
+             newMessageHandler(event){
+
+                 var msgObj = JSON.parse(event.data);
+
+                 if(logging){console.log(msgObj);}
+
+                 if(msgObj.type == "CREATEGAME")
+                 {
+                     this.gameId = msgObj.data;
+                     sessionStorage.setItem("currentGameId", this.gameId);
+                     sessionStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
+
+                     if(this.onCreateGame){this.onCreateGame(msgObj)};
+
+                 }
+                 if(msgObj.type == "JOINGAME")
+                 {
+                     this.gameId = msgObj.data
+                     sessionStorage.setItem("currentGameId", this.gameId);
+                     sessionStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
+
+                     if(this.onJoinGame){this.onJoinGame(msgObj)};
+                 }
+
+                 if(msgObj.type == "MESSAGEGAME")
+                 {
+                     if(this.onGameMessage){this.onMessageGame(msgObj)};
+                 }
+             }
+
+             createGame(){
+                 var createMessageObj = {type:"CREATEGAME"};
+                 this.ws.send(JSON.stringify(createMessageObj));
+             }
+
+             joinGame(gameId){
+                 var joinMessageObj = {type:"JOINGAME", data:gameId};
+                 this.ws.send(JSON.stringify(joinMessageObj));
+             }
+
+             sendMessageToAll(msg){
+                 var sendMessageObj = {type:"MESSAGEALLGAME", playerId:sessionStorage.getItem("playerId"), data:msg}
+                 this.ws.send(JSON.stringify(sendMessageObj));
+             }
+
+             sendMessageToHost(msg){
+                 var sendMessageObj = {type:"MESSAGEHOSTGAME", playerId:sessionStorage.getItem("playerId"), data:msg}
+                 this.ws.send(JSON.stringify(sendMessageObj));
+             }
+         }
+
+         // ***************************************************************************************************
+         // ***************************************************************************************************
+         // ***************************************************************************************************
 
          var input = document.getElementById("sMessage");
          var output = document.getElementById("messages");
+
+         var gameWebSocket = new GameWebSocket(logging=true);
 
 
          // ***************** Event listeners **********************************
@@ -56,55 +124,27 @@
          });
 
          // Listen for messages
-         gameWebSocket.addEventListener('message', newMessageHandler);
-
-         function newMessageHandler(event){
-
-             msgObj = JSON.parse(event.data);
-             console.log(msgObj);
-
-             if(msgObj.type == "CREATEGAME")
-             {
-                 gameId = msgObj.data
-                 sessionStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
-             }
-             if(msgObj.type == "JOINGAME")
-             {
-                 gameId = msgObj.data
-                 sessionStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
-             }
-
-             if(msgObj.type == "MESSAGEGAME")
-             {
-                 var listNode = document.createElement("li");
-                 listNode.innerHTML = msgObj.data;
-                 output.appendChild(listNode);
-             }
-         }
 
 
          // ********************* BUTTON FUNCTIONS *******************************
+
          function createGame(){
-             var createMessageObj = {type:"CREATEGAME"};
-             gameWebSocket.send(JSON.stringify(createMessageObj));
+             gameWebSocket.createGame();
          }
 
          function joinGame(){
-             var joinMessageObj = {type:"JOINGAME", data:getAndClearInput()};
-             gameWebSocket.send(JSON.stringify(joinMessageObj));
+             gameWebSocket.joinGame(getAndClearInput());
          }
 
-         function sendMessageToAll(){
-             var sendMessageObj = {type:"MESSAGEALLGAME", playerId:sessionStorage.getItem("playerId"), data:getAndClearInput()}
-             gameWebSocket.send(JSON.stringify(sendMessageObj));
+         function sendMessageToAll(msg){
+             gameWebSocket.sendMessageToAll(getAndClearInput());
          }
 
-         function sendMessageToHost(){
-             var sendMessageObj = {type:"MESSAGEHOSTGAME", playerId:sessionStorage.getItem("playerId"), data:getAndClearInput()}
-             gameWebSocket.send(JSON.stringify(sendMessageObj));
+         function sendMessageToHost(msg){
+             gameWebSocket.sendMessageToHost(getAndClearInput());
          }
 
-
+         gameWebSocket.onCreateGame = () => console.log("WE IN BOIS");
 
          // ******************* HELPER FUNCTIONS *******************************
          function getAndClearInput(){

@@ -161,12 +161,6 @@ function idInUse(gameId)
 // ************************** Classes for module use only **************************
 class Player
 {
-    // TODO
-    // We probably need an id... we can't store ws in local data.
-    // Create Player.send(); That way no null ptr if ws is dead.
-    // create a list of websockets? maybe not needed with the id!
-    // We will want to keep the game the player is in as well. 
-
     // A player's ws also acts like their id.
     constructor(ws, id, gameId)
     {
