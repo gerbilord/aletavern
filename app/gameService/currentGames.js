@@ -8,17 +8,19 @@ const assert = require('assert'); // TODO either use or delete.
 
 
 // This is esentailly the database of the app ;D
-var currentGames = [];   // Maps 4 character gameId to game object.
-var currentPlayers = []; // Maps a uuid playerId to player object.
+var currentGames = [];   // Maps 4 character gameId to game object. // TODO Clean up once in a while.
+var currentPlayers = []; // Maps a uuid playerId to player object.  // TODO clean up using wsToPlayerId timestamps
+var wsToPlayerId = new Map(); //Maps a ws to {playerId, timestamp}. // TODO, clean it up every once in a while.
 
 // ********************************* Public API ****************************************
+
 function addPlayerToGame(gameId, playerWs)
 {
     var game = currentGames[gameId];
 
-    if(game != null && !game.hasPlayer(playerWs)) // TODO change to check for Id. Change function name to hasPlayerWs
+    if(game != null && !game.hasPlayerWs(playerWs))
     {
-        var newPlayer = new Player(playerWs, uuid(), gameId);
+        var newPlayer = new Player(playerWs, getWsId(playerWs), gameId);
         game.addPlayer(newPlayer);
         currentPlayers[newPlayer.id] = newPlayer;
         return newPlayer;
@@ -29,10 +31,10 @@ function addPlayerToGame(gameId, playerWs)
     }
 }
 
-function removePlayerFromGame(gameId, playerWs) // Doesn't actually remove a player from the game?
-{                                               // Actually... it should. How to handle lobbies?
-    var game = currentGames[gameId];            // Jackbox.tv doesn't remove you if you disconnet.
-                                                // Perhaps this function is not needed at all?
+function removePlayerFromGame(gameId, playerWs)
+{
+    var game = currentGames[gameId];
+
     if(game != null)
     {
         game.removePlayer(playerWs);
@@ -45,6 +47,11 @@ function getPlayersInGame(gameId)
 
     if (game != null)
     {
+        //Leaving in comment since useful for debugging.
+       /* for(let i = 0; i < game.players.length; i++)
+        {
+            console.log(game.players[i].id);
+        } */
         return game.players;
     }
     else
@@ -69,7 +76,7 @@ function getHostOfGame(gameId){
 }
 
 // Can return undefined. Maybe make mock player?
-function getPlayer(playerId)
+function getPlayer(playerId) // TODO change name to byId
 {
     var player = currentPlayers[playerId];
 
@@ -81,7 +88,7 @@ function getPlayer(playerId)
 function createGame(hostWs)
 {
     var gameId = makeGameId();
-    var newHost = new Player(hostWs, uuid(), gameId);
+    var newHost = new Player(hostWs, getWsId(hostWs), gameId);
     currentPlayers[newHost.id] = newHost;
     currentGames[gameId] = new Game(gameId, newHost);
 
@@ -94,6 +101,35 @@ function deleteGame(gameId)          // Delete game if host calls.
 }
 
 // PRIVATE HELPER FUNCTIONS
+function getWsId(playerWs) // TODO Clean up map once in a while// This works but could probably be cleaned up
+{
+    if(wsToPlayerId.has(playerWs)) // If a websocket is trying to join multiple games, clean up previous game.
+    {
+        console.log("Game joined/created before leaving previous one! Culprit:" + wsToPlayerId.get(playerWs).id);
+
+        let player = currentPlayers[wsToPlayerId.get(playerWs).id];
+
+        if(player)
+        {
+            let oldGame = currentGames[player.gameId];
+            if(oldGame)
+            {
+                console.log("Removing culprit from previous game.");
+                oldGame.removePlayerByWs(playerWs);
+            }
+            return wsToPlayerId.get(playerWs).id; // Return old Id
+        }
+        else
+        {   // If this code triggers, god help us all.
+            console.log("Something is FATALLY WRONG with the logic. Culprit:" + wsToPlayerId.get(playerWs));
+        }
+    }
+    let id = uuid();
+    let idWithTimestamp = {id:id, createDate:new moment()};
+    wsToPlayerId.set(playerWs, idWithTimestamp);
+    return id;
+}
+
 function makeGameId() { // TODO if game is old just replace it
 
     var result = generateRandomId();
@@ -165,31 +201,48 @@ class Game
         this.players.push(player);
     }
 
-    removePlayer(ws)  // TODO change to Id
+    removePlayerByWs(ws)
     {
-        this.players = this.players.filter(function notSameWs(players){return player.ws != ws;});
+        this.players = this.players.filter(player=>{return player.ws != ws;});
     }
 
-    getPlayersByWs(ws) // TODO change to Id
+    getPlayersByWs(ws)
     {
-        var matching_players = this.players.filter(function sameWs(player){ return player.ws == ws; });
+        var matchingPlayers = this.players.filter(player=>{ return player.ws == ws; });
 
-        if( matching_players.length > 1)
+        if( matchingPlayers.length > 1)
         {
             console.debug(`Duplicate ws:${ws} in game ${this.id}`);
         }
 
-        return matching_players;
+        return matchingPlayers;
     }
 
-    hasPlayer(ws)  // TODO change to Id
+    hasPlayerWs(ws)
     {
         return this.getPlayersByWs(ws).length > 0;
     }
 
+    getPlayersById(id)
+    {
+        var matchingPlayers = this.players.filter((player)=>{ return player.id == id; });
+
+        if( matchingPlayers.length > 1)
+        {
+            console.debug(`Duplicate ws:${id} in game ${this.id}`);
+        }
+
+        return matchingPlayers;
+    }
+
+    hasPlayerId(id)
+    {
+        return this.getPlayersById(id).length > 0;
+    }
+
     replacePlayerWs(oldWs, newWs)
     {
-        this.getPlayersByWs(oldWs).forEach(function replacePlayerWs(player){player.ws = newWs;});
+        this.getPlayersByWs(oldWs).forEach((player)=>{player.ws = newWs;});
     }
 
 }

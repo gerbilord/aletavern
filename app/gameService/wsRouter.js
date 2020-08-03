@@ -2,7 +2,6 @@ const gameService = require('./currentGames');
 
 function giveMessage(ws, msg)
 {
-
     try
     { var messageObject = JSON.parse(msg); }
     catch(e)
@@ -17,13 +16,16 @@ function joinGame(ws, {data:gameId}){ // TODO add safety checks in switch statem
 
     if (newPlayer)
     {
-        let msgObj = {type:"JOINGAME", gameId: newPlayer.gameId, playerId:newPlayer.id, status:"SUCCESS"};
+        let msgObj = {type:"JOINGAME", data: newPlayer.gameId, playerId:newPlayer.id, status:"SUCCESS"};
         console.log(msgObj);
-        emitToGame(newPlayer.gameId, msgObj);
+        newPlayer.send(msgObj);
+
+        msgObj.type = "OTHERJOINGAME";
+        emitToOthersInGame(newPlayer, msgObj);
     }
     else
     {
-        let msgObj = {type:"JOINGAME", gameId:msg.gameId, playerId:-1, status:"FAILURE"};
+        let msgObj = {type:"JOINGAME", data:msg.gameId, playerId:-1, status:"FAILURE"};
         console.log(msgObj);
         ws.send(msgObj); // can't use Player.send since failure.
     }
@@ -32,12 +34,14 @@ function joinGame(ws, {data:gameId}){ // TODO add safety checks in switch statem
 
 function leaveGame(ws, msg){} // TODO is this even needed?
 
-function reconnectToGame(ws, msg){} // TODO
+function reconnectToGame(ws, msg){
+
+} // TODO
 
 function createGame(ws)
 {
     var newHost = gameService.createGame(ws);
-    var msgObj = {type: "CREATEGAME", gameId:newHost.gameId, playerId:newHost.id, status:"SUCCESS"};
+    var msgObj = {type: "CREATEGAME", data:newHost.gameId, playerId:newHost.id, status:"SUCCESS"};
     console.log(msgObj);
     newHost.send(msgObj);
 }
@@ -48,7 +52,7 @@ function messageAllPlayers({playerId:playerId, data:data}){
 
     var sender = gameService.getPlayer(playerId);
 
-    var msgObj = {type:"MESSAGE", playerId:sender.id, status:"SUCCESS", data:data};
+    var msgObj = {type:"MESSAGEGAME", playerId:sender.id, status:"SUCCESS", data:data};
     console.log(msgObj);
 
     emitToGame(sender.gameId, msgObj);
@@ -59,11 +63,17 @@ function emitToGame(gameId, msgObj){
     players.forEach(player => player.send(msgObj));
 }
 
+function emitToOthersInGame(newPlayer, msgObj)
+{
+    var players = gameService.getPlayersInGame(newPlayer.gameId);
+    players.filter((player)=>player != newPlayer).forEach(player => player.send(msgObj));
+}
+
 function messageOnePlayer({playerId:senderId, data:{receiverId:receiverId, message:message}}){
 
     var receiver = gameService.getPlayer(receiverId);
 
-    var msgObj = {type:"MESSAGE", playerId:senderId, status:"SUCCESS", data:message};
+    var msgObj = {type:"MESSAGEGAME", playerId:senderId, status:"SUCCESS", data:message};
     console.log(msgObj);
     receiver.send(msgObj);
 }
@@ -81,7 +91,7 @@ function messageHost(msg){
     }
 }
 
-function routeMessageType(ws, msg)
+function routeMessageType(ws, msg) // TODO verify format of object more, to caps gameIds
 {
     console.log("Entering switch with: " + msg.type);
     switch(msg.type)
@@ -123,8 +133,6 @@ function routeMessageType(ws, msg)
     }
 
 }
-
-
 
 
 module.exports = {giveMessage};

@@ -66,15 +66,15 @@
              if(msgObj.type == "CREATEGAME")
              {
                  gameId = msgObj.data
-                 localStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
+                 sessionStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
              }
              if(msgObj.type == "JOINGAME")
              {
                  gameId = msgObj.data
-                 localStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
+                 sessionStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
              }
 
-             if(msgObj.type == "MESSAGE")
+             if(msgObj.type == "MESSAGEGAME")
              {
                  var listNode = document.createElement("li");
                  listNode.innerHTML = msgObj.data;
@@ -95,12 +95,12 @@
          }
 
          function sendMessageToAll(){
-             var sendMessageObj = {type:"MESSAGEALLGAME", playerId:localStorage.getItem("playerId"), data:getAndClearInput()}
+             var sendMessageObj = {type:"MESSAGEALLGAME", playerId:sessionStorage.getItem("playerId"), data:getAndClearInput()}
              gameWebSocket.send(JSON.stringify(sendMessageObj));
          }
 
          function sendMessageToHost(){
-             var sendMessageObj = {type:"MESSAGEHOSTGAME", playerId:localStorage.getItem("playerId"), data:getAndClearInput()}
+             var sendMessageObj = {type:"MESSAGEHOSTGAME", playerId:sessionStorage.getItem("playerId"), data:getAndClearInput()}
              gameWebSocket.send(JSON.stringify(sendMessageObj));
          }
 
