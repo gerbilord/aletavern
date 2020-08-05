@@ -14,7 +14,7 @@ var wsToPlayerId = new Map(); //Maps a ws to {playerId, timestamp}. // TODO, cle
 
 // ********************************* Public API ****************************************
 
-function addPlayerToGame(gameId, playerWs)
+function addPlayerToGame(gameId, playerWs) // TODO verify game has host. If it doesn't delete it.
 {
     var game = currentGames[gameId];
 
@@ -61,7 +61,7 @@ function getPlayersInGame(gameId)
     }
 }
 
-function getHostOfGame(gameId){
+function getHostOfGame(gameId){ // TODO if game has no host, delete it.
     var game = currentGames[gameId];
 
     if (game != null)
@@ -74,6 +74,7 @@ function getHostOfGame(gameId){
         return null; // Consider returning a fake host.
     }
 }
+
 
 // Can return undefined. Maybe make mock player?
 function getPlayer(playerId) // TODO change name to byId
@@ -95,19 +96,39 @@ function createGame(hostWs)
     return newHost;
 }
 
-function deleteGame(gameId)          // Delete game if host calls.
-{                                    // Make a get host/getHostId
-    delete currentGames[gameId];     // Let's do check at caller. Not really a database check.
+function deleteGame(gameId)
+{
+    // TODO clean up.
+    delete currentGames[gameId];
+}
+
+function deletePlayer(playerId) // TODO be explicit about By ID
+{
+    var playerToDelete = currentPlayers[playerId];
+
+    if(playerToDelete)
+    {
+        var gameId = playerToDelete.gameId;
+        var game = currentGames[gameId];
+
+        if(game)
+        {
+            game.removePlayerById(playerId);
+        }
+
+        currentPlayers[playerId] = undefined;
+        wsToPlayerId.delete(playerToDelete.ws);
+    }
 }
 
 // PRIVATE HELPER FUNCTIONS
 function getWsId(playerWs) // TODO Clean up map once in a while// This works but could probably be cleaned up
 {
-    if(wsToPlayerId.has(playerWs)) // If a websocket is trying to join multiple games, clean up previous game.
+    if(wsToPlayerId.has(playerWs) )// && wsToPlayerId.get(playerWs) != undefined) // If a websocket is trying to join multiple games, clean up previous game.
     {
-        console.log("Game joined/created before leaving previous one! Culprit:" + wsToPlayerId.get(playerWs).id);
+        console.log("Game joined/created before leaving previous one! Culprit:" + wsToPlayerId.get(playerWs));
 
-        let player = currentPlayers[wsToPlayerId.get(playerWs).id];
+        let player = currentPlayers[wsToPlayerId.get(playerWs)];
 
         if(player)
         {
@@ -117,7 +138,7 @@ function getWsId(playerWs) // TODO Clean up map once in a while// This works but
                 console.log("Removing culprit from previous game.");
                 oldGame.removePlayerByWs(playerWs);
             }
-            return wsToPlayerId.get(playerWs).id; // Return old Id
+            return wsToPlayerId.get(playerWs); // Return old Id // TODO Consider giving new id. Otherwise old games could message them. // Consider adding gameId into the API again... Or add validation that people only send to same room.
         }
         else
         {   // If this code triggers, god help us all.
@@ -125,16 +146,15 @@ function getWsId(playerWs) // TODO Clean up map once in a while// This works but
         }
     }
     let id = uuid();
-    let idWithTimestamp = {id:id, createDate:new moment()};
-    wsToPlayerId.set(playerWs, idWithTimestamp);
+    wsToPlayerId.set(playerWs, id);
     return id;
 }
 
-function makeGameId() { // TODO if game is old just replace it
+function makeGameId() { // TODO this scales poorly
 
     var result = generateRandomId();
 
-    while(currentGames[result] != null)
+    while(currentGames[result] != null) // TODO if game is old just replace it
     {
         result = generateRandomId();
     }
@@ -167,15 +187,28 @@ class Player
         this.ws = ws;
         this.id = id;
         this.gameId = gameId;
+        this.createTime = new moment();
     }
 
-    // Sends an preformatted Javascript object.
+    // Sends a Javascript object.
     send(msgObj)
     {
         if (this.ws)
         {
-            this.ws.send(JSON.stringify(msgObj));
+            try
+            {
+                this.ws.send(JSON.stringify(msgObj));
+            }
+            catch(e)
+            {
+                // Socket is dead. No worries, players can reconnect.
+            }
         }
+    }
+
+    setWebSocket(ws)
+    {
+        this.ws = ws;
     }
 }
 
@@ -234,6 +267,12 @@ class Game
         return this.getPlayersById(id).length > 0;
     }
 
+    removePlayerById(id)
+    {
+        this.players = this.players.filter(player=>{return player.id != id;});
+    }
+
+
     replacePlayerWs(oldWs, newWs)
     {
         this.getPlayersByWs(oldWs).forEach((player)=>{player.ws = newWs;});
@@ -242,4 +281,4 @@ class Game
 }
 
 
-module.exports = { addPlayerToGame, removePlayerFromGame, getPlayersInGame, deleteGame, createGame, getPlayer, getHostOfGame };
+module.exports = { addPlayerToGame, removePlayerFromGame, getPlayersInGame, deleteGame, createGame, getPlayer, getHostOfGame, deletePlayer };

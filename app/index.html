@@ -29,6 +29,9 @@
                 <input id="sendMessageToHost"type="button" name="submit" value="sendMessageToHost()" onclick="sendMessageToHost();" />
                 <input id="joinGame"type="button" name="submit" value="joinGame()" onclick="joinGame();" />
                 <input id="createGame"type="button" name="submit" value="createGame()" onclick="createGame();" />
+                <input id="reconnectGame"type="button" name="submit" value="reconnectGame()" onclick="reconnectGame();" />
+                <input id="leaveGame"type="button" name="submit" value="leaveGame()" onclick="leaveGame();" />
+                <input id="deleteGame"type="button" name="submit" value="deleteGame()" onclick="deleteGame();" />
             </div>
         </div>
 
@@ -37,49 +40,98 @@
         </div>
 
 
+
         <script>
 
 
          // ***************************************************************************************************
          // ********************** Frontend GameWebSocket Api *************************************************
          // ***************************************************************************************************
-         class GameWebSocket {
+         class GameWebSocket { // TODO make sure websocket is still alive!
 
              constructor(logging = false){
                  var wsPath = "ws://" +  window.location.host + "/game";
                  this.ws = new WebSocket(wsPath);
-                 this.ws.addEventListener('message', this.newMessageHandler.bind(this));
+                 this.ws.addEventListener('message', this.messageHandler.bind(this));
                  this.logging = logging;
              }
 
-             newMessageHandler(event){
+             messageHandler(event){
 
                  var msgObj = JSON.parse(event.data);
 
                  if(logging){console.log(msgObj);}
 
-                 if(msgObj.type == "CREATEGAME")
+                 if(msgObj.type == "CREATEGAME") // TODO probably make a switch...
                  {
                      this.gameId = msgObj.data;
-                     sessionStorage.setItem("currentGameId", this.gameId);
-                     sessionStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
+                     sessionStorage.setItem("gameId", this.gameId);
+                     sessionStorage.setItem("playerId", msgObj.playerId);
 
                      if(this.onCreateGame){this.onCreateGame(msgObj)};
 
                  }
                  if(msgObj.type == "JOINGAME")
                  {
-                     this.gameId = msgObj.data
-                     sessionStorage.setItem("currentGameId", this.gameId);
-                     sessionStorage.setItem("playerId", msgObj.playerId); // Consider using session storage
+                     this.gameId = msgObj.data.gameId;
+                     this.playerId = msgObj.playerId;
+                     this.hostId = msgObj.hostId;
+
+                     sessionStorage.setItem("gameId", this.gameId);
+                     sessionStorage.setItem("playerId", msgObj.playerId);
+                     sessionStorage.setItem("hostId", msgObj.hostId);
 
                      if(this.onJoinGame){this.onJoinGame(msgObj)};
                  }
 
                  if(msgObj.type == "MESSAGEGAME")
                  {
-                     if(this.onGameMessage){this.onMessageGame(msgObj)};
+                     if(this.onMessageGame){this.onMessageGame(msgObj)};
                  }
+
+                 if(msgObj.type == "LEAVEGAME")
+                 {
+                     this.clearData();
+                     if(this.onLeaveGame){this.onJoinGame(msgObj)};
+                 }
+
+                 if(msgObj.type == "DELETEGAME")
+                 {
+                     this.clearData();
+                     if(this.onDeleteGame){this.onJoinGame(msgObj)};
+                 }
+
+                 if(msgObj.type == "RECONNECTGAME")
+                 {
+                     this.gameId = msgObj.data.gameId;
+                     this.playerId = msgObj.playerId;
+                     this.hostId = msgObj.hostId;
+
+                     sessionStorage.setItem("gameId", this.gameId);
+                     sessionStorage.setItem("playerId", msgObj.playerId);
+                     sessionStorage.setItem("hostId", msgObj.hostId);
+
+                     if(this.onReconnectGame){this.onJoinGame(msgObj)};
+                 }
+
+             }
+
+             clearData()
+             {
+                 this.gameId = undefined;
+                 this.playerId = undefined;
+                 this.hostId = undefined;
+
+                 sessionStorage.clear(); // just clear everything
+             }
+
+             loadData()
+             {
+                 this.gameId = sessionStorage.getItem("gameId");
+                 this.playerId = sessionStorage.getItem("playerId");
+                 this.hostId = sessionStorage.getItem("hostId");
+
+                 sessionStorage.clear(); // just clear everything
              }
 
              createGame(){
@@ -100,6 +152,35 @@
              sendMessageToHost(msg){
                  var sendMessageObj = {type:"MESSAGEHOSTGAME", playerId:sessionStorage.getItem("playerId"), data:msg}
                  this.ws.send(JSON.stringify(sendMessageObj));
+             }
+
+             sendMessageToOne(receiverId, msg){
+                 var addressedMessage = {receiverId:receiverId, data:msg};
+                 var sendMessageObj = {type:"MESSAGEONEGAME", playerId:sessionStorage.getItem("playerId"), data:addressedMessage};
+                 this.ws.send(JSON.stringify(sendMessageObj)); // Add try catch. Reconnect on catch
+             }
+
+             reconnectGame()
+             {
+                 this.loadData();
+
+                 if(this.playerId) // always use session storage or load data?
+                 {
+                     var sendMessageObj = {type:"RECONNECTGAME", playerId:this.playerId};
+                     this.ws.send(JSON.stringify(sendMessageObj)); // TODO refactor stringify
+                 }
+             }
+
+             deleteGame()
+             {
+                 var sendMessageObj = {type:"DELETEGAME", playerId:sessionStorage.getItem("playerId")};
+                 this.ws.send(JSON.stringify(sendMessageObj)); // TODO refactor stringify
+             }
+
+             leaveGame()
+             {
+                 var sendMessageObj = {type:"LEAVEGAME", playerId:sessionStorage.getItem("playerId")}
+                 this.ws.send(JSON.stringify(sendMessageObj)); // TODO refactor stringify
              }
          }
 
@@ -144,7 +225,23 @@
              gameWebSocket.sendMessageToHost(getAndClearInput());
          }
 
-         gameWebSocket.onCreateGame = () => console.log("WE IN BOIS");
+         function reconnectGame(){
+             gameWebSocket.reconnectGame();
+         }
+
+         function leaveGame(){
+             gameWebSocket.leaveGame();
+         }
+
+         function deleteGame(){
+             gameWebSocket.deleteGame();
+         }
+
+         // *********************** ON EVENT FUNCTIONS *************************
+
+         gameWebSocket.onCreateGame = () => console.log("Game created ;D");
+         gameWebSocket.onMessageGame = (msg) => console.log(msg.data);
+
 
          // ******************* HELPER FUNCTIONS *******************************
          function getAndClearInput(){
