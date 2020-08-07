@@ -61,6 +61,7 @@
 
                  if(logging){console.log(msgObj);}
 
+                 // TODO Add all other types. OTHERJOINGAME etc. 
                  if(msgObj.type == "CREATEGAME") // TODO probably make a switch...
                  {
                      this.gameId = msgObj.data;
@@ -81,6 +82,16 @@
                      sessionStorage.setItem("hostId", msgObj.hostId);
 
                      if(this.onJoinGame){this.onJoinGame(msgObj)};
+                 }
+
+                 if(msgObj.type == "OTHERJOINGAME")
+                 {
+                     if(this.onOtherJoinGame){this.onOtherJoinGame(msgObj);}
+                 }
+
+                 if(msgObj.type == "OTHERLEAVEGAME")
+                 {
+                     if(this.onOtherLeaveGame){this.onOtherLeaveGame(msgObj);}
                  }
 
                  if(msgObj.type == "MESSAGEGAME")
@@ -222,8 +233,10 @@
 
          // *********************** ON EVENT FUNCTIONS *************************
 
-         gameWebSocket.onCreateGame = () => console.log("Game created ;D");
-         gameWebSocket.onMessageGame = (msg) => console.log(msg.data);
+         gameWebSocket.onCreateGame = (msg) => {let text = "Game created with ID: " + msg.data; addToChat(text)};
+         gameWebSocket.onMessageGame = (msg) => { addToChat(msg.playerId + " sent: " + msg.data)};
+         gameWebSocket.onOtherJoinGame = (msg) => { addToChat(msg.playerId + " joined the game.")};
+         gameWebSocket.onOtherLeaveGame = (msg) => { addToChat(msg.playerId + " left the game.")};
 
 
          // ******************* HELPER FUNCTIONS *******************************
@@ -231,6 +244,13 @@
              var val = input.value;
              input.value = "";
              return val;
+         }
+
+         function addToChat(text)
+         {
+             let entry = document.createElement("LI");
+             entry.innerHTML = text;
+             output.insertBefore(entry, output.firstChild);
          }
 
         </script>

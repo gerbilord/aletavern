@@ -126,7 +126,7 @@ function deletePlayer(playerId) // TODO be explicit about By ID
 }
 
 // PRIVATE HELPER FUNCTIONS
-function getWsId(playerWs) // TODO Clean up map once in a while// This works but could probably be cleaned up
+function getWsId(playerWs) // TODO Clean up map once in a while // This works but could probably be improved
 {
     if(wsToPlayerId.has(playerWs) )// && wsToPlayerId.get(playerWs) != undefined) // If a websocket is trying to join multiple games, clean up previous game.
     {

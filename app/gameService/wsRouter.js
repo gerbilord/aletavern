@@ -16,8 +16,18 @@ function giveMessage(ws, msg)
 }
 
 
-function joinGame(ws, {data:gameId}){ // TODO add safety checks in switch statement.
+/*
+  * @ws Websocket of a new player trying to join a game.
+  * @msg Expected format {data:gameId} Contains what message to join.
+  */
+function joinGame(ws, msg){ // TODO add safety checks in switch statement.
 
+    if (!validateJoinGameMessage(msg))
+    {
+        return; // consider returning error?
+    }
+
+    var {data:gameId} = msg;
     gameId = gameId.toUpperCase();
     var newPlayer = gameService.addPlayerToGame(gameId, ws);
 
@@ -37,7 +47,7 @@ function joinGame(ws, {data:gameId}){ // TODO add safety checks in switch statem
             emitToOthersInGame(newPlayer, msgObj);
         }
         else
-        { // TODO gameService.addPlayerToGame should delete if game has no host.
+        { // TODO gameService.addPlayerToGame should delete if game has no host. Call leave game for all? And delete game?
             let msgObj = {type:"JOINGAME", data:gameId, playerId:-1, status:"FAILURE"};
             console.log(msgObj);
             console.debug("Game:${gameId} exists but has no host.");
@@ -50,10 +60,27 @@ function joinGame(ws, {data:gameId}){ // TODO add safety checks in switch statem
         console.log(msgObj);
         sendToRawWs(ws, msgObj); // can't use Player.send since failure.
     }
-
+}
+// TODO consider renmaing msgObj to returnObj
+function validateJoinGameMessage(msg)
+{
+    if(msg && msg.data)
+    {
+        return true;
+    }
+    else
+    {
+        return false; // Conisder console.debug.
+    }
 }
 
+
 function reconnectToGame(ws, msg){
+
+    if( !validateReconnectGameMessage(msg) ) // TODO standardize validate function names.
+    {
+        return;
+    }
     var playerId = msg.playerId;
     var player = gameService.getPlayer(playerId);
 
@@ -82,6 +109,18 @@ function reconnectToGame(ws, msg){
     msgObj.status = "FAILURE";
     msgObj.data = "Game or player does not exist.";
     sendToRawWs(ws, msgObj);
+}
+
+function validateReconnectGameMessage(msg)
+{
+    if(msg && msg.playerId)
+    {
+        return true;
+    }
+    else
+    {
+        return false; // Consider adding console.debug.
+    }
 }
 
 function createGame(ws)
@@ -228,7 +267,7 @@ function emitToOthersInGame(sender, msgObj)
  */
 function messageOnePlayer(msg){
 
-    if( validateAddressedMessage(msgObj) )
+    if( validateAddressedMessage(msg) )
     {
         var {playerId:senderId, data:{receiverId:receiverId, message:message}} = msg;
         var receiver = gameService.getPlayer(receiverId);
