@@ -98,8 +98,12 @@ function createGame(hostWs)
 
 function deleteGame(gameId)
 {
-    // TODO clean up.
-    delete currentGames[gameId];
+    if(currentGames[gameId])
+    {
+        let players = getPlayersInGame(gameId);
+        players.forEach(player=>deletePlayer(player));
+        delete currentGames[gameId];
+    }
 }
 
 function deletePlayer(playerId) // TODO be explicit about By ID

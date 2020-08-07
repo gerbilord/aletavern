@@ -31,7 +31,6 @@
                 <input id="createGame"type="button" name="submit" value="createGame()" onclick="createGame();" />
                 <input id="reconnectGame"type="button" name="submit" value="reconnectGame()" onclick="reconnectGame();" />
                 <input id="leaveGame"type="button" name="submit" value="leaveGame()" onclick="leaveGame();" />
-                <input id="deleteGame"type="button" name="submit" value="deleteGame()" onclick="deleteGame();" />
             </div>
         </div>
 
@@ -93,12 +92,6 @@
                  {
                      this.clearData();
                      if(this.onLeaveGame){this.onJoinGame(msgObj)};
-                 }
-
-                 if(msgObj.type == "DELETEGAME")
-                 {
-                     this.clearData();
-                     if(this.onDeleteGame){this.onJoinGame(msgObj)};
                  }
 
                  if(msgObj.type == "RECONNECTGAME")
@@ -171,12 +164,6 @@
                  }
              }
 
-             deleteGame()
-             {
-                 var sendMessageObj = {type:"DELETEGAME", playerId:sessionStorage.getItem("playerId")};
-                 this.ws.send(JSON.stringify(sendMessageObj)); // TODO refactor stringify
-             }
-
              leaveGame()
              {
                  var sendMessageObj = {type:"LEAVEGAME", playerId:sessionStorage.getItem("playerId")}
@@ -231,10 +218,6 @@
 
          function leaveGame(){
              gameWebSocket.leaveGame();
-         }
-
-         function deleteGame(){
-             gameWebSocket.deleteGame();
          }
 
          // *********************** ON EVENT FUNCTIONS *************************

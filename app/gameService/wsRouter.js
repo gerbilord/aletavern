@@ -1,11 +1,16 @@
 const gameService = require('./currentGames');
 
+/*
+   End point for all websocket calls.
+   @ws   Websocket of the caller
+   @msg  Data sent in message.
+  */
 function giveMessage(ws, msg)
 {
     try
     { var messageObject = JSON.parse(msg); }
     catch(e)
-    { console.debug(`Invalid JSON recieved: ${msg}`); return; }
+    { console.debug(`Invalid JSON recieved: ${msg}`); return; } // Consider sending an error message?
 
     routeMessageType(ws, messageObject);
 }
@@ -36,48 +41,16 @@ function joinGame(ws, {data:gameId}){ // TODO add safety checks in switch statem
             let msgObj = {type:"JOINGAME", data:gameId, playerId:-1, status:"FAILURE"};
             console.log(msgObj);
             console.debug("Game:${gameId} exists but has no host.");
-            ws.send(msgObj); // can't use Player.send since failure.
+            sendToRawWs(ws, msgObj); // can't use Player.send since failure.
         }
     }
     else
     {
         let msgObj = {type:"JOINGAME", data:gameId, playerId:-1, status:"FAILURE"};
         console.log(msgObj);
-        ws.send(JSON.stringify(msgObj)); // can't use Player.send since failure.
+        sendToRawWs(ws, msgObj); // can't use Player.send since failure.
     }
 
-}
-
-function leaveGame(msg) // TODO Tell others (host) that people left.
-{
-    var playerToDelete = gameService.getPlayer(msg.playerId);
-
-    if(playerToDelete)
-    {
-        var host = gameService.getHostOfGame(playerToDelete.gameId);
-
-        if(host && host == playerToDelete)
-        {
-            deleteGame(msg);
-        }
-        else
-        {
-            oneLeaveGame(msg);
-        }
-    }
-
-}
-
-function oneLeaveGame(msg)
-{
-    var playerToDelete = gameService.getPlayer(msg.playerId);
-
-    if(playerToDelete)
-    {
-        var msgObj = {type:"LEAVEGAME"}; // TODO does not show originators id. Breaks API standard.
-        playerToDelete.send(msgObj);
-        gameService.deletePlayer(msg.playerId);
-    }
 }
 
 function reconnectToGame(ws, msg){
@@ -108,7 +81,7 @@ function reconnectToGame(ws, msg){
     // Could not find player or game was done.
     msgObj.status = "FAILURE";
     msgObj.data = "Game or player does not exist.";
-    ws.send(JSON.stringify(msgObj));
+    sendToRawWs(ws, msgObj);
 }
 
 function createGame(ws)
@@ -119,81 +92,186 @@ function createGame(ws)
     newHost.send(msgObj);
 }
 
-// Delete game if host initiated request.
-function deleteGame({playerId:playerId}) // TODO delete player that left game.
+function leaveGame(ws, msg)
 {
-    var caller = gameService.getPlayer(playerId);
-    var msgObj = {type:"DELETEGAME", playerId:playerId};
-
-    if (caller)
+    if( !validateLeaveGameMessage(msg) )
     {
-        var gameHost = gameService.getHostOfGame(caller.gameId);
+        return;
+    }
 
-        if(gameHost) // should currentGames.js support isHost(playerId)?
+    var playerId = msg.playerId;
+    var playerToDelete = gameService.getPlayer(playerId);
+    var msgObj = {type:"LEAVEGAME", playerId:playerId};
+
+    if(playerToDelete)
+    {
+        var gameId = playerToDelete.gameId;
+        var host = gameService.getHostOfGame(gameId);
+
+        if(!host)
         {
-            if(gameHost.gameId == caller.gameId)
-            {
-                msgObj.status = "SUCCESS";
-                msgObj.data = `Host deleted ${caller.gameId}`;
-                emitToGame(caller.gameId,msgObj);
-                var players = gameService.getPlayersInGame(caller.gameId);
-                players.forEach( player =>{let msg = {playerId:player.id}; oneLeaveGame(msg);});
-                gameService.deleteGame(caller.gameId);
-                return;
-            }
-            else
-            {
-                msgObj.status = "FAILURE";
-                msgObj.data = "Must be host to delete a game";
-                caller.send(msgObj);
-            }
-        }
-        else
-        {
-            msgObj.status = "FAILURE";
+            // No host! Uh oh! Make everyone leave the game.
+            msgObj.status = "SUCCESS";
             msgObj.data = "Game has no host. Game most likely already deleted.";
-            caller.send(msgObj);
             console.debug(`Player:${playerId} tried to delete a game without a host. player's gameId:${playerId}`);
+
+            emitToGame(gameId, msgObj); // Let's clean up the game just in case.
+            gameService.deleteGame(gameId);
+        }
+        else if(host == playerToDelete)
+        {
+            // Host is leaving? Let's make all others leave too then. Can't play a game without a host.
+            msgObj.status = "SUCCESS";
+            msgObj.data = `Host deleted the game: ${gameId}`;
+            emitToGame(gameId, msgObj);
+
+            gameService.deleteGame(gameId);
+        }
+        else // A non-host player wants to leave.
+        {
+            msgObj.status = "SUCCESS";
+            playerToDelete.send(msgObj);
+            gameService.deletePlayer(playerId); // Delete the player that left.
+
+            // Notify everyone that someone left.
+            msgObj.type = "OTHERLEAVEGAME";
+            emitToGame(gameId, msgObj);
+        }
+    }
+    else // Consider sending a disconnect message back to the ws.
+    {
+        console.debug(`A non-existent player:${playerId} tried to leave a game.`);
+
+        msgObj.status = "FAILURE";
+        msgObj.data = "You are not a player in any game.";
+
+        sendToRawWs(ws, msgObj);
+    }
+
+}
+
+function validateLeaveGameMessage(msg)
+{
+    if(msg)
+    {
+        if(msg.playerId)
+        {
+            return true;
         }
     }
     else
     {
-        console.debug(`A non-existent player:${playerId} tried to delete a game.`);
+        return false; // Consider logging.
+    }
+}
+/*
+ * @msg A parsed message with format {playerId, data}
+ *
+ * Sends message to all players in playerId's game
+ */
+function messageAllPlayers(msg){
+
+    if(validateMessageAllPlayersMsg(msg))
+    {
+        var {playerId:playerId, data:data} = msg;
+
+        var sender = gameService.getPlayer(playerId);
+
+        var msgObj = {type:"MESSAGEGAME", playerId:sender.id, status:"SUCCESS", data:data};
+        console.log(msgObj);
+
+        emitToGame(sender.gameId, msgObj);
+    }
+    else
+    {
+        console.debug("Malformed message: " + msg);
+    }
+
+}
+
+function validateMessageAllPlayersMsg(msg)
+{
+    if(msg)
+    {
+        if(msg.playerId && msg.data)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 
-function messageAllPlayers({playerId:playerId, data:data}){
-
-    var sender = gameService.getPlayer(playerId);
-
-    var msgObj = {type:"MESSAGEGAME", playerId:sender.id, status:"SUCCESS", data:data};
-    console.log(msgObj);
-
-    emitToGame(sender.gameId, msgObj);
-}
-
+/*
+ * @gameId The game to emit the message to.
+ * @msgObj A preformatted and parsed message.
+ */
 function emitToGame(gameId, msgObj){
     var players = gameService.getPlayersInGame(gameId);
     players.forEach(player => player.send(msgObj));
 }
 
-function emitToOthersInGame(newPlayer, msgObj)
+/*
+ * @sender Player object that sent the message.
+ * @msgObj Pre-formatted
+ */
+function emitToOthersInGame(sender, msgObj)
 {
-    var players = gameService.getPlayersInGame(newPlayer.gameId);
-    players.filter((player)=>player != newPlayer).forEach(player => player.send(msgObj));
+    var players = gameService.getPlayersInGame(sender.gameId);
+    players.filter((player)=>player != sender).forEach(player => player.send(msgObj));
 }
 
-function messageOnePlayer({playerId:senderId, data:{receiverId:receiverId, message:message}}){
+/*
+ * @msg an addressed message.
+ */
+function messageOnePlayer(msg){
 
-    var receiver = gameService.getPlayer(receiverId);
+    if( validateAddressedMessage(msgObj) )
+    {
+        var {playerId:senderId, data:{receiverId:receiverId, message:message}} = msg;
+        var receiver = gameService.getPlayer(receiverId);
 
-    var msgObj = {type:"MESSAGEGAME", playerId:senderId, status:"SUCCESS", data:message};
-    console.log(msgObj);
-    receiver.send(msgObj);
+        if(receiver)
+        {
+            var msgObj = {type:"MESSAGEGAME", playerId:senderId, status:"SUCCESS", data:message};
+            console.log(msgObj);
+            receiver.send(msgObj);
+        }
+        else
+        {
+            console.debug("Message sent to non-existant player. Msg:"+ msg);
+        }
+    }
+    else
+    {  // Consider sending error back to sender. Return to sender!
+        console.debug("Incorrectly formatted msg: " + msg);
+    }
 }
 
+// checks for format {playerId, data:{recievedId, message}}
+function validateAddressedMessage(msgObj)
+{
+    if(msgObj)
+    {
+        if(msgObj.playerId && msgObj.data)
+        {
+            if(msgObj.data.receiverId && msgObj.data.message)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/*
+  * @msg a parsed msg from the caller
+  *
+  * Sends msg.data to the host of the game the caller is in.
+  */
 function messageHost(msg){
-
     var sender = gameService.getPlayer(msg.playerId);
 
     if(sender)
@@ -205,6 +283,29 @@ function messageHost(msg){
     }
 }
 
+
+function sendToRawWs(ws, msgObj)
+{
+    if (ws)
+    {
+        try
+        {
+            ws.send(JSON.stringify(msgObj));
+        }
+        catch(e)
+        {
+            // Socket is dead, or msgObj is poorly formatted.
+            // Consider debug message.
+        }
+    }
+}
+
+/*
+  * @ws  websocket of the caller
+  * @msg parsed data sent by caller
+  *
+  * Routes message to the correct function based on msg.type
+  */
 function routeMessageType(ws, msg)
 {
     console.log("Entering switch with: " + msg.type);
@@ -215,7 +316,7 @@ function routeMessageType(ws, msg)
         break;
 
         case "LEAVEGAME": // Implemented.
-        leaveGame(msg);
+        leaveGame(ws, msg);
         break;
 
         case "RECONNECTGAME": // Implemented.
@@ -224,10 +325,6 @@ function routeMessageType(ws, msg)
 
         case "CREATEGAME": // Implemented.
         createGame(ws);
-        break;
-
-        case "DELETEGAME": // Implemented. Consider using ws instead of data.
-        deleteGame(msg);
         break;
 
         case "MESSAGEALLGAME": // Implemented. Consider not messaging original sender.
