@@ -3,6 +3,11 @@ const wsRouter = require('./gameService/wsRouter');
 
 function setupRoutes(app){ // module start
 
+    // Scripts
+    app.get('/GameWebSocket.js', function(req, res) {
+        res.sendFile(path.join(__dirname +'/GameWebSocket.js'));
+    });
+
     // index.html
     app.get('/', function(req, res) {
         res.sendFile(path.join(__dirname +'/index.html'));
