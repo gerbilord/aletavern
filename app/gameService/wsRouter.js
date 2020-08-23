@@ -34,10 +34,11 @@ function joinGame(ws, msg){ // TODO add safety checks in switch statement.
     if (newPlayer)
     {
         var host = gameService.getHostOfGame(newPlayer.gameId);
+        var gameType = gameService.getGameType(gameId);
         if(host)
         {
             var hostId = host.id;
-            var dataObj = {hostId:hostId, gameId:newPlayer.gameId};
+            var dataObj = {hostId:hostId, gameId:newPlayer.gameId, gameType:gameType};
 
             let msgObj = {type:"JOINGAME", data: dataObj, playerId:newPlayer.id, status:"SUCCESS"};
             console.log(msgObj);
@@ -50,7 +51,7 @@ function joinGame(ws, msg){ // TODO add safety checks in switch statement.
         { // TODO gameService.addPlayerToGame should delete if game has no host. Call leave game for all? And delete game?
             let msgObj = {type:"JOINGAME", data:gameId, playerId:-1, status:"FAILURE"};
             console.log(msgObj);
-            console.debug("Game:${gameId} exists but has no host.");
+            console.debug(`Game:${gameId} exists but has no host.`);
             sendToRawWs(ws, msgObj); // can't use Player.send since failure.
         }
     }
@@ -123,12 +124,32 @@ function validateReconnectGameMessage(msg)
     }
 }
 
-function createGame(ws)
+function createGame(ws,msg)
 {
-    var newHost = gameService.createGame(ws);
-    var msgObj = {type: "CREATEGAME", data:newHost.gameId, playerId:newHost.id, status:"SUCCESS"};
+    if(!validateCreateGameMessage(msg))
+    {
+        console.log(msg.data)
+        console.log(`Bad create game message: ${msg}`);
+        return;
+    }
+
+    var newHost = gameService.createGame(ws, msg.data);
+    var dataObj = {gameId: newHost.gameId, gameType: msg.data};
+    var msgObj = {type: "CREATEGAME", data:dataObj, playerId:newHost.id, status:"SUCCESS"};
     console.log(msgObj);
     newHost.send(msgObj);
+}
+
+function validateCreateGameMessage(msg)
+{
+    if(msg)
+    {
+        if (msg.data)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 function leaveGame(ws, msg)
@@ -363,7 +384,7 @@ function routeMessageType(ws, msg)
         break;
 
         case "CREATEGAME": // Implemented.
-        createGame(ws);
+        createGame(ws, msg);
         break;
 
         case "MESSAGEALLGAME": // Implemented. Consider not messaging original sender.

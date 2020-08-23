@@ -86,12 +86,12 @@ function getPlayer(playerId) // TODO change name to byId
     return player;
 }
 
-function createGame(hostWs)
+function createGame(hostWs, gameType)
 {
     var gameId = makeGameId();
     var newHost = new Player(hostWs, getWsId(hostWs), gameId);
     currentPlayers[newHost.id] = newHost;
-    currentGames[gameId] = new Game(gameId, newHost);
+    currentGames[gameId] = new Game(gameId, newHost, gameType);
 
     return newHost;
 }
@@ -125,6 +125,17 @@ function deletePlayer(playerId) // TODO be explicit about By ID
     }
 }
 
+function getGameType(gameId)
+{
+    var gameType;
+
+    if(currentGames[gameId])
+    {
+        gameType = currentGames[gameId].gameType;
+    }
+
+    return gameType;
+}
 // PRIVATE HELPER FUNCTIONS
 function getWsId(playerWs) // TODO Clean up map once in a while // This works but could probably be improved
 {
@@ -220,10 +231,11 @@ class Game
 {
 
     // By convention this.players[0] is the host.
-    constructor(id, host, name)
+    constructor(id, host, gameType)
     {
         this.id = id;           // String
         this.players = [host];  // Array of Players
+        this.gameType = gameType;
         this.createTime = moment();
     }
 
@@ -285,4 +297,4 @@ class Game
 }
 
 
-module.exports = { addPlayerToGame, removePlayerFromGame, getPlayersInGame, deleteGame, createGame, getPlayer, getHostOfGame, deletePlayer };
+module.exports = { addPlayerToGame, removePlayerFromGame, getPlayersInGame, deleteGame, createGame, getPlayer, getHostOfGame, deletePlayer, getGameType };

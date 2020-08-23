@@ -1,6 +1,6 @@
 class GameWebSocket { // TODO make sure websocket is still alive!
 
-    constructor(logging = false){
+    constructor(logging){
         var wsPath = "ws://" +  window.location.host + "/game";
         this.ws = new WebSocket(wsPath);
         this.ws.addEventListener('message', this.messageHandler.bind(this));
@@ -11,29 +11,40 @@ class GameWebSocket { // TODO make sure websocket is still alive!
 
         var msgObj = JSON.parse(event.data);
 
-        if(logging){console.log(msgObj);}
+        if(this.logging){console.log(msgObj);}
 
         // TODO Add all other types. OTHERJOINGAME etc. 
         if(msgObj.type == "CREATEGAME") // TODO probably make a switch...
         {
-            this.gameId = msgObj.data;
+            this.gameId = msgObj.data.gameId;
+            this.playerId = msgObj.playerId;
+            this.hostId = this.playerId;
+            this.gameType = msgObj.data.gameType;
+
             sessionStorage.setItem("gameId", this.gameId);
             sessionStorage.setItem("playerId", msgObj.playerId);
+            sessionStorage.setItem("hostId", msgObj.playerId);
+            sessionStorage.setItem("gameType", msgObj.data.gameType);
 
             if(this.onCreateGame){this.onCreateGame(msgObj);};
 
         }
         if(msgObj.type == "JOINGAME")
         {
-            this.gameId = msgObj.data.gameId;
-            this.playerId = msgObj.playerId;
-            this.hostId = msgObj.hostId;
+            if(msgObj.status == "SUCCESS")
+            {
+                this.gameId = msgObj.data.gameId;
+                this.playerId = msgObj.playerId;
+                this.hostId = msgObj.hostId;
+                this.gameType = msgObj.data.gameType;
 
-            sessionStorage.setItem("gameId", this.gameId);
-            sessionStorage.setItem("playerId", msgObj.playerId);
-            sessionStorage.setItem("hostId", msgObj.hostId);
+                sessionStorage.setItem("gameId", this.gameId);
+                sessionStorage.setItem("playerId", msgObj.playerId);
+                sessionStorage.setItem("hostId", msgObj.data.hostId);
+                sessionStorage.setItem("gameType", msgObj.data.gameType);
 
-            if(this.onJoinGame){this.onJoinGame(msgObj)};
+                if(this.onJoinGame){this.onJoinGame(msgObj)};   
+            }
         }
 
         if(msgObj.type == "OTHERJOINGAME")
@@ -62,10 +73,12 @@ class GameWebSocket { // TODO make sure websocket is still alive!
             this.gameId = msgObj.data.gameId;
             this.playerId = msgObj.playerId;
             this.hostId = msgObj.hostId;
+            this.gameType = gameType;
 
             sessionStorage.setItem("gameId", this.gameId);
             sessionStorage.setItem("playerId", msgObj.playerId);
             sessionStorage.setItem("hostId", msgObj.hostId);
+            sessionStorage.setItem("gameType", msgObj.gameType);
 
             if(this.onReconnectGame){this.onJoinGame(msgObj)};
         }
@@ -77,6 +90,7 @@ class GameWebSocket { // TODO make sure websocket is still alive!
         this.gameId = undefined;
         this.playerId = undefined;
         this.hostId = undefined;
+        this.gameType = undefined;
 
         sessionStorage.clear(); // just clear everything
     }
@@ -90,8 +104,9 @@ class GameWebSocket { // TODO make sure websocket is still alive!
         sessionStorage.clear(); // just clear everything
     }
 
-    createGame(){
-        var createMessageObj = {type:"CREATEGAME"};
+    createGame(gameType)
+    {
+        var createMessageObj = {type:"CREATEGAME", data:gameType};
         this.ws.send(JSON.stringify(createMessageObj));
     }
 
