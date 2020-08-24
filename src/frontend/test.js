@@ -19,7 +19,7 @@ input.addEventListener("keydown", function(event){
 // Listen for messages
 
 
-// ********************* BUTTON FUNCTIONS *****************************
+// ********************* BUTTON FUNCTIONS ****************************
 
 function createGame(){
     gameWebSocket.createGame("The_gameType");

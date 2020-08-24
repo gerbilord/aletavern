@@ -1,14 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import GameWebSocket from './GameWebSocket';
-
-const Pet = ({name, animal, color}) => {
-    return React.createElement("div", {},[
-        React.createElement("h1", {}, name),
-        React.createElement("h2", {}, animal),
-        React.createElement("h2", {}, color)
-    ]);
-}
+import Pet from "./Pet";
 
 const App = () => { return React.createElement( "div", {},
           [
@@ -19,5 +12,5 @@ const App = () => { return React.createElement( "div", {},
           ]
         );
       };
-
+ 
 ReactDOM.render(React.createElement(App), document.getElementById("root"));

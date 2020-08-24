@@ -5,7 +5,7 @@
     "main": "./src/backend/server.js",
     "scripts": {
         "start": "node ./src/backend/server.js",
-        "dev": "webpack-dev-server",
+        "dev": "nodemon --watch src/backend",
         "webpack": "webpack --mode=production",
         "format": "prettier \"src/**/*.{js,html}\" --write"
     },
@@ -21,10 +21,20 @@
         "uuid": "^8.3.0"
     },
     "devDependencies": {
+        "babel": "^6.23.0",
+        "babel-core": "^6.26.3",
+        "@babel/core": "^7.11.4",
+        "@babel/runtime": "^7.11.2",
+        "@babel/preset-env": "^7.11.0",
+        "babel-preset-react-app": "^9.1.2",
+        "css-loader": "^4.2.1",
+        "file-loader": "^6.0.0",
         "nodemon": "^2.0.4",
+        "postcss-loader": "^3.0.0",
         "prettier": "^2.0.5",
+        "style-loader": "^1.2.1",
+        "url-loader": "^4.1.0",
         "webpack": "^4.44.1",
-        "webpack-cli": "^3.3.12",
-        "webpack-dev-server": "^3.11.0"
+        "webpack-cli": "^3.3.12"
     }
 }
