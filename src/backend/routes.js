@@ -8,14 +8,22 @@ function setupRoutes(app){ // module start
         res.sendFile(path.join(__dirname +'/GameWebSocket.js'));
     });
 
+    app.get('/main.js', function(req, res) {
+        res.sendFile(path.join(__dirname +'/../../dist/main.js'));
+    });
+
+    app.get('/test.js', function(req, res) {
+        res.sendFile(path.join(__dirname +'/test.js'));
+    });
+
     // index.html
     app.get('/', function(req, res) {
-        res.sendFile(path.join(__dirname +'/index.html'));
+        res.sendFile(path.join(__dirname +'/../frontend/index.html'));
     });
 
     // Website Icon
     app.get('/favicon.ico', (req, res) => {
-        res.sendFile(path.join(__dirname + '/../favicon.ico'));
+        res.sendFile(path.join(__dirname + '/../../favicon.ico'));
     });
 
     // Websocket game connection
