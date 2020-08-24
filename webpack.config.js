@@ -1,18 +1,23 @@
 const path = require('path');
 
 module.exports = {
-    entry:"./src/frontend/index.js",
+    entry:"./src/frontend/index.jsx",
     watch:true,
 
     module:{
         rules: [
             {
                 test:/\.js$/,
+                exclude: [path.resolve(__dirname, './src/backend')],
+                exclude: /node_modules/,
+                use: ['babel-loader']
+            },
+            {
                 test: /\.jsx$/,
                 exclude: [path.resolve(__dirname, './src/backend')],
                 exclude: /node_modules/,
                 use: ['babel-loader']
-            } /*,
+            }/*,
             {
                 test: /\.css$/,
                 exclude: [path.resolve(__dirname, './src/backend')],
