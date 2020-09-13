@@ -17,30 +17,13 @@ module.exports = {
                 exclude: [path.resolve(__dirname, './src/backend')],
                 exclude: /node_modules/,
                 use: ['babel-loader']
-            }/*,
+            },
             {
                 test: /\.css$/,
                 exclude: [path.resolve(__dirname, './src/backend')],
                 exclude: /node_modules/,
-                use: [
-                    { loader: 'style-loader' },
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: {
-                                localIdentName: "[name]__[local]___[hash:base64:5]",
-                            },
-                            sourceMap: true
-                        }
-                     },
-                     {
-                         loader: 'postcss-loader',
-                         options: {
-                             ident: 'postcss',
-                         }
-                      }
-                ]
-            },
+                use:['style-loader', 'css-loader']
+            }/*,
             {
                 test: /\.(png|jpe?g|gif)$/,
                 loader: 'url-loader?limit=10000&name=img/[name].[ext]'

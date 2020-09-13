@@ -102,11 +102,10 @@ class GameWebSocket {
   }
 
   loadData() {
-    this.gameId = sessionStorage.getItem("gameId");
-    this.playerId = sessionStorage.getItem("playerId");
-    this.hostId = sessionStorage.getItem("hostId");
-
-    sessionStorage.clear(); // just clear everything
+      this.gameId = sessionStorage.getItem("gameId");
+      this.playerId = sessionStorage.getItem("playerId");
+      this.hostId = sessionStorage.getItem("hostId");
+      this.gameType = sessionStorage.getItem("gameType");
   }
 
   createGame(gameType) {
