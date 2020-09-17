@@ -7,13 +7,13 @@ import Button from "./baseComponents/Button";
 
 class Home extends React.Component {
     constructor(props){
-        super(props);
+        super(props); // TODO In props, pass in game initializers. For loop through each to create buttons.
         this.state = {selection: "none"};
     }
 
     render(){
 
-        switch(this.state.selection) {
+        switch(this.state.selection) { // TODO give Join button a click handler. Try to join, on success call appropiate initializer
 
             case "none":
                 return (
@@ -22,7 +22,7 @@ class Home extends React.Component {
                             <h1>Ale Tavern</h1>
                             <input type="text" placeholder="Game Id" />
                             <input type="text" placeholder="Name" />
-                            <Button buttonText="Join" />
+                            <Button buttonText="Join" /> 
                             <h3>or</h3>
                             <Button buttonText="Create" clickHandler={()=>{this.setState({selection: "create"}) } } />
                         </div>
@@ -31,7 +31,13 @@ class Home extends React.Component {
                 break;
 
             case "create":
-                return(<h1>"CREATE SCREEN"</h1>);
+                return(
+                    <div className="button_list">
+                        <h1>CREATE SCREEN</h1>
+                        <h3>or</h3>
+                        <Button buttonText="Back" clickHandler={()=>{this.setState({selection: "none"}) } } />
+                    </div>
+                );
                 break;
 
             default:

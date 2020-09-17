@@ -1,0 +1,46 @@
+To add your own game:
+
+Create a folder in games
+In it create a gameView and whatever else you need. (like a gameEngine, components etc).
+
+Create is a game initializer, and add it to the index.jsx file. That's it!
+
+
+class gameInitializer:
+
+// This does not need anything specail. Only what you want it to do.
+constructor(gameWebSocket) {
+
+// you will probably need this:
+this.ws = gameWebSocket;
+
+}
+
+// Return { buttonText, buttonImg, path to}
+getMetaInfo() {}
+
+
+onCreateGame() {
+// a host just created a game!
+// Create your game object here
+// Something like
+this.hostGameObject = new myGame();
+
+// add event handlers or whatever you want
+}
+
+// Clean up after yourself (this is for someone who created the game)
+onHostEndGame() {
+// remove event handlers or whatever else you added
+}
+
+
+onJoinGame() {
+// setup whatever you need for players to connect to the host.
+this.playerGameObject
+}
+// Clean up needed for non-hose players
+onPlayerEndGame() {
+// remove event handlers or whatever else you added
+}
+
