@@ -33,7 +33,7 @@ class Home extends React.Component {
             case "create":
                 return(
                     <div className="button_list">
-                        <h1>CREATE SCREEN</h1>
+                        <Button buttonText="Create Quiplash Game" clickHandler={this.props.testCreate} />
                         <h3>or</h3>
                         <Button buttonText="Back" clickHandler={()=>{this.setState({selection: "none"}) } } />
                     </div>

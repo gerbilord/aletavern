@@ -1,11 +1,21 @@
-class GameWebSocket {
+export default class GameWebSocket {
   // TODO make sure websocket is still alive!
 
   constructor(logging) {
     var wsPath = "ws://" + window.location.host + "/game";
     this.ws = new WebSocket(wsPath);
     this.ws.addEventListener("message", this.messageHandler.bind(this));
-    this.logging = logging;
+      this.logging = logging;
+
+      this.onCreateGame = [];
+      this.onJoinGame = [];
+      this.defaultOnCreateGame = [];
+      this.defaultOnJoinGame = [];
+
+      this.onLeaveGame = [];
+      this.onOtherJoinGame = [];
+      this.onReconnectGame = [];
+      this.onMessageGame = [];
   }
 
   messageHandler(event) {
@@ -28,8 +38,12 @@ class GameWebSocket {
       sessionStorage.setItem("hostId", msgObj.playerId);
       sessionStorage.setItem("gameType", msgObj.data.gameType);
 
+        if (this.defaultOnCreateGame) {
+            this.defaultOnCreateGame.forEach(func => func(msgObj));
+        }
+
       if (this.onCreateGame) {
-        this.onCreateGame(msgObj);
+          this.onCreateGame.forEach(func => func(msgObj));
       }
     }
     if (msgObj.type == "JOINGAME") {
@@ -44,34 +58,38 @@ class GameWebSocket {
         sessionStorage.setItem("hostId", msgObj.data.hostId);
         sessionStorage.setItem("gameType", msgObj.data.gameType);
 
+          if(this.defaultOnJoinGame) {
+              this.defaultOnJoinGame.forEach(func=>func(msgObj));
+          }
+
         if (this.onJoinGame) {
-          this.onJoinGame(msgObj);
+            this.onJoinGame.forEach(func => func(msgObj));
         }
       }
     }
 
     if (msgObj.type == "OTHERJOINGAME") {
       if (this.onOtherJoinGame) {
-        this.onOtherJoinGame(msgObj);
+          this.onOtherJoinGame.forEach(func => func(msgObj));
       }
     }
 
     if (msgObj.type == "OTHERLEAVEGAME") {
       if (this.onOtherLeaveGame) {
-        this.onOtherLeaveGame(msgObj);
+          this.onOtherLeaveGame.forEach(func => func(msgObj));
       }
     }
 
     if (msgObj.type == "MESSAGEGAME") {
       if (this.onMessageGame) {
-        this.onMessageGame(msgObj);
+          this.onMessageGame.forEach(func => func(msgObj));
       }
     }
 
     if (msgObj.type == "LEAVEGAME") {
       this.clearData();
       if (this.onLeaveGame) {
-        this.onJoinGame(msgObj);
+          this.onLeaveGame.forEach(func => func(msgObj));
       }
     }
 
@@ -87,7 +105,7 @@ class GameWebSocket {
       sessionStorage.setItem("gameType", msgObj.gameType);
 
       if (this.onReconnectGame) {
-        this.onJoinGame(msgObj);
+          this.onReconnectGame.forEach(func => func(msgObj));
       }
     }
   }
@@ -109,12 +127,26 @@ class GameWebSocket {
   }
 
   createGame(gameType) {
-    var createMessageObj = { type: "CREATEGAME", data: gameType };
-    this.ws.send(JSON.stringify(createMessageObj));
+      var createMessageObj = { type: "CREATEGAME", data: gameType };
+
+      let promise = new Promise((resolve, reject) => {
+          let createListener = (msgObj) => {
+              this.defaultOnCreateGame.filter(func => func != createListener);
+              resolve(msgObj);
+          };
+
+          this.defaultOnCreateGame.push(createListener);
+
+      });
+
+      this.ws.send(JSON.stringify(createMessageObj));
+
+      return promise;
   }
 
   joinGame(gameId) {
-    var joinMessageObj = { type: "JOINGAME", data: gameId };
+      var joinMessageObj = { type: "JOINGAME", data: gameId };
+
     this.ws.send(JSON.stringify(joinMessageObj));
   }
 

@@ -8,6 +8,8 @@ import Home from './home.jsx';
 // LOGIC
 import GameWebSocket from './GameWebSocket';
 
+var testSocket = new GameWebSocket(false);
+
 class App extends React.Component {
     constructor(props){
         super(props);
@@ -18,7 +20,7 @@ class App extends React.Component {
 
         switch(this.state.game) {
             case "home":
-                return( <Home /> );
+                return( <Home testCreate={()=>{ testSocket.createGame("Babe is babe").then((obj)=>{ console.log(obj); console.log("I love babe");  } );}  }  /> );
                 break;
             case "quiplash":
                 return( <QuiplashView /> );
