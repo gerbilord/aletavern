@@ -1,9 +1,16 @@
 import React from "react";
 
-function Button({buttonText, clickHandler}) {
+function Button(props) {
+   let {buttonText, clickHandler, clickArgs, passEvent} = props;
+
+    let funcNoEvent = ()=>clickHandler(clickArgs); // TODO consider expanding clickArgs
+    let funcWithEvent = (event)=>clickHandler(event, clickArgs);
+
+    let clickHandlerWithArgs = passEvent ? funcWithEvent : funcNoEvent;
+
     return(
-        <button onClick={clickHandler}>
-          {buttonText}
+        <button onClick={clickHandlerWithArgs}>
+            {buttonText}
         </button>
     )
 }

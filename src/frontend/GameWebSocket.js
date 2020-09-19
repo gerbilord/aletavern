@@ -129,9 +129,8 @@ export default class GameWebSocket {
   createGame(gameType) {
       var createMessageObj = { type: "CREATEGAME", data: gameType };
 
-      let promise = new Promise(
+      let promise = new Promise( // TODO factor this out?
           (resolve, reject) => {
-              console.log(this);
               let createListener = (msgObj) => {
               this.defaultOnCreateGame.filter(func => func != createListener);
               resolve(msgObj);
@@ -149,7 +148,22 @@ export default class GameWebSocket {
   joinGame(gameId) {
       var joinMessageObj = { type: "JOINGAME", data: gameId };
 
-    this.ws.send(JSON.stringify(joinMessageObj));
+      let promise = new Promise(  // TODO factor this out?
+          (resolve, reject) => {
+              let joinListener = (msgObj) => {
+                  this.defaultOnJoinGame.filter(func => func != joinListener);
+                  resolve(msgObj);
+              };
+
+              this.defaultOnJoinGame.push(joinListener);
+
+          });
+
+      this.ws.send(JSON.stringify(joinMessageObj));
+
+      return promise;
+
+
   }
 
   sendMessageToAll(msg) {

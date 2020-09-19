@@ -27,7 +27,8 @@ function joinGame(ws, msg) {
     return; // consider returning error?
   }
 
-  var { data: gameId } = msg;
+    var { data: gameId } = msg;
+    console.log(gameId);
   gameId = gameId.toUpperCase();
   var newPlayer = gameService.addPlayerToGame(gameId, ws);
 
