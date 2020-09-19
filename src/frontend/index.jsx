@@ -11,22 +11,21 @@ import GameWebSocket from './GameWebSocket';
 var testSocket = new GameWebSocket(false);
 
 class App extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state = { game:"home"};
+        this.state = { game: "home" };
     }
 
     render() {
-
-        switch(this.state.game) {
+        switch (this.state.game) {
             case "home":
-                return( <Home testCreate={()=>{ testSocket.createGame("Babe is babe").then((obj)=>{ console.log(obj); console.log("I love babe");  } );}  }  /> );
+                return (<Home testCreate={() => { testSocket.createGame("Babe is babe").then((obj) => { console.log(obj); console.log("I love babe"); }); }} />);
                 break;
             case "quiplash":
-                return( <QuiplashView /> );
+                return (<QuiplashView />);
                 break;
             default:
-                return(<h1>"Broken"</h1>)
+                return (<h1>"Broken"</h1>);
         }
     }
 }
