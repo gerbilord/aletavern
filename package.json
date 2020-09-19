@@ -7,6 +7,7 @@
         "start": "node ./src/backend/server.js",
         "dev": "nodemon --watch src/backend",
         "webpack": "webpack --mode=production",
+        "webpackDev": "webpack -d --mode development",
         "format": "prettier \"src/**/*.{js,html}\" --write"
     },
     "author": "",

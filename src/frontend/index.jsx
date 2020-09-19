@@ -28,7 +28,6 @@ class App extends React.Component {
             default:
                 return(<h1>"Broken"</h1>)
         }
-
     }
 }
 

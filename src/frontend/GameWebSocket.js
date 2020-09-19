@@ -129,8 +129,10 @@ export default class GameWebSocket {
   createGame(gameType) {
       var createMessageObj = { type: "CREATEGAME", data: gameType };
 
-      let promise = new Promise((resolve, reject) => {
-          let createListener = (msgObj) => {
+      let promise = new Promise(
+          (resolve, reject) => {
+              console.log(this);
+              let createListener = (msgObj) => {
               this.defaultOnCreateGame.filter(func => func != createListener);
               resolve(msgObj);
           };
