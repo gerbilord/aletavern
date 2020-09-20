@@ -15,7 +15,6 @@ var games = [];
 
 
 games['Quiplash'] = {game:Quiplash};
-games['Santorini'] = {game:undefined};
 
 
 
@@ -26,11 +25,14 @@ class App extends React.Component {
 
         this.loadCreateGame = this.loadCreateGame.bind(this);
         this.loadJoinGame = this.loadJoinGame.bind(this);
+        this.currentGame = undefined;
     }
 
     loadCreateGame(serverResponse) { // TODO seperate host and join view
         console.log(serverResponse);
         console.log("Create success");
+
+        this.currentGame = new games[serverResponse.data.gameType].game(ws); // TODO consider refactoring how this works (E.g game wrapper etc)
 
         this.setState({currentGame:serverResponse.data.gameType}); // TODO handle failure to connect
     }
@@ -39,23 +41,26 @@ class App extends React.Component {
         console.log(serverResponse);
         console.log("Join success");
 
+        this.currentGame = new games[serverResponse.data.gameType].game; // TODO consider refactoring how this works (E.g game wrapper etc)
+
         this.setState({currentGame:serverResponse.data.gameType});  // TODO handle failure to connect
     }
 
     render() {
         switch (this.state.currentGame) { //TODO consider making if instead
             case "home":
-                return (<Home
-                            games = {games}
-                            clickCreate={(gameType) => { ws.createGame(gameType).then((serverResponse) => { this.loadCreateGame(serverResponse) }); }}
-                            clickJoin={(gameCode) => { ws.joinGame(gameCode).then((serverResponse) => { this.loadJoinGame(serverResponse)}); }}
-                />);
+                return (
+                    <Home
+                        games = {games}
+                        clickCreate={(gameType) => { ws.createGame(gameType).then((serverResponse) => { this.loadCreateGame(serverResponse) }); }}
+                        clickJoin={(gameCode, playerName) => { ws.joinGame(gameCode, playerName).then((serverResponse) => { this.loadJoinGame(serverResponse)}); }}
+                    />
+                );
                 break;
 
             default:
-                const game = new games[this.state.currentGame].game; // TODO consider refactoring how this works (E.g game wrapper etc)
-                const GameView = game.gameView; // TODO seperate host and join view
-                return (<game.gameView gameWrapper={game}/>);
+                let GameView = this.currentGame.gameView;
+                return (<GameView gameWrapper={this.currentGame}/>);  // TODO seperate host and join view
         }
     }
 }

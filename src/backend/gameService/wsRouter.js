@@ -27,10 +27,10 @@ function joinGame(ws, msg) {
     return; // consider returning error?
   }
 
-    var { data: gameId } = msg;
+    var { gameId, name } = msg.data;
     console.log(gameId);
   gameId = gameId.toUpperCase();
-  var newPlayer = gameService.addPlayerToGame(gameId, ws);
+    var newPlayer = gameService.addPlayerToGame(gameId, ws, name);
 
   if (newPlayer) {
     var host = gameService.getHostOfGame(newPlayer.gameId);
@@ -40,7 +40,8 @@ function joinGame(ws, msg) {
       var dataObj = {
         hostId: hostId,
         gameId: newPlayer.gameId,
-        gameType: gameType,
+          gameType: gameType,
+          name: newPlayer.name
       };
 
       let msgObj = {
@@ -79,7 +80,7 @@ function joinGame(ws, msg) {
 }
 // TODO consider renmaing msgObj to returnObj
 function validateJoinGameMessage(msg) {
-  if (msg && msg.data) {
+  if (msg && msg.data && msg.data.gameId && msg.data.name) {
     return true;
   } else {
     return false; // Conisder console.debug.

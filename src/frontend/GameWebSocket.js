@@ -34,7 +34,8 @@ export default class GameWebSocket {
       this.gameType = msgObj.data.gameType;
 
       sessionStorage.setItem("gameId", this.gameId);
-      sessionStorage.setItem("playerId", msgObj.playerId);
+        sessionStorage.setItem("playerId", msgObj.playerId);
+        sessionStorage.setItem("playerName", "host");
       sessionStorage.setItem("hostId", msgObj.playerId);
       sessionStorage.setItem("gameType", msgObj.data.gameType);
 
@@ -49,12 +50,15 @@ export default class GameWebSocket {
     if (msgObj.type == "JOINGAME") {
       if (msgObj.status == "SUCCESS") {
         this.gameId = msgObj.data.gameId;
-        this.playerId = msgObj.playerId;
+          this.playerId = msgObj.playerId;
+          this.playerName = msgObj.data.name;
         this.hostId = msgObj.hostId;
-        this.gameType = msgObj.data.gameType;
+          this.gameType = msgObj.data.gameType;
+
 
         sessionStorage.setItem("gameId", this.gameId);
-        sessionStorage.setItem("playerId", msgObj.playerId);
+          sessionStorage.setItem("playerId", msgObj.playerId);
+          sessionStorage.setItem("playerName", msgObj.data.name);
         sessionStorage.setItem("hostId", msgObj.data.hostId);
         sessionStorage.setItem("gameType", msgObj.data.gameType);
 
@@ -112,7 +116,8 @@ export default class GameWebSocket {
 
   clearData() {
     this.gameId = undefined;
-    this.playerId = undefined;
+      this.playerId = undefined;
+      this.playerName = undefined;
     this.hostId = undefined;
     this.gameType = undefined;
 
@@ -122,6 +127,7 @@ export default class GameWebSocket {
   loadData() {
       this.gameId = sessionStorage.getItem("gameId");
       this.playerId = sessionStorage.getItem("playerId");
+      this.playerName = sessionStorage.getItem("playerName");
       this.hostId = sessionStorage.getItem("hostId");
       this.gameType = sessionStorage.getItem("gameType");
   }
@@ -145,8 +151,9 @@ export default class GameWebSocket {
       return promise;
   }
 
-  joinGame(gameId) {
-      var joinMessageObj = { type: "JOINGAME", data: gameId };
+    joinGame(gameId, name) {
+        var dataObj = {gameId: gameId, name: name};
+        var joinMessageObj = { type: "JOINGAME", data: dataObj};
 
       let promise = new Promise(  // TODO factor this out?
           (resolve, reject) => {

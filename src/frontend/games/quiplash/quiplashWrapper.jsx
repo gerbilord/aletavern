@@ -6,7 +6,8 @@ import QuiplashView from './quiplashView';
 
 export default class quiplashWrapper {
 
-    constructor() {
+    constructor(gameWebSocket) {
         this.gameView = QuiplashView;
+        this.ws = gameWebSocket;
     }
 }

@@ -13,12 +13,12 @@ var wsToPlayerId = new Map(); //Maps a ws to {playerId, timestamp}. // TODO, cle
 
 // ********************************* Public API ****************************************
 
-function addPlayerToGame(gameId, playerWs) {
+function addPlayerToGame(gameId, playerWs, name) {
   // TODO verify game has host. If it doesn't delete it.
   var game = currentGames[gameId];
 
   if (game != null && !game.hasPlayerWs(playerWs)) {
-    var newPlayer = new Player(playerWs, getWsId(playerWs), gameId);
+      var newPlayer = new Player(playerWs, getWsId(playerWs), gameId, name);
     game.addPlayer(newPlayer);
     currentPlayers[newPlayer.id] = newPlayer;
     return newPlayer;
@@ -79,7 +79,7 @@ function getPlayer(playerId) {
 
 function createGame(hostWs, gameType) {
   var gameId = makeGameId();
-  var newHost = new Player(hostWs, getWsId(hostWs), gameId);
+    var newHost = new Player(hostWs, getWsId(hostWs), gameId, "host");
   currentPlayers[newHost.id] = newHost;
   currentGames[gameId] = new Game(gameId, newHost, gameType);
 
@@ -183,10 +183,11 @@ function idInUse(gameId) {
 // ************************** Classes for module use only **************************
 class Player {
   // A player's ws also acts like their id.
-  constructor(ws, id, gameId) {
+    constructor(ws, id, gameId, name) {
     this.ws = ws;
     this.id = id;
-    this.gameId = gameId;
+        this.gameId = gameId;
+        this.name = name;
     this.createTime = new moment();
   }
 
