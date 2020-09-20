@@ -1,5 +1,6 @@
 const gameService = require("./currentGames");
 
+// TODO make sending messages a queue. That way if someone is disconnected temorarily, we can send them the message when they reconncect, instead of just failing
 /*
    End point for all websocket calls.
    @ws   Websocket of the caller

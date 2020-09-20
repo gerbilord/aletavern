@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Quiplash from './games/quiplash/quiplashWrapper';
+import Santorini from './games/santorini/santoriniWrapper';
 import Home from './home.jsx';
 
 // LOGIC
@@ -15,7 +16,7 @@ var games = [];
 
 
 games['Quiplash'] = {game:Quiplash};
-
+games['Santorini'] = {game:Santorini};
 
 
 class App extends React.Component {
@@ -29,7 +30,6 @@ class App extends React.Component {
     }
 
     loadCreateGame(serverResponse) { // TODO seperate host and join view
-        console.log(serverResponse);
         console.log("Create success");
 
         this.currentGame = new games[serverResponse.data.gameType].game(ws); // TODO consider refactoring how this works (E.g game wrapper etc)
@@ -38,10 +38,9 @@ class App extends React.Component {
     }
 
     loadJoinGame(serverResponse) { // TODO seperate host and join view
-        console.log(serverResponse);
         console.log("Join success");
 
-        this.currentGame = new games[serverResponse.data.gameType].game; // TODO consider refactoring how this works (E.g game wrapper etc)
+        this.currentGame = new games[serverResponse.data.gameType].game(ws); // TODO consider refactoring how this works (E.g game wrapper etc)
 
         this.setState({currentGame:serverResponse.data.gameType});  // TODO handle failure to connect
     }
@@ -59,7 +58,7 @@ class App extends React.Component {
                 break;
 
             default:
-                let GameView = this.currentGame.gameView;
+                let GameView = this.currentGame.getGlobalGameView();
                 return (<GameView gameWrapper={this.currentGame}/>);  // TODO seperate host and join view
         }
     }

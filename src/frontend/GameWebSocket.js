@@ -1,5 +1,8 @@
 export default class GameWebSocket {
-  // TODO make sure websocket is still alive!
+    // TODO make sure websocket is still alive!
+    // TODO make sending messages a queue. That way if the websocket is temporarily disconnected, we can send the server message
+
+    // TODO Make game websocket reset function.
 
   constructor(logging) {
     var wsPath = "ws://" + window.location.host + "/game";
@@ -18,6 +21,12 @@ export default class GameWebSocket {
       this.onMessageGame = [];
   }
 
+    isHost() {
+        if(this.playerId && this.hostId && this.playerId == this.hostId){
+            return true;
+        }
+        return false;
+    }
   messageHandler(event) {
     var msgObj = JSON.parse(event.data);
 
@@ -36,7 +45,7 @@ export default class GameWebSocket {
       sessionStorage.setItem("gameId", this.gameId);
         sessionStorage.setItem("playerId", msgObj.playerId);
         sessionStorage.setItem("playerName", "host");
-      sessionStorage.setItem("hostId", msgObj.playerId);
+        sessionStorage.setItem("hostId", msgObj.playerId);
       sessionStorage.setItem("gameType", msgObj.data.gameType);
 
         if (this.defaultOnCreateGame) {
