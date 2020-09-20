@@ -21,6 +21,7 @@ export default class gameEngine {
         );
     }
 
+    //TODO create listener for starting game.
     getGameState() {
         let viewObj = { screen:this.currentState, players: this.players};
 

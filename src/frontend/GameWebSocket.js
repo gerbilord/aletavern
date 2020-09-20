@@ -3,6 +3,7 @@ export default class GameWebSocket {
     // TODO make sending messages a queue. That way if the websocket is temporarily disconnected, we can send the server message
 
     // TODO Make game websocket reset function.
+    // TODO Make request server data function.
 
   constructor(logging) {
     var wsPath = "ws://" + window.location.host + "/game";
