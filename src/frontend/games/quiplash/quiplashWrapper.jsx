@@ -15,7 +15,7 @@ export default class quiplashWrapper {
     constructor(gameWebSocket) {
         this.ws = gameWebSocket;
 
-        this.gameEngine = this.ws.isHost ? HostGameEngine : PlayerGameEngine;
+        this.gameEngine = this.ws.isHost() ? HostGameEngine : PlayerGameEngine;
         this.gameEngine = new this.gameEngine(this.ws);
     }
 

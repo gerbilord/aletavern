@@ -62,7 +62,7 @@ export default class GameWebSocket {
         this.gameId = msgObj.data.gameId;
           this.playerId = msgObj.playerId;
           this.playerName = msgObj.data.name;
-        this.hostId = msgObj.hostId;
+        this.hostId = msgObj.data.hostId;
           this.gameType = msgObj.data.gameType;
 
 
@@ -110,7 +110,7 @@ export default class GameWebSocket {
     if (msgObj.type == "RECONNECTGAME") {
       this.gameId = msgObj.data.gameId;
       this.playerId = msgObj.playerId;
-      this.hostId = msgObj.hostId;
+      this.hostId = msgObj.data.hostId;
       this.gameType = gameType;
 
       sessionStorage.setItem("gameId", this.gameId);

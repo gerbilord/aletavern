@@ -13,14 +13,16 @@ export default class QuiplashView extends React.Component {
     }
 
     // TODO give a real unique key
-    render(){ return (
+    render(){
+        return (
         <div>
             <h1>
                 Quiplash
             </h1>
             <h2>
-                Waiting for game to start
+                Waiting for game to start.
             </h2>
+            <h3>Players in lobby: {this.state.gameState.stateData.numPlayers}</h3>
         </div>
     ) };
 
