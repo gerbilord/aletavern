@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './home.css';
+import styles from './home.module.css';
 
-import Button from "./baseComponents/Button";
+import Button from "../baseComponents/Button";
 
 class Home extends React.Component {
     constructor(props) {
@@ -22,7 +22,7 @@ class Home extends React.Component {
             case "none": // Landing page/view of website.
                 return (
                     <div>
-                        <div className="button_list">
+                        <div className={styles.button_list}>
                             <h1>Ale Tavern</h1>
 
                             <input
@@ -79,7 +79,7 @@ class Home extends React.Component {
                 );
 
                 return (
-                    <div className="button_list">
+                    <div className={styles.button_list}>
 
                         {gameList}
 

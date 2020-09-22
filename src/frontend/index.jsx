@@ -2,13 +2,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Quiplash from './games/quiplash/quiplashWrapper';
-import Santorini from './games/santorini/santoriniWrapper';
-import Home from './home.jsx';
+import Home from './home/home.jsx';
 
 // LOGIC
 import GameWebSocket from './GameWebSocket';
 
+//GAME IMPORTS
+import Quiplash from './games/quiplash/quiplashWrapper';
+import Santorini from './games/santorini/santoriniWrapper';
 
 // Variables
 var ws = new GameWebSocket(true);

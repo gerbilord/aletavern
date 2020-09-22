@@ -20,10 +20,28 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                exclude: [path.resolve(__dirname, './src/backend')],
-                exclude: /node_modules/,
-                use:['style-loader', 'css-loader']
-            }/*,
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            importLoaders: 1,
+                            modules: true
+                        }
+                    }
+                ],
+                include: /\.module\.css$/,
+                exclude: [path.resolve(__dirname, './src/backend'), /node_modules/]
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ],
+                exclude: [path.resolve(__dirname, './src/backend'), /node_modules/, /\.module\.css$/]
+            }
+            /*,
             {
                 test: /\.(png|jpe?g|gif)$/,
                 loader: 'url-loader?limit=10000&name=img/[name].[ext]'
