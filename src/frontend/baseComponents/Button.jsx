@@ -14,7 +14,7 @@ function Button(props) {
             onClick={clickHandlerWithArgs}>
             {buttonText}
         </button>
-    )
+    );
 }
 
 export default Button;

@@ -5,6 +5,8 @@ export default class GameWebSocket {
   // TODO Make game websocket reset function.
   // TODO Make request server data function.
 
+  // TODO add boolean to accept or reject failure messages.
+
   constructor(logging) {
     var wsPath = "ws://" + window.location.host + "/game";
     this.ws = new WebSocket(wsPath);
