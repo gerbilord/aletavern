@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Lobby from './Views/Lobby';
+import styles from '../quiplash.module.css';
 
 
 export default class QuiplashView extends React.Component {
@@ -19,10 +20,14 @@ export default class QuiplashView extends React.Component {
         switch (this.state.gameState.screen) {
             case "Lobby":
                 return (
-                    <Lobby
-                        gameId={this.gameEngine.ws.gameId}
-                        players={this.state.gameState.players}
-                    />
+                    <div className={styles.global}>
+                        <Lobby
+                            className={styles.text}
+                            gameId={this.gameEngine.ws.gameId}
+                            players={this.state.gameState.players}
+                        />
+                    </div>
+
                 );
                 break;
             case "RoundOne":

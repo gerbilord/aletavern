@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Button from '../../../../baseComponents/Button'; //TODO make own components for game
 
+// import styles from '../../quiplash.module.css';
+
 export default function Lobby(props) {
     let { numPlayers, startGameFunction, canStart } = props;
 

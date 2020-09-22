@@ -1,0 +1,14 @@
+.global * {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.global * button {
+    border-radius: 12px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.global * button:disabled {
+    opacity: .6;
+}
