@@ -77,9 +77,9 @@ function getPlayer(playerId) {
   return player;
 }
 
-function createGame(hostWs, gameType) {
+function createGame(hostWs, gameType, hostName) {
   var gameId = makeGameId();
-    var newHost = new Player(hostWs, getWsId(hostWs), gameId, "host");
+    var newHost = new Player(hostWs, getWsId(hostWs), gameId, hostName);
   currentPlayers[newHost.id] = newHost;
   currentGames[gameId] = new Game(gameId, newHost, gameType);
 

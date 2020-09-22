@@ -28,10 +28,10 @@ function joinGame(ws, msg) {
     return; // consider returning error?
   }
 
-    var { gameId, name } = msg.data;
-    console.log(gameId);
+  var { gameId, name } = msg.data;
+  console.log(gameId);
   gameId = gameId.toUpperCase();
-    var newPlayer = gameService.addPlayerToGame(gameId, ws, name);
+  var newPlayer = gameService.addPlayerToGame(gameId, ws, name);
 
   if (newPlayer) {
     var host = gameService.getHostOfGame(newPlayer.gameId);
@@ -41,8 +41,8 @@ function joinGame(ws, msg) {
       var dataObj = {
         hostId: hostId,
         gameId: newPlayer.gameId,
-          gameType: gameType,
-          name: newPlayer.name
+        gameType: gameType,
+        name: newPlayer.name
       };
 
       let msgObj = {
@@ -137,8 +137,8 @@ function createGame(ws, msg) {
     return;
   }
 
-  var newHost = gameService.createGame(ws, msg.data);
-  var dataObj = { gameId: newHost.gameId, gameType: msg.data };
+  var newHost = gameService.createGame(ws, msg.data.gameType, msg.data.name);
+  var dataObj = { gameId: newHost.gameId, gameType: msg.data.gameType, name: msg.data.name };
   var msgObj = {
     type: "CREATEGAME",
     data: dataObj,
@@ -151,7 +151,7 @@ function createGame(ws, msg) {
 
 function validateCreateGameMessage(msg) {
   if (msg) {
-    if (msg.data) {
+    if (msg.data && msg.data.name && msg.data.gameType) {
       return true;
     }
   }

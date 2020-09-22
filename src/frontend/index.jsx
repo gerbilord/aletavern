@@ -15,8 +15,8 @@ var ws = new GameWebSocket(true);
 var games = [];
 
 
-games['Quiplash'] = {game:Quiplash};
-games['Santorini'] = {game:Santorini};
+games['Quiplash'] = { game: Quiplash };
+games['Santorini'] = { game: Santorini };
 
 
 class App extends React.Component {
@@ -29,20 +29,21 @@ class App extends React.Component {
         this.currentGame = undefined;
     }
 
-    loadCreateGame(serverResponse) { // TODO seperate host and join view
+    loadCreateGame(serverResponse) {
         console.log("Create success");
 
         this.currentGame = new games[serverResponse.data.gameType].game(ws); // TODO consider refactoring how this works (E.g game wrapper etc)
 
-        this.setState({currentGame:serverResponse.data.gameType}); // TODO handle failure to connect
+        this.setState({ currentGame: serverResponse.data.gameType }); // TODO handle failure to connect
     }
 
-    loadJoinGame(serverResponse) { // TODO seperate host and join view
+    loadJoinGame(serverResponse) {
         console.log("Join success");
 
         this.currentGame = new games[serverResponse.data.gameType].game(ws); // TODO consider refactoring how this works (E.g game wrapper etc)
+        //TODO consider adding object to be passed in
 
-        this.setState({currentGame:serverResponse.data.gameType});  // TODO handle failure to connect
+        this.setState({ currentGame: serverResponse.data.gameType });  // TODO handle failure to connect
     }
 
     render() {
@@ -50,16 +51,16 @@ class App extends React.Component {
             case "home":
                 return (
                     <Home
-                        games = {games}
-                        clickCreate={(gameType) => { ws.createGame(gameType).then((serverResponse) => { this.loadCreateGame(serverResponse) }); }}
-                        clickJoin={(gameCode, playerName) => { ws.joinGame(gameCode, playerName).then((serverResponse) => { this.loadJoinGame(serverResponse)}); }}
+                        games={games}
+                        clickCreate={(obj) => { ws.createGame(obj.gameType, obj.name).then((serverResponse) => { this.loadCreateGame(serverResponse) }); }}
+                        clickJoin={(gameCode, playerName) => { ws.joinGame(gameCode, playerName).then((serverResponse) => { this.loadJoinGame(serverResponse) }); }}
                     />
                 );
                 break;
 
             default:
                 let GameView = this.currentGame.getGlobalGameView();
-                return (<GameView gameWrapper={this.currentGame}/>);  // TODO seperate host and join view
+                return (<GameView gameWrapper={this.currentGame} />);  // TODO seperate host and join view
         }
     }
 }

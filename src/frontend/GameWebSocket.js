@@ -41,11 +41,12 @@ export default class GameWebSocket {
       this.gameId = msgObj.data.gameId;
       this.playerId = msgObj.playerId;
       this.hostId = this.playerId;
-      this.gameType = msgObj.data.gameType;
+        this.gameType = msgObj.data.gameType;
+        this.playerName = msgObj.data.name;
 
       sessionStorage.setItem("gameId", this.gameId);
         sessionStorage.setItem("playerId", msgObj.playerId);
-        sessionStorage.setItem("playerName", "host");
+        sessionStorage.setItem("playerName", this.playerName);
         sessionStorage.setItem("hostId", msgObj.playerId);
       sessionStorage.setItem("gameType", msgObj.data.gameType);
 
@@ -142,8 +143,9 @@ export default class GameWebSocket {
       this.gameType = sessionStorage.getItem("gameType");
   }
 
-  createGame(gameType) {
-      var createMessageObj = { type: "CREATEGAME", data: gameType };
+    createGame(gameType, name) {
+        var dataObj = {gameType:gameType, name:name};
+      var createMessageObj = { type: "CREATEGAME", data: dataObj };
 
       let promise = new Promise( // TODO factor this out?
           (resolve, reject) => {

@@ -30,7 +30,7 @@ export default class QuiplashView extends React.Component {
     componentDidMount() {
         this.interval = setInterval(
             () => this.setState({ gameState: this.gameEngine.getGameState() }),
-            1000);
+            100);
     }
     componentWillUnmount() {
         clearInterval(this.interval);
