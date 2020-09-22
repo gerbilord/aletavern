@@ -1,33 +1,60 @@
 export default class GameWebSocket {
-    // TODO make sure websocket is still alive!
-    // TODO make sending messages a queue. That way if the websocket is temporarily disconnected, we can send the server message
+  // TODO make sure websocket is still alive!
+  // TODO make sending messages a queue. That way if the websocket is temporarily disconnected, we can send the server message
 
-    // TODO Make game websocket reset function.
-    // TODO Make request server data function.
+  // TODO Make game websocket reset function.
+  // TODO Make request server data function.
 
   constructor(logging) {
     var wsPath = "ws://" + window.location.host + "/game";
     this.ws = new WebSocket(wsPath);
     this.ws.addEventListener("message", this.messageHandler.bind(this));
-      this.logging = logging;
+    this.logging = logging;
 
-      this.onCreateGame = [];
-      this.onJoinGame = [];
-      this.defaultOnCreateGame = [];
-      this.defaultOnJoinGame = [];
-
-      this.onLeaveGame = [];
-      this.onOtherJoinGame = [];
-      this.onReconnectGame = [];
-      this.onMessageGame = [];
+    this.clearAllHandlers();
   }
 
-    isHost() {
-        if(this.playerId && this.hostId && this.playerId == this.hostId){
-            return true;
-        }
-        return false;
+  clearAllHandlers() {
+    this.onCreateGame = [];
+    this.onJoinGame = [];
+    this.defaultOnCreateGame = [];
+    this.defaultOnJoinGame = [];
+
+    this.onLeaveGame = [];
+    this.onOtherJoinGame = [];
+    this.onReconnectGame = [];
+    this.onMessageGame = [];
+  }
+
+  isHost() {
+    if (this.playerId && this.hostId && this.playerId == this.hostId) {
+      return true;
     }
+    return false;
+  }
+
+  setLocalDataFromServer(msgObj) {
+    if (msgObj) {
+      this.gameId = msgObj.data.gameId;
+      sessionStorage.setItem("gameId", this.gameId);
+
+      this.playerId = msgObj.playerId;
+      sessionStorage.setItem("playerId", this.playerId);
+
+      this.hostId = msgObj.type == "CREATEGAME" ? this.playerId : msgObj.data.hostId;
+      sessionStorage.setItem("hostId", this.hostId);
+
+      this.gameType = msgObj.data.gameType;
+      sessionStorage.setItem("gameType", this.gameType);
+
+      this.playerName = msgObj.data.name;
+      sessionStorage.setItem("playerName", this.playerName);
+    }
+    else {
+      console.log("Server sent null data.");
+    }
+  }
+
   messageHandler(event) {
     var msgObj = JSON.parse(event.data);
 
@@ -35,100 +62,70 @@ export default class GameWebSocket {
       console.log(msgObj);
     }
 
-    // TODO Add all other types. OTHERJOINGAME etc.
     if (msgObj.type == "CREATEGAME") {
-      // TODO probably make a switch...
-      this.gameId = msgObj.data.gameId;
-      this.playerId = msgObj.playerId;
-      this.hostId = this.playerId;
-        this.gameType = msgObj.data.gameType;
-        this.playerName = msgObj.data.name;
+      this.setLocalDataFromServer(msgObj);
 
-      sessionStorage.setItem("gameId", this.gameId);
-        sessionStorage.setItem("playerId", msgObj.playerId);
-        sessionStorage.setItem("playerName", this.playerName);
-        sessionStorage.setItem("hostId", msgObj.playerId);
-      sessionStorage.setItem("gameType", msgObj.data.gameType);
-
-        if (this.defaultOnCreateGame) {
-            this.defaultOnCreateGame.forEach(func => func(msgObj));
-        }
+      if (this.defaultOnCreateGame) {
+        this.defaultOnCreateGame.forEach(func => func(msgObj));
+      }
 
       if (this.onCreateGame) {
-          this.onCreateGame.forEach(func => func(msgObj));
+        this.onCreateGame.forEach(func => func(msgObj));
       }
     }
     if (msgObj.type == "JOINGAME") {
-      if (msgObj.status == "SUCCESS") {
-        this.gameId = msgObj.data.gameId;
-          this.playerId = msgObj.playerId;
-          this.playerName = msgObj.data.name;
-        this.hostId = msgObj.data.hostId;
-          this.gameType = msgObj.data.gameType;
+      if (msgObj.status == "SUCCESS") { // TODO make consistent
 
+        this.setLocalDataFromServer(msgObj);
 
-        sessionStorage.setItem("gameId", this.gameId);
-          sessionStorage.setItem("playerId", msgObj.playerId);
-          sessionStorage.setItem("playerName", msgObj.data.name);
-        sessionStorage.setItem("hostId", msgObj.data.hostId);
-        sessionStorage.setItem("gameType", msgObj.data.gameType);
-
-          if(this.defaultOnJoinGame) {
-              this.defaultOnJoinGame.forEach(func=>func(msgObj));
-          }
+        if (this.defaultOnJoinGame) {
+          this.defaultOnJoinGame.forEach(func => func(msgObj));
+        }
 
         if (this.onJoinGame) {
-            this.onJoinGame.forEach(func => func(msgObj));
+          this.onJoinGame.forEach(func => func(msgObj));
         }
       }
     }
 
     if (msgObj.type == "OTHERJOINGAME") {
       if (this.onOtherJoinGame) {
-          this.onOtherJoinGame.forEach(func => func(msgObj));
+        this.onOtherJoinGame.forEach(func => func(msgObj));
       }
     }
 
     if (msgObj.type == "OTHERLEAVEGAME") {
       if (this.onOtherLeaveGame) {
-          this.onOtherLeaveGame.forEach(func => func(msgObj));
+        this.onOtherLeaveGame.forEach(func => func(msgObj));
       }
     }
 
     if (msgObj.type == "MESSAGEGAME") {
       if (this.onMessageGame) {
-          this.onMessageGame.forEach(func => func(msgObj));
+        this.onMessageGame.forEach(func => func(msgObj));
       }
     }
 
     if (msgObj.type == "LEAVEGAME") {
       this.clearData();
       if (this.onLeaveGame) {
-          this.onLeaveGame.forEach(func => func(msgObj));
+        this.onLeaveGame.forEach(func => func(msgObj));
       }
     }
 
     if (msgObj.type == "RECONNECTGAME") {
-      this.gameId = msgObj.data.gameId;
-      this.playerId = msgObj.playerId;
-      this.hostId = msgObj.data.hostId;
-      this.gameType = gameType;
-
-      sessionStorage.setItem("gameId", this.gameId);
-      sessionStorage.setItem("playerId", msgObj.playerId);
-      sessionStorage.setItem("hostId", msgObj.hostId);
-      sessionStorage.setItem("gameType", msgObj.gameType);
+      this.setLocalDataFromServer(msgObj);
 
       if (this.onReconnectGame) {
-          this.onReconnectGame.forEach(func => func(msgObj));
+        this.onReconnectGame.forEach(func => func(msgObj));
       }
     }
   }
 
   clearData() {
     this.gameId = undefined;
-      this.playerId = undefined;
-      this.playerName = undefined;
+    this.playerId = undefined;
+    this.playerName = undefined;
     this.hostId = undefined;
     this.gameType = undefined;
 
@@ -136,53 +133,51 @@ export default class GameWebSocket {
   }
 
   loadData() {
-      this.gameId = sessionStorage.getItem("gameId");
-      this.playerId = sessionStorage.getItem("playerId");
-      this.playerName = sessionStorage.getItem("playerName");
-      this.hostId = sessionStorage.getItem("hostId");
-      this.gameType = sessionStorage.getItem("gameType");
+    this.gameId = sessionStorage.getItem("gameId");
+    this.playerId = sessionStorage.getItem("playerId");
+    this.playerName = sessionStorage.getItem("playerName");
+    this.hostId = sessionStorage.getItem("hostId");
+    this.gameType = sessionStorage.getItem("gameType");
   }
 
-    createGame(gameType, name) {
-        var dataObj = {gameType:gameType, name:name};
-      var createMessageObj = { type: "CREATEGAME", data: dataObj };
+  createGame(gameType, name) {
+    var dataObj = { gameType: gameType, name: name };
+    var createMessageObj = { type: "CREATEGAME", data: dataObj };
 
-      let promise = new Promise( // TODO factor this out?
-          (resolve, reject) => {
-              let createListener = (msgObj) => {
-              this.defaultOnCreateGame.filter(func => func != createListener);
-              resolve(msgObj);
-          };
+    let promise = new Promise(
+      (resolve, reject) => {
+        let createListener = (msgObj) => {
+          this.defaultOnCreateGame.filter(func => func != createListener);
+          resolve(msgObj);
+        };
 
-          this.defaultOnCreateGame.push(createListener);
+        this.defaultOnCreateGame.push(createListener);
 
       });
 
-      this.ws.send(JSON.stringify(createMessageObj));
+    this.ws.send(JSON.stringify(createMessageObj));
 
-      return promise;
+    return promise;
   }
 
-    joinGame(gameId, name) {
-        var dataObj = {gameId: gameId, name: name};
-        var joinMessageObj = { type: "JOINGAME", data: dataObj};
+  joinGame(gameId, name) {
+    var dataObj = { gameId: gameId, name: name };
+    var joinMessageObj = { type: "JOINGAME", data: dataObj };
 
-      let promise = new Promise(  // TODO factor this out?
-          (resolve, reject) => {
-              let joinListener = (msgObj) => {
-                  this.defaultOnJoinGame.filter(func => func != joinListener);
-                  resolve(msgObj);
-              };
+    let promise = new Promise(
+      (resolve, reject) => {
+        let joinListener = (msgObj) => {
+          this.defaultOnJoinGame.filter(func => func != joinListener);
+          resolve(msgObj);
+        };
 
-              this.defaultOnJoinGame.push(joinListener);
+        this.defaultOnJoinGame.push(joinListener);
 
-          });
+      });
 
-      this.ws.send(JSON.stringify(joinMessageObj));
+    this.ws.send(JSON.stringify(joinMessageObj));
 
-      return promise;
-
-
+    return promise;
   }
 
   sendMessageToAll(msg) {
