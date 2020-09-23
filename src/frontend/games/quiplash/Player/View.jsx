@@ -31,8 +31,8 @@ export default class QuiplashView extends React.Component {
                     </div>
                 );
                 break;
-            case "RoundOne":
-                return (<h1>ROUND ONE</h1>);
+            case "Text Round":
+                return (<h1>Round {stateData.roundNum}</h1>);
         }
     };
 

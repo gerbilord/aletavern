@@ -19,7 +19,7 @@ export default class GameWebSocket {
   clearAllHandlers() {
     this.onCreateGame = [];
     this.onJoinGame = [];
-    this.defaultOnCreateGame = [];
+    this.defaultOnCreateGame = []; // Consider removing defaults from here
     this.defaultOnJoinGame = [];
 
     this.onLeaveGame = [];

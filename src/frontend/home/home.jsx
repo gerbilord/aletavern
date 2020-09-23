@@ -21,10 +21,9 @@ class Home extends React.Component {
 
             case "none": // Landing page/view of website.
                 return (
-                    <div>
+                    <div className={styles.global}>
                         <div className={styles.button_list}>
-                            <h1>Ale Tavern</h1>
-
+                            <h1 className={styles.title}>Ale Tavern</h1>
                             <input
                                 type="text"
                                 placeholder="Name"
@@ -32,7 +31,7 @@ class Home extends React.Component {
                                 value={this.state.name}
                             />
 
-                            <h2>then</h2>
+                            <h2 className={styles.subTitle}>then</h2>
 
                             <input
                                 type="text"
@@ -47,7 +46,7 @@ class Home extends React.Component {
                                 }}
                             />
 
-                            <h3>or</h3>
+                            <h3 className={styles.subTitle}>or</h3>
 
                             <Button
                                 buttonText="Create"
@@ -79,18 +78,20 @@ class Home extends React.Component {
                 );
 
                 return (
-                    <div className={styles.button_list}>
+                    <div className={styles.global}>
+                        <div className={styles.button_list}>
 
-                        {gameList}
+                            {gameList}
 
-                        <h3>or</h3>
+                            <h3 className={styles.subTitle}>or</h3>
 
-                        <Button
-                            buttonText="Back"
-                            clickHandler={() => {
-                                this.setState({ selection: "none" })
-                            }}
-                        />
+                            <Button
+                                buttonText="Back"
+                                clickHandler={() => {
+                                    this.setState({ selection: "none" })
+                                }}
+                            />
+                        </div>
                     </div>
                 );
                 break;

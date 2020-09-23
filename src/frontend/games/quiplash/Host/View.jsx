@@ -17,7 +17,8 @@ export default class QuiplashView extends React.Component {
 
     // TODO give a real unique key
     render() {
-        switch (this.state.gameState.screen) {
+        let { screen, stateData } = this.state.gameState;
+        switch (screen) {
             case "Lobby":
                 return (
                     <div className={styles.global}>
@@ -30,8 +31,8 @@ export default class QuiplashView extends React.Component {
 
                 );
                 break;
-            case "RoundOne":
-                return (<h1>ROUND ONE</h1>);
+            case "Text Round":
+                return (<h1>Round {stateData.roundNum}</h1>);
 
             default:
                 return (<h1>SOME TING WONG</h1>);

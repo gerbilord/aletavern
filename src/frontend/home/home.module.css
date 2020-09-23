@@ -1,7 +1,49 @@
 .button_list {
+    height: 100vh;
     display: flex;
     flex-flow: column nowrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
+.title {
+    font-size: 9vmin;
+    margin-top: 3vmin;
+    margin-bottom: 5vmin;
+    text-align: center;
+}
+
+.subTitle {
+    font-size: 6vmin;
+}
+
+.global * button {
+    width: 50vmin;
+    height: 8vmin;
+    font-size: 3vmin;
+    color: white;
+    margin: 1vmin;
+    border-radius: 1.5vmin;
+    background-color: steelblue;
+    opacity: .8;
+}
+
+.global * button:active {
+    opacity: 1;
+}
+
+.global * button:disabled {
+    opacity: .2;
+}
+
+.global * input[type=text] {
+    width: 50vmin;
+    height: 6vmin;
+    font-size: 3vmin;
+    margin: 1vmin;
+    text-align: center;    
+}
+
+.global {
+    height: 100vh;
+}

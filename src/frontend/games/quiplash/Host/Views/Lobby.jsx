@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-// import styles from '../../quiplash.module.css';
+import styles from '../../quiplash.module.css';
 
 export default function Lobby(props) {
     let { gameId, players } = props;
 
     return (
-        <div>
+        <div className={styles.basic_col}>
             <h1>
                 Quiplash
         </h1>

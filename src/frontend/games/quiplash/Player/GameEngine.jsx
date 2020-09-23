@@ -17,28 +17,27 @@ export default class gameEngine {
     }
 
     startLobby() {
-        this.currentState = "Lobby";
-
-        this.stateData.numPlayers = 0;
-
         let startGameHandler = () => {
-            this.ws.sendMessageToHost("startRoundOne");
+            let msgObj = { type: "start" }
+            this.ws.sendMessageToHost(msgObj);
         };
 
         let updatePlayerCountListener = (msgObj) => {
             if (this.isMessageFromHost(msgObj) && msgObj.data.type == 'playerCount') { // TODO check if message is valid.
-                let minPlayers = 2; // TODO Factor out into constant file, perhaps even constant between both engines.
                 this.stateData.numPlayers = msgObj.data.numPlayers;
                 this.stateData.canStart = this.stateData.numPlayers >= CONSTANTS.MIN_PLAYERS;
             }
         };
 
         let endLobbyListener = (msgObj) => {
-            if (msgObj.data == "startRoundOne") {
-                this.ws.onMessageGame = this.ws.onMessageGame.filter(func => func != endLobbyListener && func != updatePlayerCountListener);
-                this.startRoundOne();
+            if (msgObj.data && msgObj.data.type == "startRound") {
+                this.ws.onMessageGame = [];
+                this.goToNextRound(msgObj.data);
             }
         };
+
+        this.currentState = "Lobby";
+        this.stateData.numPlayers = 0;
 
         this.ws.onMessageGame.push(updatePlayerCountListener);
         this.ws.onMessageGame.push(endLobbyListener);
@@ -46,18 +45,44 @@ export default class gameEngine {
         this.stateData.startGameFunction = startGameHandler;
     }
 
-    startRoundOne() {
-        this.currentState = "RoundOne";
-        this.stateData = {};
+    // TODO go to transition state instead.
+
+    goToNextRound(msgData) {
+        let { roundType, roundNum, roundData } = msgData;
+        this.stateData = { roundNum: roundNum, roundData: roundData };
+
+        if (roundType == 'text') {
+            this.startTextRound();
+        }
     }
 
+    startTextRound() {
+
+        // TODO FIX
+        var currentPromptNum = 0;
+
+        var sendAnswer = (answer) => {
+            let msg = { type: "answer", answer: answer }
+            // currentPromptNum = currentPromptNum + 1;
+            this.ws.sendMessageToHost(msg);
+        }
+
+        var onRoundOver = (msgObj) => {
+            if (msgObj.type == 'next')
+                this.goToNextRound(msgObj)
+        }
+
+        this.stateData.currentPrompt = this.stateData.roundData[currentPromptNum];
+
+        this.currentState = "Text Round";
+
+    }
 
     // TODO create handler/button to start game.
     // TODO create listener to listen for game start.
     getGameState() {
         return { screen: this.currentState, stateData: this.stateData };
     }
-
 
     isMessageFromHost(msgObj) {
 
