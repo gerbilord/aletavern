@@ -46,21 +46,23 @@ export default class gameEngine {
     }
 
     wait() {
+
         var onInstructions = (msg) => {
 
-            if (msg && msg.data && msg.data.type == "instructions" && this.isMessageFromHost(msg)) {
+            var instructions = ["please answer", "please wait", "please vote", "please leave"];
+            if (msg && msg.data && instructions.includes(msg.data.type) && this.isMessageFromHost(msg)) {
                 this.ws.onMessageGame = [];
 
-                let instructions = msg.data;
-                let command = instructions.command;
+                var command = msg.data.type;
+                var data = msg.data;
 
                 if (command == "please answer") {
                     this.ws.onMessageGame = [];
-                    this.answerPropmts(instructions.prompts);
+                    this.answerPropmts(data.prompts);
                 }
                 else if (command == "please vote") {
                     this.ws.onMessageGame = [];
-                    this.voteOnAnswers(instructions.answers)
+                    this.voteOnAnswers(data.answers)
                 }
                 else if (command == "please leave") {
                     this.ws.onMessageGame = [];
@@ -68,7 +70,7 @@ export default class gameEngine {
             }
         }
 
-        this.ws.onMessageGame(onInstructions);
+        this.ws.onMessageGame.push(onInstructions);
         this.currentState = "Wait";
         this.stateData = {};
     }
@@ -86,6 +88,7 @@ export default class gameEngine {
 
             if (currPromptNum < prompts.length) {
                 currPrompt = prompts[currPromptNum];
+                this.stateData.text = currPrompt;
             }
             else {
                 this.ws.onMessageGame = [];
@@ -101,11 +104,11 @@ export default class gameEngine {
         }
 
         this.ws.onMessageGame.push(onTimesUp);
-        this.stateData.answerFunc = sendAnswer;
+        this.stateData.text = currPrompt;
+        this.stateData.buttons = sendAnswer;
         this.currentState = "Answer";
     }
 
-    // Change to one answer set at a time...
     voteOnAnswers(answerSet) {
 
         var createVoteOnSet = () => {
@@ -129,8 +132,8 @@ export default class gameEngine {
         }
 
         this.ws.onMessageGame.push(onTimesUp);
-        this.stateData.voteOnSet = createVoteOnSet();
-        this.stateData.answerSet = answerSet;
+        this.stateData.text = answerSet;
+        this.stateData.buttons = createVoteOnSet();
         this.currentState = "Vote";
     }
 

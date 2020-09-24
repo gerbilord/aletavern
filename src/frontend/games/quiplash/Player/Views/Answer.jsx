@@ -5,7 +5,7 @@ import styles from '../../quiplash.module.css';
 import Button from '../../../../baseComponents/Button';
 
 export default function Answer(props) {
-    var { propmt, sendAnswer } = props;
+    var { prompt, sendAnswer } = props;
     const [answer, setAnswer] = useState("");
 
     return (

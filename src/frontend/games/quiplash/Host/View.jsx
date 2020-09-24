@@ -25,7 +25,7 @@ export default class QuiplashView extends React.Component {
                         <Lobby
                             className={styles.text}
                             gameId={this.gameEngine.ws.gameId}
-                            players={this.state.gameState.players}
+                            players={stateData.players}
                         />
                     </div>
 
@@ -33,6 +33,9 @@ export default class QuiplashView extends React.Component {
                 break;
             case "Text Round":
                 return (<h1>Round {stateData.roundNum}</h1>);
+
+            case "Instructions":
+                return (<h1>Please listen</h1>);
 
             default:
                 return (<h1>SOME TING WONG</h1>);
