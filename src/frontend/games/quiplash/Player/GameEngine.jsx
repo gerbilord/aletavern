@@ -3,8 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import CONSTANTS from '../Constants';
-import prompts from '../Host/textPromts';
-import prompts from '../Host/textPromts';
 
 export default class gameEngine {
 
@@ -108,45 +106,19 @@ export default class gameEngine {
     }
 
     // Change to one answer set at a time...
-    voteOnAnswers(answerSets) {
-        var currAnswerSetNum = 0;
-        var currAnswerSet = answerSet[currPromptNum];
-        var currVoteOnSet = createVoteOnSet();
-
-        function nextSet() {
-            currAnswerSetNum = currAnswerSetNum + 1;
-            if (currAnswerSet < answerSets.length) {
-                currAnswerSet = answerSet[currPromptNum];
-                currVoteOnSet = createVoteOnSet();
-            }
-            else {
-                this.ws.onMessageGame = [];
-                this.wait();
-            }
-        }
+    voteOnAnswers(answerSet) {
 
         var createVoteOnSet = () => {
-            return currAnswerSet.map((answer) => {
+            return answerSet.map((answer) => {
                 return () => {
-                    this.ws.sendMessageToHost({ type: "vote", answer: answer });
-                    nextSet();
+                    sendVote(answer);
                 }
             });
         };
 
-        var sendAnswer = (answer) => {
-            let msg = { type: "answer", answer: answer }
+        var sendVote = (answer) => {
+            let msg = { type: "vote", answer: answer }
             this.ws.sendMessageToHost(msg);
-
-            currPromptNum = currPromptNum + 1;
-
-            if (currPromptNum < prompts.length) {
-                currPrompt = prompts[currPromptNum];
-            }
-            else {
-                this.ws.onMessageGame = [];
-                this.wait();
-            }
         }
 
         var onTimesUp = (msgObj) => {
@@ -158,6 +130,7 @@ export default class gameEngine {
 
         this.ws.onMessageGame.push(onTimesUp);
         this.stateData.voteOnSet = createVoteOnSet();
+        this.stateData.answerSet = answerSet;
         this.currentState = "Vote";
     }
 
