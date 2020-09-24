@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom';
 
 import Lobby from './Views/Lobby';
 import styles from '../quiplash.module.css';
+import Wait from './Views/Wait';
+import Vote from './Views/Vote';
+import Answer from './Views/Answer';
 
 
 export default class QuiplashView extends React.Component {
@@ -30,9 +33,30 @@ export default class QuiplashView extends React.Component {
                         />
                     </div>
                 );
-                break;
-            case "Text Round":
-                return (<h1>Round {stateData.roundNum}</h1>);
+
+            case "Answer":
+                return (
+                    <div className={styles.global}>
+                        <Answer />
+                    </div>
+                );
+
+            case "Wait":
+                return (
+                    <div className={styles.global}>
+                        <Wait />
+                    </div>
+                );
+
+            case "Vote":
+                return (
+                    <div className={styles.global}>
+                        <Vote />
+                    </div>
+                );
+
+            default:
+                return (<h1>WRONG</h1>);
         }
     };
 

@@ -3,6 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import CONSTANTS from '../Constants';
+import prompts from '../Host/textPromts';
+import prompts from '../Host/textPromts';
 
 export default class gameEngine {
 
@@ -30,9 +32,9 @@ export default class gameEngine {
         };
 
         let endLobbyListener = (msgObj) => {
-            if (msgObj.data && msgObj.data.type == "startRound") {
+            if (msgObj.data && msgObj.data.type == "please wait") {
                 this.ws.onMessageGame = [];
-                this.goToNextRound(msgObj.data);
+                this.wait();
             }
         };
 
@@ -45,37 +47,118 @@ export default class gameEngine {
         this.stateData.startGameFunction = startGameHandler;
     }
 
-    // TODO go to transition state instead.
+    wait() {
+        var onInstructions = (msg) => {
 
-    goToNextRound(msgData) {
-        let { roundType, roundNum, roundData } = msgData;
-        this.stateData = { roundNum: roundNum, roundData: roundData };
+            if (msg && msg.data && msg.data.type == "instructions" && this.isMessageFromHost(msg)) {
+                this.ws.onMessageGame = [];
 
-        if (roundType == 'text') {
-            this.startTextRound();
+                let instructions = msg.data;
+                let command = instructions.command;
+
+                if (command == "please answer") {
+                    this.ws.onMessageGame = [];
+                    this.answerPropmts(instructions.prompts);
+                }
+                else if (command == "please vote") {
+                    this.ws.onMessageGame = [];
+                    this.voteOnAnswers(instructions.answers)
+                }
+                else if (command == "please leave") {
+                    this.ws.onMessageGame = [];
+                }
+            }
         }
+
+        this.ws.onMessageGame(onInstructions);
+        this.currentState = "Wait";
+        this.stateData = {};
     }
 
-    startTextRound() {
+    answerPropmts(prompts) {
 
-        // TODO FIX
-        var currentPromptNum = 0;
+        var currPromptNum = 0;
+        var currPrompt = prompts[currPromptNum];
 
         var sendAnswer = (answer) => {
             let msg = { type: "answer", answer: answer }
-            // currentPromptNum = currentPromptNum + 1;
             this.ws.sendMessageToHost(msg);
+
+            currPromptNum = currPromptNum + 1;
+
+            if (currPromptNum < prompts.length) {
+                currPrompt = prompts[currPromptNum];
+            }
+            else {
+                this.ws.onMessageGame = [];
+                this.wait();
+            }
         }
 
-        var onRoundOver = (msgObj) => {
-            if (msgObj.type == 'next')
-                this.goToNextRound(msgObj)
+        var onTimesUp = (msgObj) => {
+            if (msgObj.data && msgObj.data.type == "please wait") {
+                this.ws.onMessageGame = [];
+                this.wait();
+            }
         }
 
-        this.stateData.currentPrompt = this.stateData.roundData[currentPromptNum];
+        this.ws.onMessageGame.push(onTimesUp);
+        this.stateData.answerFunc = sendAnswer;
+        this.currentState = "Answer";
+    }
 
-        this.currentState = "Text Round";
+    // Change to one answer set at a time...
+    voteOnAnswers(answerSets) {
+        var currAnswerSetNum = 0;
+        var currAnswerSet = answerSet[currPromptNum];
+        var currVoteOnSet = createVoteOnSet();
 
+        function nextSet() {
+            currAnswerSetNum = currAnswerSetNum + 1;
+            if (currAnswerSet < answerSets.length) {
+                currAnswerSet = answerSet[currPromptNum];
+                currVoteOnSet = createVoteOnSet();
+            }
+            else {
+                this.ws.onMessageGame = [];
+                this.wait();
+            }
+        }
+
+        var createVoteOnSet = () => {
+            return currAnswerSet.map((answer) => {
+                return () => {
+                    this.ws.sendMessageToHost({ type: "vote", answer: answer });
+                    nextSet();
+                }
+            });
+        };
+
+        var sendAnswer = (answer) => {
+            let msg = { type: "answer", answer: answer }
+            this.ws.sendMessageToHost(msg);
+
+            currPromptNum = currPromptNum + 1;
+
+            if (currPromptNum < prompts.length) {
+                currPrompt = prompts[currPromptNum];
+            }
+            else {
+                this.ws.onMessageGame = [];
+                this.wait();
+            }
+        }
+
+        var onTimesUp = (msgObj) => {
+            if (msgObj.data && msgObj.data.type == "please wait") {
+                this.ws.onMessageGame = [];
+                this.wait();
+            }
+        }
+
+        this.ws.onMessageGame.push(onTimesUp);
+        this.stateData.voteOnSet = createVoteOnSet();
+        this.currentState = "Vote";
     }
 
     // TODO create handler/button to start game.
