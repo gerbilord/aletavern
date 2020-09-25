@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 
 import CONSTANTS from '../Constants';
 import prompts from './textPromts';
+import 'babel-polyfill';
 
 export default class gameEngine { // TODO The otherjoingame message is sent right away.
     // Could there be an issue where message is missed before event handlers are placed on client side?
@@ -69,16 +70,17 @@ export default class gameEngine { // TODO The otherjoingame message is sent righ
     // TODO make transition round.
     startTextRound() {
         this.currentState = "Instructions";
-        this.playInstructions().then(this.sendPrompts.bind(this));
+        this.playInstructions().then(this.sendPrompts.bind(this)); // Is playing instructions a UI thing?
     }
 
     playInstructions() {
         return new Promise(resolve => setTimeout(resolve, 2000));
     }
 
+    // Perhaps we can factor this out?
     sendPrompts() {
-        this.currentState = "Text Round";
-        this.stateData = { roundNum: this.roundNum };
+        this.currentState = "Waiting";
+        this.stateData = { roundNum: this.roundNum, numOfAnswersNeeded: this.players.length };
         this.answers = [];
 
         var prompt = [];
@@ -88,7 +90,8 @@ export default class gameEngine { // TODO The otherjoingame message is sent righ
         var onDone = (msg) => {
             if (msg.data.type == 'answer' && this.answers.length >= this.players.length) {
                 this.ws.sendMessageToAll({ type: "please wait" });
-                this.goToNextRound();
+                this.ws.onMessageGame = [];
+                this.startVotingRound();
             }
         }
 
@@ -96,6 +99,8 @@ export default class gameEngine { // TODO The otherjoingame message is sent righ
             if (msg.data.type == 'answer') {
                 this.answers.push(msg);
                 this.ws.sendMessageToOne(msg.playerId, { type: "please wait" });
+                this.stateData.numOfAnswersNeeded = this.stateData.numOfAnswersNeeded - 1;
+                console.log("Answer!");
             }
         }
 
@@ -104,6 +109,42 @@ export default class gameEngine { // TODO The otherjoingame message is sent righ
 
         this.ws.onMessageGame.push(onAnswer);
         this.ws.onMessageGame.push(onDone);
+    }
+
+    startVotingRound() {
+        this.currentState = "Instructions";
+        this.playInstructions().then(this.sendAllBallots.bind(this));
+    }
+
+    async sendAllBallots() {
+        console.log("WE MADE IT");
+        this.stateData.text = {};
+        this.stateData.text.answers = this.answers; // TODO factor out to sendBallot()
+        this.currentState = "Voting"; // TODO
+
+        for (var i; i < this.answers.length; i = i + 2) { // TODO make variable
+            await this.sendBallot(this.answers.slice(i, i + 1)); // TODO makes this varaible
+        }
+
+    }
+
+    sendBallot(listOfAnswersToVoteOn) { // TODO, include id's of players who prompt it is?
+        // Players don't vote on their own answers/questions
+        var numPlayersYetToVote = this.players.length - listOfAnswersToVoteOn.length;
+        var playersWhoVoted = [];
+
+        var promise = new Promise(
+            (resolve, reject) => {
+
+                let voteListener = (msgObj) => { // TODO only let each player vote once;
+
+                    resolve(msgObj);
+                };
+
+            }
+        );
+
+        return promise;
     }
 
     //TODO create listener for starting game.

@@ -1,7 +1,8 @@
 const path = require('path');
 
 module.exports = {
-    entry:"./src/frontend/index.jsx",
+    entry: ['babel-polyfill', "./src/frontend/index.jsx"],
+
     watch:true,
 
     module:{

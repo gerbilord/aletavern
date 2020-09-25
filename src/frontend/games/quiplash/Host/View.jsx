@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 
 import Lobby from './Views/Lobby';
 import styles from '../quiplash.module.css';
+import Button from '../../../baseComponents/Button';
 
 
 export default class QuiplashView extends React.Component {
@@ -30,12 +31,25 @@ export default class QuiplashView extends React.Component {
                     </div>
 
                 );
-                break;
-            case "Text Round":
-                return (<h1>Round {stateData.roundNum}</h1>);
 
             case "Instructions":
                 return (<h1>Please listen</h1>);
+
+            case "Waiting":
+                return (
+                    <div className={styles.global}>
+                        <h1>Round {stateData.roundNum}</h1>
+                        <h3>Waiting for {stateData.numOfAnswersNeeded} players.</h3>
+                    </div>
+                );
+
+            case "Voting": // TODO make list of prompts.
+                return (
+                    <div className={styles.global}>
+                        <h3>{JSON.stringify(stateData.text.answers[0])}</h3>
+                        <h3>{JSON.stringify(stateData.text.answers[1])}</h3>
+                    </div>
+                )
 
             default:
                 return (<h1>SOME TING WONG</h1>);
