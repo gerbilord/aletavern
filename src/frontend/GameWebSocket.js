@@ -19,12 +19,14 @@ export default class GameWebSocket {
   clearAllHandlers() {
     this.onCreateGame = [];
     this.onJoinGame = [];
-    this.defaultOnCreateGame = []; // Consider removing defaults from here
-    this.defaultOnJoinGame = [];
+      this.defaultOnCreateGame = []; // Consider removing defaults from here
+      this.defaultOnJoinGame = [];
+      this.defaultOnReconnectGame = [];
 
     this.onLeaveGame = [];
     this.onOtherJoinGame = [];
-    this.onReconnectGame = [];
+      this.onReconnectGame = [];
+      this.onOtherReconnectGame = [];
     this.onMessageGame = [];
   }
 
@@ -44,12 +46,12 @@ export default class GameWebSocket {
       sessionStorage.setItem("playerId", this.playerId);
 
       this.hostId = msgObj.type == "CREATEGAME" ? this.playerId : msgObj.data.hostId;
-      sessionStorage.setItem("hostId", this.hostId);
+      sessionStorage.setItem("hostId", this.hostId); // TODO get info from server. (For reconnect)
 
       this.gameType = msgObj.data.gameType;
       sessionStorage.setItem("gameType", this.gameType);
 
-      this.playerName = msgObj.data.name;
+      this.playerName = msgObj.data.playerName;
       sessionStorage.setItem("playerName", this.playerName);
     }
     else {
@@ -115,13 +117,28 @@ export default class GameWebSocket {
       }
     }
 
-    if (msgObj.type == "RECONNECTGAME") {
-      this.setLocalDataFromServer(msgObj);
+      if (msgObj.type == "RECONNECTGAME") {
+          if(msgObj.status === "SUCCESS") {
+              this.setLocalDataFromServer(msgObj);
+          }
+          else {
+              this.clearData();
+          }
+
+        if (this.defaultOnReconnectGame) {
+            this.defaultOnReconnectGame.forEach(func => func(msgObj));
+        }
 
       if (this.onReconnectGame) {
         this.onReconnectGame.forEach(func => func(msgObj));
       }
     }
+
+      if (msgObj.type == "OTHERRECONNECTGAME") {
+          if (this.onOtherReconnectGame) {
+              this.onOtherReconnectGame.forEach(func => func(msgObj));
+          }
+      }
   }
 
   clearData() {
@@ -143,7 +160,7 @@ export default class GameWebSocket {
   }
 
   createGame(gameType, name) {
-    var dataObj = { gameType: gameType, name: name };
+    var dataObj = { gameType: gameType, playerName: name };
     var createMessageObj = { type: "CREATEGAME", data: dataObj };
 
     let promise = new Promise(
@@ -163,7 +180,7 @@ export default class GameWebSocket {
   }
 
   joinGame(gameId, name) {
-    var dataObj = { gameId: gameId, name: name };
+    var dataObj = { gameId: gameId, playerName: name };
     var joinMessageObj = { type: "JOINGAME", data: dataObj };
 
     let promise = new Promise(
@@ -210,14 +227,24 @@ export default class GameWebSocket {
     this.ws.send(JSON.stringify(sendMessageObj)); // Add try catch. Reconnect on catch
   }
 
-  reconnectGame() { // TODO reconncect doesn't reconnect if ws closed. Only if a refresh happend
+  reconnectGame() { // TODO reconnect doesn't reconnect if ws closed. Only if a refresh happend
     this.loadData();
 
-    if (this.playerId) {
-      // always use session storage or load data?
-      var sendMessageObj = { type: "RECONNECTGAME", playerId: this.playerId };
-      this.ws.send(JSON.stringify(sendMessageObj)); // TODO refactor stringify
-    }
+        let promise = new Promise(
+            (resolve, reject) => {
+                let createListener = (msgObj) => {
+                    this.defaultOnCreateGame.filter(func => func != createListener);
+                    resolve(msgObj);
+                };
+
+                this.defaultOnReconnectGame.push(createListener);
+
+            });
+
+        var sendMessageObj = { type: "RECONNECTGAME", playerId: this.playerId };
+        this.ws.send(JSON.stringify(sendMessageObj)); // TODO refactor stringify
+
+        return promise;
   }
 
   leaveGame() {

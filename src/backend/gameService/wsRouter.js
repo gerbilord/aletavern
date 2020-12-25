@@ -28,10 +28,10 @@ function joinGame(ws, msg) {
     return; // consider returning error?
   }
 
-  var { gameId, name } = msg.data;
+  var { gameId, playerName } = msg.data;
   console.log(gameId);
   gameId = gameId.toUpperCase();
-  var newPlayer = gameService.addPlayerToGame(gameId, ws, name);
+  var newPlayer = gameService.addPlayerToGame(gameId, ws, playerName);
 
   if (newPlayer) {
     var host = gameService.getHostOfGame(newPlayer.gameId);
@@ -42,7 +42,7 @@ function joinGame(ws, msg) {
         hostId: hostId,
         gameId: newPlayer.gameId,
         gameType: gameType,
-        name: newPlayer.name
+        playerName: newPlayer.name
       };
 
       let msgObj = {
@@ -81,7 +81,7 @@ function joinGame(ws, msg) {
 }
 // TODO consider renmaing msgObj to returnObj
 function validateJoinGameMessage(msg) {
-  if (msg && msg.data && msg.data.gameId && msg.data.name) {
+  if (msg && msg.data && msg.data.gameId && msg.data.playerName) {
     return true;
   } else {
     return false; // Conisder console.debug.
@@ -89,14 +89,19 @@ function validateJoinGameMessage(msg) {
 }
 
 function reconnectToGame(ws, msg) {
-  if (!validateReconnectGameMessage(msg)) {
-    // TODO standardize validate function names.
+    var msgObj = { type: "RECONNECTGAME"};
+
+    if (!validateReconnectGameMessage(msg)) {
+      // TODO standardize validate function names.
+      msgObj.status = "FAILURE";
+      msgObj.data = "Bad parameters.";
+      sendToRawWs(ws, msgObj);
     return;
   }
   var playerId = msg.playerId;
   var player = gameService.getPlayer(playerId);
 
-  var msgObj = { type: "RECONNECTGAME", playerId: playerId };
+  msgObj.playerId =  playerId;
 
   if (player && player.gameId) {
     // if the player and game still exist
@@ -106,12 +111,16 @@ function reconnectToGame(ws, msg) {
       msgObj.status = "SUCCESS";
       player.setWebSocket(ws);
 
+        var gameType = gameService.getGameType(player.gameId);
       var hostId = host.id;
-      var dataObj = { hostId: hostId, gameId: player.gameId };
+        var dataObj = { hostId: hostId, gameId: player.gameId, gameType:gameType, playerName:player.name };
       msgObj.data = dataObj;
 
       console.log(msgObj);
-      player.send(msgObj);
+        player.send(msgObj);
+
+        msgObj.type = "OTHERRECONNECTGAME";
+        emitToOthersInGame(player, msgObj);
       return;
     }
   }
@@ -137,8 +146,8 @@ function createGame(ws, msg) {
     return;
   }
 
-  var newHost = gameService.createGame(ws, msg.data.gameType, msg.data.name);
-  var dataObj = { gameId: newHost.gameId, gameType: msg.data.gameType, name: msg.data.name };
+  var newHost = gameService.createGame(ws, msg.data.gameType, msg.data.playerName);
+  var dataObj = { gameId: newHost.gameId, gameType: msg.data.gameType, playerName: msg.data.playerName };
   var msgObj = {
     type: "CREATEGAME",
     data: dataObj,
@@ -151,7 +160,7 @@ function createGame(ws, msg) {
 
 function validateCreateGameMessage(msg) {
   if (msg) {
-    if (msg.data && msg.data.name && msg.data.gameType) {
+    if (msg.data && msg.data.playerName && msg.data.gameType) {
       return true;
     }
   }

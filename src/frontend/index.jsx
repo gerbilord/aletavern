@@ -27,24 +27,46 @@ class App extends React.Component {
 
         this.loadCreateGame = this.loadCreateGame.bind(this);
         this.loadJoinGame = this.loadJoinGame.bind(this);
+        this.loadReconnectGame = this.loadReconnectGame.bind(this);
         this.currentGame = undefined;
     }
 
     loadCreateGame(serverResponse) {
         console.log("Create success");
+        let otherArgs = {connectionType:"create"}
 
-        this.currentGame = new games[serverResponse.data.gameType].game(ws); // TODO consider refactoring how this works (E.g game wrapper etc)
+        this.currentGame = new games[serverResponse.data.gameType].game(ws, otherArgs); // TODO consider refactoring how this works (E.g game wrapper etc)
 
         this.setState({ currentGame: serverResponse.data.gameType }); // TODO handle failure to connect
     }
 
     loadJoinGame(serverResponse) {
         console.log("Join success");
+        let otherArgs = {connectionType:"join"}
 
-        this.currentGame = new games[serverResponse.data.gameType].game(ws); // TODO consider refactoring how this works (E.g game wrapper etc)
+        this.currentGame = new games[serverResponse.data.gameType].game(ws, otherArgs); // TODO consider refactoring how this works (E.g game wrapper etc)
         //TODO consider adding object to be passed in
 
         this.setState({ currentGame: serverResponse.data.gameType });  // TODO handle failure to connect
+    }
+
+    loadReconnectGame(serverResponse) {
+
+        if(serverResponse.status === "SUCCESS"){
+            console.log("Reconnect success");
+
+            let otherArgs = {connectionType:"reconnect"}
+
+            this.currentGame = new games[serverResponse.data.gameType].game(ws, otherArgs); // TODO consider refactoring how this works (E.g game wrapper etc)
+            //TODO consider adding object to be passed in
+
+            this.setState({ currentGame: serverResponse.data.gameType });  // TODO handle failure to connect
+        }
+        else {
+            console.log("Reconnect failed.");
+            this.forceUpdate();
+        }
+
     }
 
     render() {
@@ -55,6 +77,7 @@ class App extends React.Component {
                         games={games}
                         clickCreate={(obj) => { ws.createGame(obj.gameType, obj.name).then((serverResponse) => { this.loadCreateGame(serverResponse) }); }}
                         clickJoin={(gameCode, playerName) => { ws.joinGame(gameCode, playerName).then((serverResponse) => { this.loadJoinGame(serverResponse) }); }}
+                        clickReconnect={() => { ws.reconnectGame().then((serverResponse) => { this.loadReconnectGame(serverResponse) }); }}
                     />
                 );
                 break;

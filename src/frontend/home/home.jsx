@@ -55,6 +55,14 @@ class Home extends React.Component {
                                     this.setState({ selection: "create" })
                                 }}
                             />
+                            <h3 className={styles.subTitle}>or</h3>
+                            <Button
+                                buttonText="Reconnect"
+                                isDisabled={sessionStorage.getItem("playerId") == null}
+                                clickHandler={() => { /* TODO this doesn't use Button args={something}, kinda confusing... */
+                                    this.props.clickReconnect()
+                                }}
+                            />
                         </div>
                     </div>
                 );

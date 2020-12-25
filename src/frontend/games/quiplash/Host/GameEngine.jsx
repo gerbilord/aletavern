@@ -46,7 +46,7 @@ export default class gameEngine { // TODO The otherjoingame message is sent righ
         var onAddNewPlayer = (serverResponse) => {
             // Add player to game list
             this.players.push(serverResponse);
-            this.playerNames.push(serverResponse.data.name);
+            this.playerNames.push(serverResponse.data.playerName);
             this.stateData.players = this.playerNames;
 
             // Tell other players, amount of people in lobby
