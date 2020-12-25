@@ -12,7 +12,7 @@ import PlayerGameEngine from './Player/GameEngine'
 export default class quiplashWrapper {
 
     // REQUIRED
-    constructor(gameWebSocket) {
+    constructor(gameWebSocket, otherArgs) {
         this.ws = gameWebSocket;
 
         this.gameEngine = this.ws.isHost() ? HostGameEngine : PlayerGameEngine;
