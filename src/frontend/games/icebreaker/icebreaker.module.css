@@ -1,0 +1,63 @@
+.global * {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.basic_col {
+    width:100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.global * button {
+    width: 50vmin;
+    height: 8vmin;
+    font-size: 3vmin;
+    color: white;
+    margin: 1vmin;
+    border-radius: 1.5vmin;
+    background-color: steelblue;
+    opacity: .8;
+}
+
+.global * button:active {
+    opacity: 1;
+}
+
+.global * button:disabled {
+    opacity: .3;
+}
+
+.global * input[type=text] {
+    width: 50vmin;
+    height: 6vmin;
+    font-size: 3vmin;
+    margin: 1vmin;
+    text-align: center;    
+}
+
+.global * h1 {
+    font-size: 9vmin;
+}
+
+.global * h2 {
+    font-size: 6vmin;
+}
+
+.global * h3 {
+    font-size: 3vmin;
+}
+
+.global * h4 {
+    font-size: 2.5vmin;
+}
+
+.global * h1,
+.global * h2,
+.global * h3,
+.global * h4,
+.global * h5 {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    /* text-align: center; */
+}
