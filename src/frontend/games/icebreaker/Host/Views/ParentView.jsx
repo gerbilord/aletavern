@@ -2,9 +2,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Lobby from './Views/Lobby';
-import styles from '../icebreaker.module.css';
-import Button from '../../../baseComponents/Button';
+import Lobby from './Lobby';
+import styles from '../../icebreaker.module.css';
+import Button from '../../../../baseComponents/Button';
 
 
 export default class IcebreakerView extends React.Component {

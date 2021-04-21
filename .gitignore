@@ -118,3 +118,4 @@ dist
 # Personal Files
 commands.txt
 .dist/
+/.vs

@@ -2,8 +2,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import HostView from './Host/View';
-import HostGameEngine from './Host/GameEngine'
+import HostView from './Host/Views/ParentView';
+import HostGameEngine from './Host/GameLogic/GameEngine'
 
 import PlayerView from './Player/View';
 import PlayerGameEngine from './Player/GameEngine'
