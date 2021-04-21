@@ -166,7 +166,7 @@ export default class GameWebSocket {
     let promise = new Promise(
       (resolve, reject) => {
         let createListener = (msgObj) => {
-          this.defaultOnCreateGame.filter(func => func != createListener);
+          this.defaultOnCreateGame = this.defaultOnCreateGame.filter(func => func !== createListener);
           resolve(msgObj);
         };
 
@@ -185,10 +185,10 @@ export default class GameWebSocket {
 
     let promise = new Promise(
       (resolve, reject) => {
-        let joinListener = (msgObj) => {
-          this.defaultOnJoinGame.filter(func => func != joinListener);
+          let joinListener = (msgObj) => {
+          this.defaultOnJoinGame = this.defaultOnJoinGame.filter(func => func !== joinListener);
           resolve(msgObj);
-        };
+       };
 
         this.defaultOnJoinGame.push(joinListener);
 
@@ -233,7 +233,7 @@ export default class GameWebSocket {
         let promise = new Promise(
             (resolve, reject) => {
                 let createListener = (msgObj) => {
-                    this.defaultOnCreateGame.filter(func => func != createListener);
+                    this.defaultOnReconnectGame = this.defaultOnReconnectGame.filter(func => func !== createListener);
                     resolve(msgObj);
                 };
 
