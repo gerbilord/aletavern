@@ -9,13 +9,11 @@ export default function Vote(props) {
     // TODO make button per prompt.
     return (
         <div>
-            <h5>
-                {prompts}
-            </h5>
+            <h5>{prompts}</h5>
             <Button
-                buttonText={"Vote"}
+                buttonText={'Vote'}
                 clickHandler={vote}
-                clickArgs={"PROMPT HERE"}
+                clickArgs={'PROMPT HERE'}
             />
         </div>
     );

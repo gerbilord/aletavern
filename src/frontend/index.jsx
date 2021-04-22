@@ -16,16 +16,14 @@ import Icebreaker from './games/icebreaker/icebreakerWrapper.jsx';
 var ws = new GameWebSocket(true);
 var games = [];
 
-
 games['Quiplash'] = { game: Quiplash };
 games['Santorini'] = { game: Santorini };
 games['Icebreaker'] = { game: Icebreaker };
 
-
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { currentGame: "home" };
+        this.state = { currentGame: 'home' };
 
         this.loadCreateGame = this.loadCreateGame.bind(this);
         this.loadJoinGame = this.loadJoinGame.bind(this);
@@ -34,63 +32,86 @@ class App extends React.Component {
     }
 
     loadCreateGame(serverResponse) {
-        console.log("Create success");
-        let otherArgs = {connectionType:"create"}
+        console.log('Create success');
+        let otherArgs = { connectionType: 'create' };
 
-        this.currentGame = new games[serverResponse.data.gameType].game(ws, otherArgs); // TODO consider refactoring how this works (E.g game wrapper etc)
+        this.currentGame = new games[serverResponse.data.gameType].game(
+            ws,
+            otherArgs
+        ); // TODO consider refactoring how this works (E.g game wrapper etc)
 
         this.setState({ currentGame: serverResponse.data.gameType }); // TODO handle failure to connect
     }
 
     loadJoinGame(serverResponse) {
-        console.log("Join success");
-        let otherArgs = {connectionType:"join"}
+        console.log('Join success');
+        let otherArgs = { connectionType: 'join' };
 
-        this.currentGame = new games[serverResponse.data.gameType].game(ws, otherArgs); // TODO consider refactoring how this works (E.g game wrapper etc)
+        this.currentGame = new games[serverResponse.data.gameType].game(
+            ws,
+            otherArgs
+        ); // TODO consider refactoring how this works (E.g game wrapper etc)
         //TODO consider adding object to be passed in
 
-        this.setState({ currentGame: serverResponse.data.gameType });  // TODO handle failure to connect
+        this.setState({ currentGame: serverResponse.data.gameType }); // TODO handle failure to connect
     }
 
     loadReconnectGame(serverResponse) {
+        if (serverResponse.status === 'SUCCESS') {
+            console.log('Reconnect success');
 
-        if(serverResponse.status === "SUCCESS"){
-            console.log("Reconnect success");
+            let otherArgs = { connectionType: 'reconnect' };
 
-            let otherArgs = {connectionType:"reconnect"}
-
-            this.currentGame = new games[serverResponse.data.gameType].game(ws, otherArgs); // TODO consider refactoring how this works (E.g game wrapper etc)
+            this.currentGame = new games[serverResponse.data.gameType].game(
+                ws,
+                otherArgs
+            ); // TODO consider refactoring how this works (E.g game wrapper etc)
             //TODO consider adding object to be passed in
 
-            this.setState({ currentGame: serverResponse.data.gameType });  // TODO handle failure to connect
-        }
-        else {
-            console.log("Reconnect failed.");
+            this.setState({ currentGame: serverResponse.data.gameType }); // TODO handle failure to connect
+        } else {
+            console.log('Reconnect failed.');
             this.forceUpdate();
         }
-
     }
 
     render() {
-        switch (this.state.currentGame) { //TODO consider making if instead
-            case "home":
+        switch (
+            this.state.currentGame //TODO consider making if instead
+        ) {
+            case 'home':
                 return (
                     <Home
                         games={games}
-                        clickCreate={(obj) => { ws.createGame(obj.gameType, obj.name).then((serverResponse) => { this.loadCreateGame(serverResponse) }); }}
-                        clickJoin={(gameCode, playerName) => { ws.joinGame(gameCode, playerName).then((serverResponse) => { this.loadJoinGame(serverResponse) }); }}
-                        clickReconnect={() => { ws.reconnectGame().then((serverResponse) => { this.loadReconnectGame(serverResponse) }); }}
+                        clickCreate={(obj) => {
+                            ws.createGame(obj.gameType, obj.name).then(
+                                (serverResponse) => {
+                                    this.loadCreateGame(serverResponse);
+                                }
+                            );
+                        }}
+                        clickJoin={(gameCode, playerName) => {
+                            ws.joinGame(gameCode, playerName).then(
+                                (serverResponse) => {
+                                    this.loadJoinGame(serverResponse);
+                                }
+                            );
+                        }}
+                        clickReconnect={() => {
+                            ws.reconnectGame().then((serverResponse) => {
+                                this.loadReconnectGame(serverResponse);
+                            });
+                        }}
                     />
                 );
                 break;
 
             default:
                 let GameView = this.currentGame.getGlobalGameView();
-                return (<GameView gameWrapper={this.currentGame} />);  // TODO seperate host and join view
+                return <GameView gameWrapper={this.currentGame} />; // TODO seperate host and join view
         }
     }
 }
-
 
 /*
    Add functions + event listeners here
@@ -141,7 +162,4 @@ class gameRouter {
 }
 */
 
-
-
-ReactDOM.render(<App />, document.getElementById("root"));
-
+ReactDOM.render(<App />, document.getElementById('root'));

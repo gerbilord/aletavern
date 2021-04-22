@@ -1,13 +1,13 @@
 // ************************ Server Setup ******************************
 
-const http = require("http");
-const express = require("express");
-const path = require("path");
+const http = require('http');
+const express = require('express');
+const path = require('path');
 
 const app = express();
-var expressWs = require("express-ws")(app);
+var expressWs = require('express-ws')(app);
 
-require("./routes")(app);
+require('./routes')(app);
 
 app.use(express.json());
 
@@ -15,5 +15,5 @@ app.use(express.json());
 const port = process.env.PORT || 5656;
 
 app.listen(port, () => {
-  console.log(`http://localhost:${port}`);
+    console.log(`http://localhost:${port}`);
 });

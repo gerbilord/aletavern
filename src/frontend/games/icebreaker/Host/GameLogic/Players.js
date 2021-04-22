@@ -1,8 +1,6 @@
-import 'babel-polyfill';
 import Player from './Player';
 
 export default class Players {
-
     constructor(ws) {
         this.hostWs = ws;
         this.players = [];
@@ -10,9 +8,7 @@ export default class Players {
     }
 
     addPlayerFromServer(serverPayload) {
-        const {
-            playerId
-        } = serverPayload;
+        const { playerId } = serverPayload;
 
         if (this.findPlayerFromId(playerId) === undefined) {
             this.players.push(new Player(serverPayload));
@@ -23,7 +19,9 @@ export default class Players {
     }
 
     findPlayerFromId(id) {
-        return this.players.find(player => { player.id === id });
+        return this.players.find((player) => {
+            player.id === id;
+        });
     }
 
     isPlayerIdVip(id) {

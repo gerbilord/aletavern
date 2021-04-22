@@ -1,11 +1,7 @@
-import CONSTANTS from '../../Constants';
-import prompts from './textPromts';
-import 'babel-polyfill';
 import Players from './Players';
 import LobbyRound from './Rounds/LobbyRound';
 
 export default class GameEngine {
-
     constructor(gameWebSocket) {
         this.ws = gameWebSocket;
         this.players = new Players(this.ws);
@@ -17,9 +13,9 @@ export default class GameEngine {
     async runGameLoop() {
         for (let i = 0; i < this.rounds.length; i++) {
             const currentRound = this.rounds[i];
-            console.log("STARTING");
+            console.log('STARTING');
             await currentRound;
-            console.log("ENDING");
+            console.log('ENDING');
         }
     }
 }

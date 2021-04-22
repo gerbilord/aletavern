@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 import CONSTANTS from '../Constants';
 
 export default class gameEngine {
-
     constructor(gameWebSocket) {
         this.ws = gameWebSocket;
 
@@ -18,25 +17,30 @@ export default class gameEngine {
 
     startLobby() {
         let startGameHandler = () => {
-            let msgObj = { type: "start" }
+            let msgObj = { type: 'start' };
             this.ws.sendMessageToHost(msgObj);
         };
 
         let updatePlayerCountListener = (msgObj) => {
-            if (this.isMessageFromHost(msgObj) && msgObj.data.type == 'playerCount') { // TODO check if message is valid.
+            if (
+                this.isMessageFromHost(msgObj) &&
+                msgObj.data.type == 'playerCount'
+            ) {
+                // TODO check if message is valid.
                 this.stateData.numPlayers = msgObj.data.numPlayers;
-                this.stateData.canStart = this.stateData.numPlayers >= CONSTANTS.MIN_PLAYERS;
+                this.stateData.canStart =
+                    this.stateData.numPlayers >= CONSTANTS.MIN_PLAYERS;
             }
         };
 
         let endLobbyListener = (msgObj) => {
-            if (msgObj.data && msgObj.data.type == "please wait") {
+            if (msgObj.data && msgObj.data.type == 'please wait') {
                 this.ws.onMessageGame = [];
                 this.wait();
             }
         };
 
-        this.currentState = "Lobby";
+        this.currentState = 'Lobby';
         this.stateData.numPlayers = 0;
 
         this.ws.onMessageGame.push(updatePlayerCountListener);
@@ -46,42 +50,47 @@ export default class gameEngine {
     }
 
     wait() {
-
         var onInstructions = (msg) => {
-
-            var instructions = ["please answer", "please wait", "please vote", "please leave"];
-            if (msg && msg.data && instructions.includes(msg.data.type) && this.isMessageFromHost(msg)) {
+            var instructions = [
+                'please answer',
+                'please wait',
+                'please vote',
+                'please leave',
+            ];
+            if (
+                msg &&
+                msg.data &&
+                instructions.includes(msg.data.type) &&
+                this.isMessageFromHost(msg)
+            ) {
                 this.ws.onMessageGame = [];
 
                 var command = msg.data.type;
                 var data = msg.data;
 
-                if (command == "please answer") {
+                if (command == 'please answer') {
                     this.ws.onMessageGame = [];
                     this.answerPropmts(data.prompts);
-                }
-                else if (command == "please vote") {
+                } else if (command == 'please vote') {
                     this.ws.onMessageGame = [];
-                    this.voteOnAnswers(data.answers)
-                }
-                else if (command == "please leave") {
+                    this.voteOnAnswers(data.answers);
+                } else if (command == 'please leave') {
                     this.ws.onMessageGame = [];
                 }
             }
-        }
+        };
 
         this.ws.onMessageGame.push(onInstructions);
-        this.currentState = "Wait";
+        this.currentState = 'Wait';
         this.stateData = {};
     }
 
     answerPropmts(prompts) {
-
         var currPromptNum = 0;
         var currPrompt = prompts[currPromptNum];
 
         var sendAnswer = (answer) => {
-            let msg = { type: "answer", answer: answer }
+            let msg = { type: 'answer', answer: answer };
             this.ws.sendMessageToHost(msg);
 
             currPromptNum = currPromptNum + 1;
@@ -89,52 +98,50 @@ export default class gameEngine {
             if (currPromptNum < prompts.length) {
                 currPrompt = prompts[currPromptNum];
                 this.stateData.text = currPrompt;
-            }
-            else {
+            } else {
                 this.ws.onMessageGame = [];
                 this.wait();
             }
-        }
+        };
 
         var onTimesUp = (msgObj) => {
-            if (msgObj.data && msgObj.data.type == "please wait") {
+            if (msgObj.data && msgObj.data.type == 'please wait') {
                 this.ws.onMessageGame = [];
                 this.wait();
             }
-        }
+        };
 
         this.ws.onMessageGame.push(onTimesUp);
         this.stateData.text = currPrompt;
         this.stateData.buttons = sendAnswer;
-        this.currentState = "Answer";
+        this.currentState = 'Answer';
     }
 
     voteOnAnswers(answerSet) {
-
         var createVoteOnSet = () => {
             return answerSet.map((answer) => {
                 return () => {
                     sendVote(answer);
-                }
+                };
             });
         };
 
         var sendVote = (answer) => {
-            let msg = { type: "vote", answer: answer }
+            let msg = { type: 'vote', answer: answer };
             this.ws.sendMessageToHost(msg);
-        }
+        };
 
         var onTimesUp = (msgObj) => {
-            if (msgObj.data && msgObj.data.type == "please wait") {
+            if (msgObj.data && msgObj.data.type == 'please wait') {
                 this.ws.onMessageGame = [];
                 this.wait();
             }
-        }
+        };
 
         this.ws.onMessageGame.push(onTimesUp);
         this.stateData.text = answerSet;
         this.stateData.buttons = createVoteOnSet();
-        this.currentState = "Vote";
+        this.currentState = 'Vote';
     }
 
     // TODO create handler/button to start game.
@@ -144,13 +151,10 @@ export default class gameEngine {
     }
 
     isMessageFromHost(msgObj) {
-
         if (msgObj) {
             return this.hostId == msgObj.playerId;
         }
 
         return false;
     }
-
-
 }

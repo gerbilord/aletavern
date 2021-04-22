@@ -8,7 +8,6 @@ import Wait from './Views/Wait';
 import Vote from './Views/Vote';
 import Answer from './Views/Answer';
 
-
 export default class QuiplashView extends React.Component {
     constructor(props) {
         super(props);
@@ -23,7 +22,7 @@ export default class QuiplashView extends React.Component {
         let { screen, stateData } = this.state.gameState;
         var text, buttons;
         switch (this.state.gameState.screen) {
-            case "Lobby":
+            case 'Lobby':
                 return (
                     <div className={styles.global}>
                         <Lobby
@@ -34,8 +33,7 @@ export default class QuiplashView extends React.Component {
                     </div>
                 );
 
-            case "Answer":
-
+            case 'Answer':
                 return (
                     <div className={styles.global}>
                         <Answer
@@ -45,7 +43,7 @@ export default class QuiplashView extends React.Component {
                     </div>
                 );
 
-            case "Vote":
+            case 'Vote':
                 return (
                     <div className={styles.global}>
                         <Vote
@@ -55,22 +53,22 @@ export default class QuiplashView extends React.Component {
                     </div>
                 );
 
-            case "Wait":
+            case 'Wait':
                 return (
                     <div className={styles.global}>
                         <Wait />
                     </div>
                 );
             default:
-                return (<h1>WRONG</h1>);
+                return <h1>WRONG</h1>;
         }
-    };
-
+    }
 
     componentDidMount() {
         this.interval = setInterval(
             () => this.setState({ gameState: this.gameEngine.getGameState() }),
-            100);
+            100
+        );
     }
     componentWillUnmount() {
         clearInterval(this.interval);

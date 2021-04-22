@@ -25,7 +25,7 @@
     margin: 1vmin;
     border-radius: 1.5vmin;
     background-color: steelblue;
-    opacity: .8;
+    opacity: 0.8;
 }
 
 .global * button:active {
@@ -33,15 +33,15 @@
 }
 
 .global * button:disabled {
-    opacity: .2;
+    opacity: 0.2;
 }
 
-.global * input[type=text] {
+.global * input[type='text'] {
     width: 50vmin;
     height: 6vmin;
     font-size: 3vmin;
     margin: 1vmin;
-    text-align: center;    
+    text-align: center;
 }
 
 .global {

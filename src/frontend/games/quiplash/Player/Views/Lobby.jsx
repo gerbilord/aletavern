@@ -9,16 +9,12 @@ export default function Lobby(props) {
 
     return (
         <div className={styles.basic_col}>
-            <h1>
-                Quiplash
-            </h1>
-            <h2>
-                Waiting for game to start.
-            </h2>
+            <h1>Quiplash</h1>
+            <h2>Waiting for game to start.</h2>
             <h3>Players in lobby: {numPlayers}</h3>
 
             <Button
-                buttonText={"Start Game"}
+                buttonText={'Start Game'}
                 clickHandler={startGameFunction}
                 isDisabled={!canStart}
             />

@@ -1,9 +1,9 @@
 .global * {
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 .basic_col {
-    width:100%;
+    width: 100%;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -18,7 +18,7 @@
     margin: 1vmin;
     border-radius: 1.5vmin;
     background-color: steelblue;
-    opacity: .8;
+    opacity: 0.8;
 }
 
 .global * button:active {
@@ -26,15 +26,15 @@
 }
 
 .global * button:disabled {
-    opacity: .3;
+    opacity: 0.3;
 }
 
-.global * input[type=text] {
+.global * input[type='text'] {
     width: 50vmin;
     height: 6vmin;
     font-size: 3vmin;
     margin: 1vmin;
-    text-align: center;    
+    text-align: center;
 }
 
 .global * h1 {
@@ -58,6 +58,6 @@
 .global * h3,
 .global * h4,
 .global * h5 {
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
     /* text-align: center; */
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 function Button(props) {
     let { buttonText, clickHandler, clickArgs, passEvent, isDisabled } = props;
@@ -9,9 +9,7 @@ function Button(props) {
     let clickHandlerWithArgs = passEvent ? funcWithEvent : funcNoEvent;
 
     return (
-        <button
-            disabled={isDisabled}
-            onClick={clickHandlerWithArgs}>
+        <button disabled={isDisabled} onClick={clickHandlerWithArgs}>
             {buttonText}
         </button>
     );

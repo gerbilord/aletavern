@@ -8,19 +8,13 @@ module.exports = {
     module:{
         rules: [
             {
-                test:/\.js$/,
+                test: /\.(js|jsx)$/, // babel loading in js and jsx files
                 exclude: [path.resolve(__dirname, './src/backend')],
                 exclude: /node_modules/,
                 use: ['babel-loader']
             },
             {
-                test: /\.jsx$/,
-                exclude: [path.resolve(__dirname, './src/backend')],
-                exclude: /node_modules/,
-                use: ['babel-loader']
-            },
-            {
-                test: /\.css$/,
+                test: /\.css$/,  // css modules
                 use: [
                     'style-loader',
                     {
@@ -35,7 +29,7 @@ module.exports = {
                 exclude: [path.resolve(__dirname, './src/backend'), /node_modules/]
             },
             {
-                test: /\.css$/,
+                test: /\.css$/, // Css non-modules
                 use: [
                     'style-loader',
                     'css-loader'
@@ -51,7 +45,14 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.js', '.jsx']
+        extensions: ['.js', '.jsx'],
+          alias: {
+            Frontend: path.resolve(__dirname, './src/frontend'),
+            Games: path.resolve(__dirname, './src/frontend/games'),
+
+            // GAME LIST
+              Icebreaker: path.resolve(__dirname, './src/frontend/games/icebreaker'),
+        }
     }
 }
 

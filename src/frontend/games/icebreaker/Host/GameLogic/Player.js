@@ -1,13 +1,8 @@
-import 'babel-polyfill';
-
 export default class Player {
-
     constructor(serverPayload) {
         const {
-            data: {
-                playerName
-            },
-            playerId
+            data: { playerName },
+            playerId,
         } = serverPayload;
 
         this.name = playerName;

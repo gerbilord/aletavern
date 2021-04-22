@@ -6,7 +6,6 @@ import Lobby from './Lobby';
 import styles from '../../icebreaker.module.css';
 import Button from '../../../../baseComponents/Button';
 
-
 export default class IcebreakerView extends React.Component {
     constructor(props) {
         super(props);
@@ -16,21 +15,17 @@ export default class IcebreakerView extends React.Component {
 
     // TODO give a real unique key
     render() {
-               return (
-                    <div className={styles.global}>
-                        <Lobby
-                            className={styles.text}
-                            gameId={this.gameEngine.ws.gameId}
-                        />
-                    </div>
-
-                );
-        }
-
-
-    componentDidMount() {
+        return (
+            <div className={styles.global}>
+                <Lobby
+                    className={styles.text}
+                    gameId={this.gameEngine.ws.gameId}
+                />
+            </div>
+        );
     }
 
-    componentWillUnmount() {
-    }
+    componentDidMount() {}
+
+    componentWillUnmount() {}
 }
