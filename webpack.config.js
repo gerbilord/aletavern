@@ -5,18 +5,17 @@ module.exports = {
 
     watch: true,
 
+    target: 'node', // in order to ignore built-in modules like path, fs, etc.
+
     module: {
         rules: [
             {
                 test: /\.(js|jsx)$/, // babel loading in js and jsx files
-                exclude: [
-                    path.resolve(__dirname, './src/backend'),
-                    /node_modules/,
-                ],
+                include: path.resolve(__dirname, './src/frontend'),
                 use: ['babel-loader'],
             },
             {
-                test: /\.css$/, // css modules
+                test: /\.module\.css$/, // css modules
                 use: [
                     'style-loader',
                     {
@@ -27,20 +26,13 @@ module.exports = {
                         },
                     },
                 ],
-                include: /\.module\.css$/,
-                exclude: [
-                    path.resolve(__dirname, './src/backend'),
-                    /node_modules/,
-                ],
+                include: path.resolve(__dirname, './src/frontend'),
             },
             {
                 test: /\.css$/, // Css non-modules
                 use: ['style-loader', 'css-loader'],
-                exclude: [
-                    path.resolve(__dirname, './src/backend'),
-                    /node_modules/,
-                    /\.module\.css$/,
-                ],
+                include: path.resolve(__dirname, './src/frontend'),
+                exclude: /\.module\.css$/,
             },
             /*,
             {
@@ -51,7 +43,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.js', '.jsx'],
+        extensions: ['.js', '.jsx', '.css'],
         alias: {
             Frontend: path.resolve(__dirname, './src/frontend'),
             Utils: path.resolve(__dirname, './src/frontend/utils'),
