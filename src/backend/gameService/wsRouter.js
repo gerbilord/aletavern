@@ -326,7 +326,7 @@ function messageOnePlayer(msg) {
     }
 }
 
-// checks for format {playerId, data:{recievedId, message}}
+// checks for format {playerId, data:{receiverId, message}}
 function validateAddressedMessage(msgObj) {
     if (msgObj) {
         if (msgObj.playerId && msgObj.data) {

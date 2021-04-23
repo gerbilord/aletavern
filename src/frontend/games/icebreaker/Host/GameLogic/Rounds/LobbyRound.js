@@ -1,47 +1,59 @@
 import CONSTANTS from 'Icebreaker/Constants';
+import * as ListUtils from 'Utils/listUtils';
+import MessageObject from 'Icebreaker/Shared/GameLogic/IcebreakerMessage';
+import ViewData from 'Icebreaker/Shared/Views/IcebreakerViewData';
+
+// noinspection JSUnusedGlobalSymbols
 
 export default class LobbyRound {
     constructor(hostWs, players) {
         this.hostWs = hostWs;
         this.players = players;
         this.cleanUpFunctions = []; // run before ending round.
+
+        this.viewData = new ViewData();
+        this.viewData.addViewType(CONSTANTS.ROUNDS.LOBBY);
+        this.viewData.setExtraData(this.players.players);
     }
 
     // play round
     async then(endRound) {
         this.endRound = endRound;
 
-        this.listenForVipEndingLobby();
+        this.listenForPlayerEndingLobby();
         this.listenForNewPlayers();
     }
 
-    listenForVipEndingLobby() {
-        const endWhenVipAsks = (msgObj) => {
-            const { playerId, data } = msgObj;
+    listenForPlayerEndingLobby() {
+        const endWhenPlayerAsks = (msgObj) => {
+            const message = new MessageObject(msgObj);
             if (
-                data.msgType === 'endLobby' &&
-                this.players.isPlayerIdVip(playerId) &&
+                message.getRound() === CONSTANTS.ROUNDS.LOBBY &&
+                message.getMessageType() === CONSTANTS.MESSAGE_TYPE.END_ROUND &&
+                message.getSender() !== this.hostWs.hostId && // Don't listen to your own messages! // TODO consider changing send message to all in backend.
+                // this.players.isPlayerIdVip(playerId) && // TODO Consider implementing VIP
                 this.players.length >= CONSTANTS.MIN_PLAYERS
             ) {
-                this.cleanUpFunctions.forEach((func) => func());
-                this.endRound();
+                this.cleanUpAndEndRound();
             }
         };
 
         this.addObjectToListAndCleanUp(
             this.hostWs.onMessageGame,
-            endWhenVipAsks
+            endWhenPlayerAsks
         );
-
-        setTimeout(() => {
-            this.cleanUpFunctions.forEach((func) => func());
-            this.endRound();
-        }, 5000);
     }
 
     listenForNewPlayers() {
         const addNewPlayerOnJoin = (msgObj) => {
-            this.players.addPlayerFromServer(msgObj);
+            const newPlayer = this.players.addPlayerFromServer(msgObj);
+
+            if (newPlayer) {
+                this.players.sendPlayerMessage(
+                    newPlayer,
+                    this.createStartRoundMessage()
+                );
+            }
         };
 
         this.addObjectToListAndCleanUp(
@@ -51,18 +63,33 @@ export default class LobbyRound {
     }
 
     addObjectToListAndCleanUp(objectList, object) {
-        this.addListCleanUpFunction(objectList, object);
+        this.cleanUpFunctions.push(
+            ListUtils.createRemoveItemCallback(objectList, object)
+        );
         objectList.push(object);
     }
 
-    addListCleanUpFunction(objectList, objectToRemove) {
-        // filter in place.
-        this.cleanUpFunctions.push(() => {
-            objectList.splice(
-                0,
-                objectList.length,
-                ...objectList.filter((object) => object !== objectToRemove)
-            );
-        });
+    cleanUpAndEndRound() {
+        this.players.sendMessageToAllPlayers(this.createEndRoundMessage()); // Notify players round is over.
+        this.cleanUpFunctions.forEach((func) => func()); // Remove all listeners created in this round.
+        this.endRound(); // End the round. (resolve promise)
+    }
+
+    createStartRoundMessage() {
+        const startRoundMessage = new MessageObject();
+        startRoundMessage.setRound(CONSTANTS.ROUNDS.LOBBY);
+        startRoundMessage.setMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
+        return startRoundMessage.getMessage();
+    }
+
+    createEndRoundMessage() {
+        const endRoundMessage = new MessageObject();
+        endRoundMessage.setRound(CONSTANTS.ROUNDS.LOBBY);
+        endRoundMessage.setMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
+        return endRoundMessage.getMessage();
+    }
+
+    getViewData() {
+        return this.viewData;
     }
 }

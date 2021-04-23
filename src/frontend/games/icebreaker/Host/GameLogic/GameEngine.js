@@ -7,15 +7,22 @@ export default class GameEngine {
         this.players = new Players(this.ws);
         this.rounds = [new LobbyRound(this.ws, this.players)]; //, 'selfAnswerOtherGuess', 'leaderboard'];
 
+        this.currentRound = null;
+
         this.runGameLoop();
     }
 
     async runGameLoop() {
         for (let i = 0; i < this.rounds.length; i++) {
-            const currentRound = this.rounds[i];
+            this.currentRound = this.rounds[i];
             console.log('STARTING');
-            await currentRound;
+            await this.currentRound;
             console.log('ENDING');
+            this.currentRound = null;
         }
+    }
+
+    getViewData() {
+        return this.currentRound?.getViewData();
     }
 }

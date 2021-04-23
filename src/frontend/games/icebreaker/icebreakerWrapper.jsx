@@ -1,12 +1,10 @@
-// GUI
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import HostView from './Host/Views/ParentView';
 import HostGameEngine from './Host/GameLogic/GameEngine';
 
-import PlayerView from './Player/View';
-import PlayerGameEngine from './Player/GameEngine';
+import PlayerView from './Player/Views/ParentView';
+import PlayerGameEngine from './Player/GameLogic/GameEngine';
 
 export default class icebreakerWrapper {
     // REQUIRED

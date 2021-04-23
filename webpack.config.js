@@ -1,41 +1,47 @@
 const path = require('path');
 
 module.exports = {
-    entry: ['babel-polyfill', "./src/frontend/index.jsx"],
+    entry: ['babel-polyfill', './src/frontend/index.jsx'],
 
-    watch:true,
+    watch: true,
 
-    module:{
+    module: {
         rules: [
             {
                 test: /\.(js|jsx)$/, // babel loading in js and jsx files
-                exclude: [path.resolve(__dirname, './src/backend')],
-                exclude: /node_modules/,
-                use: ['babel-loader']
+                exclude: [
+                    path.resolve(__dirname, './src/backend'),
+                    /node_modules/,
+                ],
+                use: ['babel-loader'],
             },
             {
-                test: /\.css$/,  // css modules
+                test: /\.css$/, // css modules
                 use: [
                     'style-loader',
                     {
                         loader: 'css-loader',
                         options: {
                             importLoaders: 1,
-                            modules: true
-                        }
-                    }
+                            modules: true,
+                        },
+                    },
                 ],
                 include: /\.module\.css$/,
-                exclude: [path.resolve(__dirname, './src/backend'), /node_modules/]
+                exclude: [
+                    path.resolve(__dirname, './src/backend'),
+                    /node_modules/,
+                ],
             },
             {
                 test: /\.css$/, // Css non-modules
-                use: [
-                    'style-loader',
-                    'css-loader'
+                use: ['style-loader', 'css-loader'],
+                exclude: [
+                    path.resolve(__dirname, './src/backend'),
+                    /node_modules/,
+                    /\.module\.css$/,
                 ],
-                exclude: [path.resolve(__dirname, './src/backend'), /node_modules/, /\.module\.css$/]
-            }
+            },
             /*,
             {
                 test: /\.(png|jpe?g|gif)$/,
@@ -46,13 +52,16 @@ module.exports = {
 
     resolve: {
         extensions: ['.js', '.jsx'],
-          alias: {
+        alias: {
             Frontend: path.resolve(__dirname, './src/frontend'),
+            Utils: path.resolve(__dirname, './src/frontend/utils'),
             Games: path.resolve(__dirname, './src/frontend/games'),
 
             // GAME LIST
-              Icebreaker: path.resolve(__dirname, './src/frontend/games/icebreaker'),
-        }
-    }
-}
-
+            Icebreaker: path.resolve(
+                __dirname,
+                './src/frontend/games/icebreaker'
+            ),
+        },
+    },
+};
