@@ -1,8 +1,17 @@
 import React from 'react';
 
-import Lobby from './IbHostRoundViews/IbHostLobbyRoundView';
 import CONSTANTS from 'Icebreaker/IbConstants';
 import styles from '../../icebreaker.module.css';
+
+// ROUND LOADER
+import IbRoundComponentLoader from 'Icebreaker/IbShared/IbSharedViews/IbRoundComponentLoader';
+
+// ROUND IMPORTS
+import LobbyRoundView from './IbHostRoundViews/IbHostLobbyRoundView';
+
+// SET ROUND TO VIEW MAPPING
+const roundViews = [];
+roundViews[CONSTANTS.ROUNDS.LOBBY] = LobbyRoundView;
 
 export default class IcebreakerView extends React.Component {
     constructor(props) {
@@ -10,37 +19,6 @@ export default class IcebreakerView extends React.Component {
 
         this.gameEngine = this.props.gameWrapper.gameEngine;
         this.state = { viewData: this.gameEngine.getViewData() };
-    }
-
-    render() {
-        const { viewData } = this.state;
-
-        const viewTypes = viewData?.getViewTypes();
-        const extraData = viewData?.getExtraData();
-
-        if (viewData && viewTypes) {
-            switch (
-                viewData.getMainView() // TODO Refactor to getter method instead of switch.
-            ) {
-                case CONSTANTS.ROUNDS.LOBBY:
-                    return (
-                        <div className={styles.global}>
-                            <Lobby
-                                ws={this.gameEngine.ws}
-                                viewTypes={viewTypes}
-                                extraData={extraData}
-                            />
-                        </div>
-                    );
-            }
-        }
-
-        return (
-            <div className={styles.global}>
-                <h1>Icebreaker Game</h1>
-                <h2>No view data D;</h2>
-            </div>
-        );
     }
 
     componentDidMount() {
@@ -51,5 +29,20 @@ export default class IcebreakerView extends React.Component {
     }
     componentWillUnmount() {
         clearInterval(this.interval);
+    }
+
+    render() {
+        const { viewData } = this.state;
+
+        return (
+            <div className={styles.global}>
+                <IbRoundComponentLoader
+                    viewLevel={0}
+                    roundViews={roundViews}
+                    viewData={viewData}
+                    ws={this.gameEngine.ws}
+                />
+            </div>
+        );
     }
 }
