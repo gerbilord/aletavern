@@ -3,8 +3,6 @@ const path = require('path');
 module.exports = {
     entry: ['babel-polyfill', './src/frontend/index.js'],
 
-    watch: true,
-
     target: 'node', // in order to ignore built-in modules like path, fs, etc.
 
     module: {
