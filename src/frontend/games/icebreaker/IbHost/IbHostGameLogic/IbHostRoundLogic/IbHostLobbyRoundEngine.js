@@ -53,6 +53,9 @@ export default class LobbyRound {
                     newPlayer,
                     this.createStartRoundMessage()
                 );
+                this.players.sendMessageToAllPlayers(
+                    this.createNumberOfPlayersUpdateMessage()
+                );
             }
         };
 
@@ -87,6 +90,16 @@ export default class LobbyRound {
         endRoundMessage.setRound(CONSTANTS.ROUNDS.LOBBY);
         endRoundMessage.setMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
         return endRoundMessage.getMessage();
+    }
+
+    createNumberOfPlayersUpdateMessage() {
+        const playerUpdateMessage = new MessageObject();
+        playerUpdateMessage.setMessageType(CONSTANTS.ROUNDS.LOBBY);
+        playerUpdateMessage.setMessageType(
+            CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS
+        );
+        playerUpdateMessage.setData(this.players.length);
+        return playerUpdateMessage.getMessage();
     }
 
     getViewData() {

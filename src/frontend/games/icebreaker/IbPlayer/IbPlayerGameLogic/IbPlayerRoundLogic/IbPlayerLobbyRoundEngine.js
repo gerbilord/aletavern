@@ -12,7 +12,11 @@ export default class LobbyRound {
 
         this.viewData = new ViewData();
         this.viewData.addViewType(CONSTANTS.ROUNDS.LOBBY);
-        this.viewData.setExtraData(this.messageHostToEnd.bind(this));
+        const extraViewData = {
+            startRoundFunction: this.messageHostToEnd.bind(this),
+            canStartRound: false,
+        };
+        this.viewData.setExtraData(extraViewData);
     }
 
     // play round
@@ -20,6 +24,7 @@ export default class LobbyRound {
         this.endRound = endRound;
 
         this.listenForRoundEnding();
+        this.listenForRoundUpdates();
     }
 
     listenForRoundEnding() {
@@ -37,7 +42,27 @@ export default class LobbyRound {
             this.playerWs.onMessageGame,
             endRoundListener
         );
-        this.playerWs.onMessageGame.push(endRoundListener);
+        // this.playerWs.onMessageGame.push(endRoundListener);
+    }
+
+    listenForRoundUpdates() {
+        const updateRoundListener = (msgObj) => {
+            const message = new MessageObject(msgObj);
+            if (
+                message.getSender() === this.playerWs.hostId &&
+                message.getMessageType() ===
+                    CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS
+            ) {
+                if (message.getData() >= CONSTANTS.MIN_PLAYERS) {
+                    this.viewData.extraViewData.canStartRound = true;
+                }
+            }
+        };
+
+        this.addObjectToListAndCleanUp(
+            this.playerWs.onMessageGame,
+            updateRoundListener
+        );
     }
 
     // TODO consider refactoring to a util.
