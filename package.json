@@ -4,12 +4,12 @@
     "description": "",
     "main": "./src/backend/server.js",
     "scripts": {
-        "start": "npm run webpack && node ./src/backend/server.js",
         "dev": "nodemon --watch src/backend",
         "webpack": "webpack --mode=production",
         "webpackDev": "webpack -d --watch --mode development",
         "format": "prettier \"src/**/*.{js,html,jsx,css}\" --write",
-        "debug": "node --inspect ./src/backend/server.js"
+        "debug": "node --inspect ./src/backend/server.js",
+        "start": "npm run webpack && node ./src/backend/server.js"
     },
     "author": "",
     "license": "ISC",
