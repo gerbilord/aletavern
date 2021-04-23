@@ -2,20 +2,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Home from './home/home.jsx';
+import Home from './home/home';
 
 // LOGIC
 import GameWebSocket from './GameWebSocket';
 
-//GAME IMPORTS
+// GAME IMPORTS
 import Quiplash from './games/quiplash/quiplashWrapper';
 import Santorini from './games/santorini/santoriniWrapper';
-import Icebreaker from './games/icebreaker/icebreakerWrapper.jsx';
+import Icebreaker from 'Icebreaker/icebreakerWrapper.js';
 
 // Variables
-var ws = new GameWebSocket(true);
-var games = [];
+const ws = new GameWebSocket(true);
+const games = [];
 
+// GAME VARIABLE SETUP
 games['Quiplash'] = { game: Quiplash };
 games['Santorini'] = { game: Santorini };
 games['Icebreaker'] = { game: Icebreaker };

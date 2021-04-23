@@ -1,5 +1,3 @@
-import React from 'react';
-
 import HostView from './IbHost/IbHostViews/IbHostParentView';
 import HostGameEngine from './IbHost/IbHostGameLogic/IbHostGameEngine';
 
