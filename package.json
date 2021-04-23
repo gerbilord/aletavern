@@ -22,9 +22,7 @@
         "prop-types": "^15.7.2",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
-        "uuid": "^8.3.0"
-    },
-    "devDependencies": {
+        "uuid": "^8.3.0",
         "@babel/core": "^7.11.4",
         "@babel/plugin-transform-async-to-generator": "^7.13.0",
         "@babel/preset-env": "^7.11.0",
@@ -43,5 +41,8 @@
         "url-loader": "^4.1.0",
         "webpack": "^4.44.1",
         "webpack-cli": "^3.3.12"
+    },
+    "devDependencies": {
+
     }
 }
