@@ -4,7 +4,7 @@
     "description": "",
     "main": "./src/backend/server.js",
     "scripts": {
-        "start": "node ./src/backend/server.js",
+        "start": "npm run webpack && node ./src/backend/server.js",
         "dev": "nodemon --watch src/backend",
         "webpack": "webpack --mode=production",
         "webpackDev": "webpack -d --watch --mode development",
