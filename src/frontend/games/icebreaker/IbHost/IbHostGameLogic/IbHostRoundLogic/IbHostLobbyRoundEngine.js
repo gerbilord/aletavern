@@ -1,7 +1,7 @@
-import CONSTANTS from 'Icebreaker/Constants';
+import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
-import MessageObject from 'Icebreaker/Shared/GameLogic/IcebreakerMessage';
-import ViewData from 'Icebreaker/Shared/Views/IcebreakerViewData';
+import MessageObject from 'Icebreaker/IbShared/IbSharedGameLogic/IbMessage';
+import ViewData from 'Icebreaker/IbShared/IbSharedViews/IbSharedViewData';
 
 // noinspection JSUnusedGlobalSymbols
 

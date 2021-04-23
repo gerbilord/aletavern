@@ -1,7 +1,7 @@
-import CONSTANTS from '../../Constants';
-import MessageObject from 'Icebreaker/Shared/GameLogic/IcebreakerMessage';
+import CONSTANTS from '../../IbConstants';
+import MessageObject from 'Icebreaker/IbShared/IbSharedGameLogic/IbMessage';
 import * as ListUtils from 'Utils/listUtils';
-import LobbyRound from 'Icebreaker/Player/GameLogic/Rounds/LobbyRound';
+import LobbyRound from 'Icebreaker/IbPlayer/IbPlayerGameLogic/IbPlayerRoundLogic/IbPlayerLobbyRoundEngine';
 
 export default class gameEngine {
     constructor(gameWebSocket) {

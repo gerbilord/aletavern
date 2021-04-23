@@ -1,4 +1,4 @@
-import CONSTANTS from '../../Constants';
+import CONSTANTS from '../../IbConstants';
 
 export default class icebreakerMessage {
     // Accepts serverMessage and serverMessage.data

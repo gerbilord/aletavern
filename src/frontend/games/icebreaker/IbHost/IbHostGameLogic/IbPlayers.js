@@ -1,4 +1,4 @@
-import Player from './Player';
+import Player from './IbPlayer';
 
 export default class Players {
     constructor(ws) {

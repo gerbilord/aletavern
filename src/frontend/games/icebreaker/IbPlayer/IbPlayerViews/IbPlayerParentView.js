@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Lobby from './Rounds/Lobby';
-import CONSTANTS from 'Icebreaker/Constants';
+import Lobby from './IbPlayerRoundViews/IbPlayerLobbyRoundView';
+import CONSTANTS from 'Icebreaker/IbConstants';
 import styles from '../../icebreaker.module.css';
 
 export default class IcebreakerView extends React.Component {

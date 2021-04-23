@@ -1,5 +1,5 @@
-import Players from './Players';
-import LobbyRound from './Rounds/LobbyRound';
+import Players from './IbPlayers';
+import LobbyRound from './IbHostRoundLogic/IbHostLobbyRoundEngine';
 
 export default class GameEngine {
     constructor(gameWebSocket) {

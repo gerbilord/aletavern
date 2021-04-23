@@ -1,10 +1,10 @@
 import React from 'react';
 
-import HostView from './Host/Views/ParentView';
-import HostGameEngine from './Host/GameLogic/GameEngine';
+import HostView from './IbHost/IbHostViews/IbHostParentView';
+import HostGameEngine from './IbHost/IbHostGameLogic/IbHostGameEngine';
 
-import PlayerView from './Player/Views/ParentView';
-import PlayerGameEngine from './Player/GameLogic/GameEngine';
+import PlayerView from './IbPlayer/IbPlayerViews/IbPlayerParentView';
+import PlayerGameEngine from './IbPlayer/IbPlayerGameLogic/IbPlayerGameEngine';
 
 export default class icebreakerWrapper {
     // REQUIRED
