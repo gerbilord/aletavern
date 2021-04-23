@@ -84,7 +84,7 @@ function validateJoinGameMessage(msg) {
     if (msg && msg.data && msg.data.gameId && msg.data.playerName) {
         return true;
     } else {
-        return false; // Conisder console.debug.
+        return false; // Consider console.debug.
     }
 }
 
@@ -267,6 +267,31 @@ function messageAllPlayers(msg) {
     }
 }
 
+/*
+ * @msg A parsed message with format {playerId, data}
+ *
+ * Sends message to all players in playerId's game
+ */
+function messageAllOtherPlayers(msg) {
+    if (validateMessageAllPlayersMsg(msg)) {
+        const { playerId: playerId, data: data } = msg;
+
+        const sender = gameService.getPlayer(playerId);
+
+        const msgObj = {
+            type: 'MESSAGEGAME',
+            playerId: sender.id,
+            status: 'SUCCESS',
+            data: data,
+        };
+        console.log(msgObj);
+
+        emitToOthersInGame(sender, msgObj);
+    } else {
+        console.debug('Malformed message: ' + msg);
+    }
+}
+
 function validateMessageAllPlayersMsg(msg) {
     if (msg) {
         if (msg.playerId && msg.data) {
@@ -278,11 +303,11 @@ function validateMessageAllPlayersMsg(msg) {
 }
 
 /*
- * @gameId The game to emit the message to.
+ * @gameId The game to emit the message to. // TODO consider passing in player who sent the message
  * @msgObj A preformatted and parsed message.
  */
 function emitToGame(gameId, msgObj) {
-    var players = gameService.getPlayersInGame(gameId);
+    const players = gameService.getPlayersInGame(gameId);
     players.forEach((player) => player.send(msgObj));
 }
 
@@ -291,7 +316,7 @@ function emitToGame(gameId, msgObj) {
  * @msgObj Pre-formatted
  */
 function emitToOthersInGame(sender, msgObj) {
-    var players = gameService.getPlayersInGame(sender.gameId);
+    const players = gameService.getPlayersInGame(sender.gameId);
     players
         .filter((player) => player != sender)
         .forEach((player) => player.send(msgObj));
@@ -392,6 +417,9 @@ function routeMessageType(ws, msg) {
 
         case 'MESSAGEALLGAME': // Implemented. Consider not messaging original sender.
             messageAllPlayers(msg);
+            break;
+        case 'MESSAGEALLOTHERSGAME':
+            messageAllOtherPlayers(msg);
             break;
         // Consider a message others
         case 'MESSAGEONEGAME': // Implemented.

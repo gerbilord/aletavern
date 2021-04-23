@@ -220,6 +220,15 @@ export default class GameWebSocket {
         this.ws.send(JSON.stringify(sendMessageObj));
     }
 
+    sendMessageToAllOthers(msg) {
+        const sendMessageObj = {
+            type: 'MESSAGEALLOTHERSGAME',
+            playerId: sessionStorage.getItem('playerId'),
+            data: msg,
+        };
+        this.ws.send(JSON.stringify(sendMessageObj));
+    }
+
     sendMessageToHost(msg) {
         const sendMessageObj = {
             type: 'MESSAGEHOSTGAME',

@@ -38,9 +38,13 @@ export default class Players {
         this.hostWs.sendMessageToOne(id, msg);
     }
 
-    // TODO Consider only sending message to players
-    sendMessageToAllPlayers(msg) {
+    sendMessageToAll(msg) {
         this.hostWs.sendMessageToAll(msg);
+    }
+
+    // TODO Consider only sending message to players in list. In case of spectators later.
+    sendMessageToAllPlayers(msg) {
+        this.hostWs.sendMessageToAllOthers(msg);
     }
 
     get length() {

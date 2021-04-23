@@ -30,7 +30,7 @@ export default class LobbyRound {
             if (
                 message.getRound() === CONSTANTS.ROUNDS.LOBBY &&
                 message.getMessageType() === CONSTANTS.MESSAGE_TYPE.END_ROUND &&
-                message.getSender() !== this.hostWs.hostId && // Don't listen to your own messages! // TODO consider changing send message to all in backend.
+                message.getSender() !== this.hostWs.hostId && // Don't listen to your own messages!
                 // this.players.isPlayerIdVip(playerId) && // TODO Consider implementing VIP
                 this.players.length >= CONSTANTS.MIN_PLAYERS
             ) {
