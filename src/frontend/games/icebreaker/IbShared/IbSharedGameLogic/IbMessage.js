@@ -6,30 +6,43 @@ export default class icebreakerMessage {
         this.messageObject = {};
         this.sender = null; // We are sending message, sender will be populated by GameWebSocket.
 
+        this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY] = [];
+        this.messageObject[CONSTANTS.ROUND_KEY] = [];
+
         if (messageData) {
             if (messageData.data) {
+                // If gameWebSocketMessage
                 this.messageObject = messageData.data;
                 this.sender = messageData.playerId;
             } else {
+                // Else assume icebreakerMessage
                 this.messageObject = messageData;
             }
         }
     }
 
-    setMessageType(newType) {
-        this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY] = newType;
+    addMessageType(newType) {
+        this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY].push(newType);
     }
 
-    getMessageType() {
+    getMessageTypes() {
         return this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY];
     }
 
-    setRound(newRound) {
-        this.messageObject[CONSTANTS.ROUND_KEY] = newRound;
+    getMainMessageType() {
+        return this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY][0];
     }
 
-    getRound() {
+    addRound(newRound) {
+        this.messageObject[CONSTANTS.ROUND_KEY].push(newRound);
+    }
+
+    getRounds() {
         return this.messageObject[CONSTANTS.ROUND_KEY];
+    }
+
+    getMainRound() {
+        return this.messageObject[CONSTANTS.ROUND_KEY][0];
     }
 
     setData(newData) {

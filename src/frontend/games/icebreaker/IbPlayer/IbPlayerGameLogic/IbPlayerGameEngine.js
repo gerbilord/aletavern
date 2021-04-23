@@ -16,13 +16,14 @@ export default class gameEngine {
             const message = new MessageObject(msgObj);
             if (
                 message.getSender() === this.ws.hostId &&
-                message.getMessageType() === CONSTANTS.MESSAGE_TYPE.START_ROUND
+                message.getMainMessageType() ===
+                    CONSTANTS.MESSAGE_TYPE.START_ROUND
             ) {
                 ListUtils.removeItemFromList(
                     this.ws.onMessageGame,
                     startRoundListener
                 );
-                this.startRound(message.getRound());
+                this.startRound(message.getMainRound());
             }
         };
 

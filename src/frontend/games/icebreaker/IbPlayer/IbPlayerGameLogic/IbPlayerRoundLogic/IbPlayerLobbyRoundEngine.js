@@ -32,7 +32,8 @@ export default class LobbyRound {
             const message = new MessageObject(msgObj);
             if (
                 message.getSender() === this.playerWs.hostId &&
-                message.getMessageType() === CONSTANTS.MESSAGE_TYPE.END_ROUND
+                message.getMainMessageType() ===
+                    CONSTANTS.MESSAGE_TYPE.END_ROUND
             ) {
                 this.cleanUpAndEndRound();
             }
@@ -50,7 +51,7 @@ export default class LobbyRound {
             const message = new MessageObject(msgObj);
             if (
                 message.getSender() === this.playerWs.hostId &&
-                message.getMessageType() ===
+                message.getMainMessageType() ===
                     CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS
             ) {
                 if (message.getData() >= CONSTANTS.MIN_PLAYERS) {
@@ -84,8 +85,8 @@ export default class LobbyRound {
 
     createEndRoundMessage() {
         const startRoundMessage = new MessageObject();
-        startRoundMessage.setRound(CONSTANTS.ROUNDS.LOBBY);
-        startRoundMessage.setMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
+        startRoundMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
+        startRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
         return startRoundMessage.getMessage();
     }
 

@@ -18,9 +18,9 @@ export default class IcebreakerView extends React.Component {
         const viewTypes = viewData?.getViewTypes();
         const extraData = viewData?.getExtraData();
 
-        if (viewTypes?.length > 0) {
+        if (viewData && viewTypes) {
             switch (
-                viewTypes[0] // TODO Refactor to getter method instead of switch.
+                viewData.getMainView() // TODO Refactor to getter method instead of switch.
             ) {
                 case CONSTANTS.ROUNDS.LOBBY:
                     return (

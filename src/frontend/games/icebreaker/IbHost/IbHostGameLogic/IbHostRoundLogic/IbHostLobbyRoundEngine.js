@@ -28,8 +28,9 @@ export default class LobbyRound {
         const endWhenPlayerAsks = (msgObj) => {
             const message = new MessageObject(msgObj);
             if (
-                message.getRound() === CONSTANTS.ROUNDS.LOBBY &&
-                message.getMessageType() === CONSTANTS.MESSAGE_TYPE.END_ROUND &&
+                message.getMainRound() === CONSTANTS.ROUNDS.LOBBY &&
+                message.getMainMessageType() ===
+                    CONSTANTS.MESSAGE_TYPE.END_ROUND &&
                 message.getSender() !== this.hostWs.hostId && // Don't listen to your own messages!
                 // this.players.isPlayerIdVip(playerId) && // TODO Consider implementing VIP
                 this.players.length >= CONSTANTS.MIN_PLAYERS
@@ -80,22 +81,22 @@ export default class LobbyRound {
 
     createStartRoundMessage() {
         const startRoundMessage = new MessageObject();
-        startRoundMessage.setRound(CONSTANTS.ROUNDS.LOBBY);
-        startRoundMessage.setMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
+        startRoundMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
+        startRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
         return startRoundMessage.getMessage();
     }
 
     createEndRoundMessage() {
         const endRoundMessage = new MessageObject();
-        endRoundMessage.setRound(CONSTANTS.ROUNDS.LOBBY);
-        endRoundMessage.setMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
+        endRoundMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
+        endRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
         return endRoundMessage.getMessage();
     }
 
     createNumberOfPlayersUpdateMessage() {
         const playerUpdateMessage = new MessageObject();
-        playerUpdateMessage.setMessageType(CONSTANTS.ROUNDS.LOBBY);
-        playerUpdateMessage.setMessageType(
+        playerUpdateMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
+        playerUpdateMessage.addMessageType(
             CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS
         );
         playerUpdateMessage.setData(this.players.length);
