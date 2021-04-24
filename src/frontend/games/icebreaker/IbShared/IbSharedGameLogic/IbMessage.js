@@ -45,6 +45,11 @@ export default class icebreakerMessage {
         return this.messageObject[CONSTANTS.ROUND_KEY][0];
     }
 
+    getSpecificRound() {
+        const lastIndex = this.messageObject[CONSTANTS.ROUND_KEY].length;
+        return this.messageObject[CONSTANTS.ROUND_KEY][lastIndex - 1];
+    }
+
     setData(newData) {
         this.messageObject[CONSTANTS.DATA_KEY] = newData;
     }

@@ -1,11 +1,20 @@
 import Players from './IbPlayers';
 import LobbyRound from './IbHostRoundLogic/IbHostLobbyRoundEngine';
+import PromptPlayerRound from './IbHostRoundLogic/IbHostAskPlayerQuestionRoundEngine'; // TODO remove after testing
 
 export default class GameEngine {
     constructor(gameWebSocket) {
         this.ws = gameWebSocket;
         this.players = new Players(this.ws);
-        this.rounds = [new LobbyRound(this.ws, this.players)]; //, 'selfAnswerOtherGuess', 'leaderboard'];
+        this.rounds = [
+            new LobbyRound(this.ws, this.players),
+            new PromptPlayerRound(
+                this.ws,
+                this.players,
+                ['PROMPT 1', 'PROMPT 2'],
+                1
+            ),
+        ]; //, 'selfAnswerOtherGuess', 'leaderboard'];
 
         this.currentRound = null;
 

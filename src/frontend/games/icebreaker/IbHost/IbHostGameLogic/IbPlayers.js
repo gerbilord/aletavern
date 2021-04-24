@@ -38,6 +38,14 @@ export default class Players {
         this.hostWs.sendMessageToOne(id, msg);
     }
 
+    // TODO Consider refactoring to GameWebSocket
+    // Array of players
+    sendGroupMessage(group, msg) {
+        group.forEach((player) => {
+            this.sendPlayerMessage(player, msg);
+        });
+    }
+
     sendMessageToAll(msg) {
         this.hostWs.sendMessageToAll(msg);
     }

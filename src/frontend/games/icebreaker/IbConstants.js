@@ -11,6 +11,7 @@ const CONSTANTS = Object.freeze({
     ROUND_KEY: 'ROUND',
     ROUNDS: {
         LOBBY: 'LOBBY',
+        ASK_PLAYERS_QUESTION: 'ASKPLAYERSQUESTION',
     },
 
     DATA_KEY: 'DATA',

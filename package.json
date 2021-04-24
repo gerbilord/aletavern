@@ -11,7 +11,7 @@
         "debug": "node --inspect ./src/backend/server.js",
         "start": "npm run webpack && node ./src/backend/server.js"
     },
-    "author": "",
+    "author": "Alessandro Cois",
     "license": "ISC",
     "dependencies": {
         "assert": "^2.0.0",
