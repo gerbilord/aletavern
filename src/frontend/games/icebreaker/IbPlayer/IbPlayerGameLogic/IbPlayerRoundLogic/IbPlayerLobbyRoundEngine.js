@@ -3,8 +3,6 @@ import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbSharedGameLogic/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViews/IbSharedViewData';
 
-// noinspection JSUnusedGlobalSymbols
-
 export default class LobbyRound {
     constructor(playerWs) {
         this.playerWs = playerWs;
@@ -39,11 +37,7 @@ export default class LobbyRound {
             }
         };
 
-        this.addObjectToListAndCleanUp(
-            this.playerWs.onMessageGame,
-            endRoundListener
-        );
-        // this.playerWs.onMessageGame.push(endRoundListener);
+        ListUtils.addObjectToListAndAddCleanUp(this.playerWs.onMessageGame, endRoundListener, this.cleanUpFunctions);
     }
 
     listenForRoundUpdates() {
@@ -60,18 +54,7 @@ export default class LobbyRound {
             }
         };
 
-        this.addObjectToListAndCleanUp(
-            this.playerWs.onMessageGame,
-            updateRoundListener
-        );
-    }
-
-    // TODO consider refactoring to a util.
-    addObjectToListAndCleanUp(objectList, object) {
-        this.cleanUpFunctions.push(
-            ListUtils.createRemoveItemCallback(objectList, object)
-        );
-        objectList.push(object);
+        ListUtils.addObjectToListAndAddCleanUp(this.playerWs.onMessageGame, updateRoundListener, this.cleanUpFunctions);
     }
 
     cleanUpAndEndRound() {
@@ -84,10 +67,10 @@ export default class LobbyRound {
     }
 
     createEndRoundMessage() {
-        const startRoundMessage = new MessageObject();
-        startRoundMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
-        startRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
-        return startRoundMessage.getMessage();
+        const endRoundMessage = new MessageObject();
+        endRoundMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
+        endRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
+        return endRoundMessage.getMessage();
     }
 
     getViewData() {

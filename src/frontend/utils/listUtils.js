@@ -39,3 +39,10 @@ export function shuffleList(array) {
 
     return array;
 }
+
+export function addObjectToListAndAddCleanUp(objectList, object, cleanUpFunctionList) {
+    cleanUpFunctionList.push(
+        createRemoveItemCallback(objectList, object)
+    );
+    objectList.push(object);
+}

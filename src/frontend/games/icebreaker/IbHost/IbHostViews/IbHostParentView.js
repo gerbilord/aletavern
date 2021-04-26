@@ -8,10 +8,12 @@ import IbRoundComponentLoader from 'Icebreaker/IbShared/IbSharedViews/IbRoundCom
 
 // ROUND IMPORTS
 import LobbyRoundView from './IbHostRoundViews/IbHostLobbyRoundView';
+import AskPlayerQuestionRound from 'Icebreaker/IbHost/IbHostViews/IbHostRoundViews/IbHostSubRoundViews/IbHostAskPlayerQuestionRoundView';
 
 // SET ROUND TO VIEW MAPPING
 const roundViews = [];
 roundViews[CONSTANTS.ROUNDS.LOBBY] = LobbyRoundView;
+roundViews[CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION] = AskPlayerQuestionRound;
 
 export default class IcebreakerView extends React.Component {
     constructor(props) {

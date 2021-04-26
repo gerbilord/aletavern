@@ -33,6 +33,11 @@ export default class icebreakerMessage {
         return this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY][0];
     }
 
+    getSpecificMessageType() {
+        const lastIndex = this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY].length - 1;
+        return this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY][lastIndex];
+    }
+
     addRound(newRound) {
         this.messageObject[CONSTANTS.ROUND_KEY].push(newRound);
     }
@@ -46,8 +51,8 @@ export default class icebreakerMessage {
     }
 
     getSpecificRound() {
-        const lastIndex = this.messageObject[CONSTANTS.ROUND_KEY].length;
-        return this.messageObject[CONSTANTS.ROUND_KEY][lastIndex - 1];
+        const lastIndex = this.messageObject[CONSTANTS.ROUND_KEY].length - 1;
+        return this.messageObject[CONSTANTS.ROUND_KEY][lastIndex];
     }
 
     setData(newData) {

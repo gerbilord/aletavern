@@ -12,7 +12,8 @@ export default class GameEngine {
                 this.ws,
                 this.players,
                 ['PROMPT 1', 'PROMPT 2'],
-                1
+                1,
+                20000
             ),
         ]; //, 'selfAnswerOtherGuess', 'leaderboard'];
 

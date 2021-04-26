@@ -28,10 +28,10 @@ export default class LobbyRound {
         const endWhenPlayerAsks = (msgObj) => {
             const message = new MessageObject(msgObj);
             if (
-                message.getMainRound() === CONSTANTS.ROUNDS.LOBBY &&
-                message.getMainMessageType() ===
-                    CONSTANTS.MESSAGE_TYPE.END_ROUND &&
-                message.getSender() !== this.hostWs.hostId && // Don't listen to your own messages!
+                message.getMainRound() === CONSTANTS.ROUNDS.LOBBY
+                && message.getMainMessageType() === CONSTANTS.MESSAGE_TYPE.END_ROUND
+                && message.getSpecificRound() === CONSTANTS.ROUNDS.LOBBY
+                && message.getSender() !== this.hostWs.hostId && // Don't listen to your own messages!
                 // this.players.isPlayerIdVip(playerId) && // TODO Consider implementing VIP
                 this.players.length >= CONSTANTS.MIN_PLAYERS
             ) {
@@ -39,10 +39,7 @@ export default class LobbyRound {
             }
         };
 
-        this.addObjectToListAndCleanUp(
-            this.hostWs.onMessageGame,
-            endWhenPlayerAsks
-        );
+        ListUtils.addObjectToListAndAddCleanUp(this.hostWs.onMessageGame, endWhenPlayerAsks, this.cleanUpFunctions);
     }
 
     listenForNewPlayers() {
@@ -60,17 +57,7 @@ export default class LobbyRound {
             }
         };
 
-        this.addObjectToListAndCleanUp(
-            this.hostWs.onOtherJoinGame,
-            addNewPlayerOnJoin
-        );
-    }
-
-    addObjectToListAndCleanUp(objectList, object) {
-        this.cleanUpFunctions.push(
-            ListUtils.createRemoveItemCallback(objectList, object)
-        );
-        objectList.push(object);
+        ListUtils.addObjectToListAndAddCleanUp(this.hostWs.onOtherJoinGame, addNewPlayerOnJoin, this.cleanUpFunctions);
     }
 
     cleanUpAndEndRound() {

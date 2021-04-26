@@ -6,18 +6,18 @@ import ViewData from 'Icebreaker/IbShared/IbSharedViews/IbSharedViewData';
 // noinspection JSUnusedGlobalSymbols
 
 export default class AskPlayerQuestionRound {
-    constructor(hostWs, players, prompts, groupSize) {
+    constructor(hostWs, players, prompts, groupSize, timeToAnswer) {
         this.hostWs = hostWs;
         this.players = players;
         this.playersYetToAnswer = [...players.players];
         this.playerAnswers = [];
         this.prompts = prompts; // Array of prompts.
         this.groupSize = groupSize;
+        this.timeToAnswer = timeToAnswer;
+
+        this.timeLeft = timeToAnswer;
 
         this.cleanUpFunctions = []; // run before ending round.
-
-        this.viewData = new ViewData();
-        this.viewData.addViewType(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
     }
 
     // play round
@@ -26,6 +26,13 @@ export default class AskPlayerQuestionRound {
 
         this.listenForPlayerAnswers();
         this.sendPlayersPrompts();
+        this.startEndRoundTimer();
+    }
+
+    startEndRoundTimer(){
+        setTimeout(()=>{this.cleanUpAndEndRound(5000)}, this.timeToAnswer);
+        const countDown = setInterval(()=>{this.timeLeft -= 1000}, 1000);
+        this.cleanUpFunctions.push(()=>{clearInterval(countDown)});
     }
 
     listenForPlayerAnswers() {
@@ -40,6 +47,7 @@ export default class AskPlayerQuestionRound {
                 this.players.length >= CONSTANTS.MIN_PLAYERS
             ) {
                 this.playerAnswers[message.getSender()] = message.getData(); // Update player response.
+                this.playersYetToAnswer = this.playersYetToAnswer.filter(player => player.id !== message.getSender());
                 if (
                     Object.keys(this.playerAnswers).length ===
                     this.players.length
@@ -78,7 +86,7 @@ export default class AskPlayerQuestionRound {
         for (let i = 0; i < groups.length; i++) {
             const subGroup = groups[i];
 
-            const promptMessage = this.createPromptMessage(this.prompts[i]);
+            const promptMessage = this.createStartRoundMessage(this.prompts[i]);
             this.players.sendGroupMessage(subGroup, promptMessage);
         }
     }
@@ -90,22 +98,15 @@ export default class AskPlayerQuestionRound {
         objectList.push(object);
     }
 
-    cleanUpAndEndRound() {
+    async cleanUpAndEndRound(waitTime = 0) {
         this.players.sendMessageToAllPlayers(this.createEndRoundMessage()); // Notify players round is over.
+        await new Promise(r => setTimeout(r, waitTime)); // wait for players to get in their answers.
         this.cleanUpFunctions.forEach((func) => func()); // Remove all listeners created in this round.
         this.endRound(); // End the round. (resolve promise)
     }
 
-    // TODO Consider refactoring StartRound and EndRound messages
-    createStartRoundMessage() {
-        const startRoundMessage = new MessageObject();
-        startRoundMessage.addRound(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
-        startRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
-        return startRoundMessage.getMessage();
-    }
-
     // TODO Consider refactoring to start round. (currently type is start round).
-    createPromptMessage(question) {
+    createStartRoundMessage(question) {
         const promptMessage = new MessageObject();
         promptMessage.addRound(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
         promptMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
@@ -121,6 +122,11 @@ export default class AskPlayerQuestionRound {
     }
 
     getViewData() {
-        return this.viewData;
+        const viewData = new ViewData();
+        viewData.addViewType(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
+
+        const extraData = {timeLeft: this.timeLeft, playersYetToAnswer: this.playersYetToAnswer};
+        viewData.setExtraData(extraData);
+        return viewData;
     }
 }
