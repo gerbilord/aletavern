@@ -30,7 +30,8 @@ export default class AnswerPromptRound {
             const answerMessage = new MessageObject();
             answerMessage.addRound(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
             answerMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS);
-            answerMessage.setData(this.currentAnswer);
+            const data = {prompt:this.prompt, answer:this.currentAnswer}
+            answerMessage.setData(data);
             this.playerWs.sendMessageToHost(answerMessage.getMessage());
         }
     }

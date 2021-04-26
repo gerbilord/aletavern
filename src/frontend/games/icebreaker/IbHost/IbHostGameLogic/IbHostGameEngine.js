@@ -1,19 +1,17 @@
 import Players from './IbPlayers';
 import LobbyRound from './IbHostRoundLogic/IbHostLobbyRoundEngine';
-import PromptPlayerRound from './IbHostRoundLogic/IbHostAskPlayerQuestionRoundEngine'; // TODO remove after testing
+import SelfAnswerOtherGuessRound from './IbHostRoundLogic/IbHostSelfAnswerOtherGuessRoundEngine'
 
-export default class GameEngine {
+export default class GameEngine { // TODO consider abstracting to multi-round engine that takes in rounds
     constructor(gameWebSocket) {
         this.ws = gameWebSocket;
         this.players = new Players(this.ws);
         this.rounds = [
             new LobbyRound(this.ws, this.players),
-            new PromptPlayerRound(
+            new SelfAnswerOtherGuessRound(
                 this.ws,
                 this.players,
-                ['PROMPT 1', 'PROMPT 2'],
-                1,
-                20000
+                ['PROMPT 1', 'PROMPT 2'], // TODO calculate prompts randomly
             ),
         ]; //, 'selfAnswerOtherGuess', 'leaderboard'];
 

@@ -43,8 +43,7 @@ export default class AskPlayerQuestionRound {
                     CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION &&
                 message.getMainMessageType() ===
                     CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS &&
-                message.getSender() !== this.hostWs.hostId && // Don't listen to your own messages! // TODO Maybe check if person is in round?
-                this.players.length >= CONSTANTS.MIN_PLAYERS
+                message.getSender() !== this.hostWs.hostId // Don't listen to your own messages! // TODO Maybe check if person is in round?
             ) {
                 this.playerAnswers[message.getSender()] = message.getData(); // Update player response.
                 this.playersYetToAnswer = this.playersYetToAnswer.filter(player => player.id !== message.getSender());
@@ -102,7 +101,7 @@ export default class AskPlayerQuestionRound {
         this.players.sendMessageToAllPlayers(this.createEndRoundMessage()); // Notify players round is over.
         await new Promise(r => setTimeout(r, waitTime)); // wait for players to get in their answers.
         this.cleanUpFunctions.forEach((func) => func()); // Remove all listeners created in this round.
-        this.endRound(); // End the round. (resolve promise)
+        this.endRound(this.playerAnswers); // End the round. (resolve promise) // TODO Package this.playerAnswers in lists of lists with same prompts.
     }
 
     // TODO Consider refactoring to start round. (currently type is start round).

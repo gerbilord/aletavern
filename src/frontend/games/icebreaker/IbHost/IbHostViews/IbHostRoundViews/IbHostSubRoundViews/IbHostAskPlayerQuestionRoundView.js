@@ -18,8 +18,8 @@ export default function AnswerRoundView(props) {
             <h2>Time left: {secondsLeft}</h2>
             <h3>Players left to answer:</h3>
             <div>
-                {playersYetToAnswer.map(({ name }) => {
-                    return <div>{name}</div>;
+                {playersYetToAnswer.map(({ id, name }) => {
+                    return <div key={id}>{name}</div>;
                 })}
             </div>
         </div>

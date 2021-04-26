@@ -12,9 +12,15 @@ const CONSTANTS = Object.freeze({
     ROUNDS: {
         LOBBY: 'LOBBY',
         ASK_PLAYERS_QUESTION: 'ASKPLAYERSQUESTION',
+        QUIZ_PLAYERS: 'QUIZPLAYERS',
     },
 
     DATA_KEY: 'DATA',
+
+    TIME:{
+        TO_ANSWER_PROMPT: 20000,
+        TO_ANSWER_QUIZ: 10000,
+    }
 });
 
 export default CONSTANTS;
