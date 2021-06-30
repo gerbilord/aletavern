@@ -11,6 +11,7 @@ import GameWebSocket from './GameWebSocket';
 import Quiplash from './games/quiplash/quiplashWrapper';
 import Santorini from './games/santorini/santoriniWrapper';
 import Icebreaker from 'Icebreaker/icebreakerWrapper.js';
+import Tomfoag from './games/tomfoag/tomfoagWrapper';
 
 // Variables
 const ws = new GameWebSocket(true);
@@ -20,6 +21,8 @@ const games = [];
 games['Quiplash'] = { game: Quiplash };
 games['Santorini'] = { game: Santorini };
 games['Icebreaker'] = { game: Icebreaker };
+games['Tomfoag'] = { game: Tomfoag };
+
 
 class App extends React.Component {
     constructor(props) {
