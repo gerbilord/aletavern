@@ -61,8 +61,12 @@ export default class HostGameEngine {
 
     getAllStacks() {
         // stack path, then stack name
-        this.getStack("./FashionCents/Cards/player1/card_details.json", CONSTANTS.STACK_NAMES.PLAYER1);
-        this.getStack("./FashionCents/Cards/store1/card_details.json", CONSTANTS.STACK_NAMES.STORE1, true);
+        this.getStack("./FashionCents/Cards/player1/guy/card_details.json", CONSTANTS.STACK_NAMES.PLAYER1_GUY);
+        this.getStack("./FashionCents/Cards/player2/guy/card_details.json", CONSTANTS.STACK_NAMES.PLAYER2_GUY);
+        this.getStack("./FashionCents/Cards/player1/deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER1_DECK);
+        this.getStack("./FashionCents/Cards/player2/deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER2_DECK);
+        this.getStack("./FashionCents/Cards/store1/card_details.json", CONSTANTS.STACK_NAMES.STORE1);
+        this.getStack("./FashionCents/Cards/store2/card_details.json", CONSTANTS.STACK_NAMES.STORE2, true);
     }
 
 
@@ -92,6 +96,11 @@ export default class HostGameEngine {
         }
     }
 
+    setupEmptyStack(stackName){
+        this.stacks[stackName] = new Stack();
+        this.stacks[stackName].name = stackName;
+    }
+
     createCard(cardData){
         const cardId = this.totalCards;
         this.totalCards++;
@@ -100,14 +109,21 @@ export default class HostGameEngine {
 
     startGame(){
         this.log("Json Data loaded.");
-        this.log("Syncing player stacks just in case.")
-        this.updatePlayerStacks();
 
-        // Do any game specific setup here.
+        this.log("Running specific game logic");
+        this.setupGame();
+
+        this.log("Syncing player stacks.")
+        this.updatePlayerStacks();
 
         this.log("Listening for commands");
         this.listenForCommands();
 
+    }
+
+    setupGame(){
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER1_DISCARD);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER2_DISCARD);
     }
 
     listenForCommands() {

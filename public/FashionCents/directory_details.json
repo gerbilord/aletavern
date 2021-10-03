@@ -1,4 +1,8 @@
 [
-    "./FashionCents/Cards/player1/card_details.json",
-    "./FashionCents/Cards/store1/card_details.json"
+    "./FashionCents/Cards/player1/deck/card_details.json",
+    "./FashionCents/Cards/player1/guy/card_details.json",
+    "./FashionCents/Cards/player2/deck/card_details.json",
+    "./FashionCents/Cards/player2/guy/card_details.json",
+    "./FashionCents/Cards/store1/card_details.json",
+    "./FashionCents/Cards/store2/card_details.json"
 ]

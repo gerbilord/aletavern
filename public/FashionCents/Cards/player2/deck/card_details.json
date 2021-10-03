@@ -1,0 +1,27 @@
+[
+    {
+        "location": "default",
+        "count": 1
+    },
+    {
+        "location": "./FashionCents/Cards/player2/deck/Baggy Shorts.png"
+    },
+    {
+        "location": "./FashionCents/Cards/player2/deck/Bell Bottoms.png"
+    },
+    {
+        "location": "./FashionCents/Cards/player2/deck/Blazer.png"
+    },
+    {
+        "location": "./FashionCents/Cards/player2/deck/Deer Muffs.png"
+    },
+    {
+        "location": "./FashionCents/Cards/player2/deck/Fed-door-a.png"
+    },
+    {
+        "location": "./FashionCents/Cards/player2/deck/Slippers6.png"
+    },
+    {
+        "location": "./FashionCents/Cards/player2/deck/Tisshoes.png"
+    }
+]
