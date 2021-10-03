@@ -9,6 +9,8 @@ var expressWs = require('express-ws')(app);
 
 require('./routes')(app);
 
+
+app.use(express.static(process.cwd() + '/public'));
 app.use(express.json());
 
 // ************************ Run Server ******************************

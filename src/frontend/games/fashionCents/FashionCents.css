@@ -1,0 +1,12 @@
+.fc-stacked {
+    position: absolute;
+}
+
+.fc-stacked-holder {
+    position: relative;
+}
+
+.fc-card-default {
+    height: 350px;
+    width: 250px;
+}
