@@ -15,6 +15,7 @@ export default class GameWebSocket {
         const wsPath = 'ws://' + window.location.host + '/game';
         this.ws = new WebSocket(wsPath);
         this.ws.addEventListener('message', this.messageHandler.bind(this));
+        this.ws.addEventListener('close', this.closeHandler.bind(this));
         this.logging = logging;
 
         this.clearAllHandlers();
@@ -33,6 +34,10 @@ export default class GameWebSocket {
         this.onReconnectGame = [];
         this.onOtherReconnectGame = [];
         this.onMessageGame = [];
+    }
+
+    closeHandler(event){
+        console.log("Websocket closing. " + event.reason);
     }
 
     isHost() {
@@ -252,6 +257,7 @@ export default class GameWebSocket {
         // TODO reconnect doesn't reconnect if ws closed. Only if a refresh happened
         this.loadData();
 
+        // Resolve server response when
         let promise = new Promise((resolve) => {
             let reconnectListener = (msgObj) => {
                 ListUtils.removeItemFromList(
