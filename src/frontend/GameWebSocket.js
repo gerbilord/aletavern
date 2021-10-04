@@ -37,7 +37,8 @@ export default class GameWebSocket {
     }
 
     closeHandler(event){
-        console.log("Websocket closing. " + event.reason);
+        console.log("Websocket closing. Event below");
+        console.log(event);
     }
 
     isHost() {
