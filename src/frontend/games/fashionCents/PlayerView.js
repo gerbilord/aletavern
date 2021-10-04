@@ -135,11 +135,11 @@ export default (props) => {
     }
 
     const onCardInCardSelectorClicked = (e, card, stack) =>{
-        setCommand(new Command()); // Clear command.
-        command.type = CONSTANTS.COMMAND_TYPE.MOVE; // Declare that it will be a move command.
-        command.fromStack = stack.name; // Set the stack to the one the card exists
-        command.selectedCards.push(card); // And clicked card.
-        setCommand(Command.fromJson(command)); // And update our command, Command.fromJson is to make a copy so react knows to update.
+        const newCommand = new Command();
+        newCommand.type = CONSTANTS.COMMAND_TYPE.MOVE; // Declare that it will be a move command.
+        newCommand.fromStack = stack.name; // Set the stack to the one the card exists
+        newCommand.selectedCards.push(card); // And clicked card.
+        setCommand(Command.fromJson(newCommand)); // And update our command, Command.fromJson is to make a copy so react knows to update.
         setCardSelectorOpen(false);
     }
 

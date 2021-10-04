@@ -44,7 +44,7 @@ export default (props) => {
                     className={classNames(sizeClass, "fc-stacked")}
                     card={stack.cards[0]}
                     isFaceUp={false}
-                    key={stack.cards[0].toString()}
+                    key={stack.cards[0].toString() + "back"}
                 />)
             }
 

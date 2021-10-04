@@ -33,6 +33,5 @@ export default (props) => {
                 })}
             </div>
         </Popup>
-
     );
 }
