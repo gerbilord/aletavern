@@ -105,7 +105,7 @@ export default class HostGameEngine {
     createCard(cardData){
         const cardId = this.totalCards;
         this.totalCards++;
-        return new Card(cardId,cardData.location)
+        return new Card(cardId,cardData.location, "./FashionCents/Cards/cardBacks/FC_Cards_Wardrobe_Purple small.png") // TODO Make card back dynamic
     }
 
     startGame(){

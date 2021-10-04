@@ -23,7 +23,10 @@
 
 .fc-flex-container {
     display: flex;
-    flex-wrap: nowrap;
+}
+
+.fc-flex-container-wrap{
+    flex-wrap: wrap;
 }
 
 .fc-flex-container > div {
@@ -39,5 +42,12 @@
 .fc-unselected {
     border-style: solid;
     border-color: transparent;
+    border-width: 7px;
+}
+
+.fc-card-selector {
+    background-color: azure;
+    border-style: solid;
+    border-color: deepskyblue;
     border-width: 7px;
 }

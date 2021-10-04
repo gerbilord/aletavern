@@ -235,7 +235,7 @@ export default class GameWebSocket {
             this.wsOpenedBefore = true;
         }
 
-        // this.sendPing(); // Needed, commented out for reconnect testing.
+        this.sendPing();
     }
 
     sendPing(){

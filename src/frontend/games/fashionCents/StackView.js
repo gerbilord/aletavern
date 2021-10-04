@@ -3,10 +3,13 @@ import CONSTANTS from 'Games/fashionCents/fcConstants';
 import classNames from 'classnames';
 import './FashionCents.css';
 import Command from 'Games/fashionCents/Command';
+import CardView from 'Games/fashionCents/CardView';
 
 export default (props) => {
     let {stack, setStack,
+        isFaceUp,
         command, setCommand, sendCommand,
+        onClick, onRightClick,
         sizeClass} = props;
 
     if(stack?.cards == null){
@@ -15,36 +18,36 @@ export default (props) => {
 
     const isSelected = stack.isAnyCardInStack(command.selectedCards); // Is selected is based off command. It will update when command does.
 
-    const onStackClick = (e) =>{
-        if(isSelected){
-            setCommand(new Command()); // Clear command, which unselects us.
-        } else { // We are not selected.
-            if(command.fromStack === "" && stack.cards.length > 0){ // If no other stack is set, and we have cards to give.
-                command.type = CONSTANTS.COMMAND_TYPE.MOVE; // Declare that it will be a move command.
-                command.fromStack = stack.name; // Set the stack to ours!
-                command.selectedCards.push(stack.cards[0]); // And our top card as the one to move.
-                setCommand(Command.fromJson(command)); // And update our command, Command.fromJson is to make a copy so react knows to update.
-            } else if(command.type === CONSTANTS.COMMAND_TYPE.MOVE // If it's a move command,
-                && command.fromStack !== "" // and the giving stack is sent,
-                && command.selectedCards.length > 0){ // and there are cards to give.
-                command.toStack = stack.name; // Send those cards to us.
-                sendCommand(); // This clears the command for us.
-            }
-        }
+    const onClickWrapper = (e) =>{
+        onClick(e, stack);
+    }
+
+    const onRightClickWrapper = (e)=>{
+        onRightClick(e, stack);
     }
 
     return (
-        <div onClick={onStackClick} className={classNames(sizeClass, "fc-stack-placeholder-color", {"fc-selected":isSelected, "fc-unselected":!isSelected})}>
+        <div onClick={onClick == null ? undefined : onClickWrapper}
+             onContextMenu={onRightClick == null ? undefined : onRightClickWrapper}
+             className={classNames(sizeClass, "fc-stack-placeholder-color", {"fc-selected":isSelected, "fc-unselected":!isSelected})}>
             {stack.cards.slice(0).reverse().map(
                 (card, index) =>{
-                    return (<img
-                        className={classNames( sizeClass, "fc-stacked")}
-                        src={CONSTANTS.BASE_URL+card.url}
-                        key={CONSTANTS.BASE_URL+card.url + card.id}
-                        alt={"card"}
+                    return (<CardView
+                        className={classNames(sizeClass, "fc-stacked")}
+                        card={card}
+                        key={card.toString()}
                     />)
                 })
             }
+            {!(isFaceUp === true || isFaceUp == null) && stack.cards.length > 0 && (
+                <CardView
+                    className={classNames(sizeClass, "fc-stacked")}
+                    card={stack.cards[0]}
+                    isFaceUp={false}
+                    key={stack.cards[0].toString()}
+                />)
+            }
+
         </div>
     );
 }
