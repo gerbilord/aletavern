@@ -10,7 +10,7 @@ function giveMessage(ws, msg) {
     try {
         var messageObject = JSON.parse(msg);
     } catch (e) {
-        console.debug(`Invalid JSON recieved: ${msg}`);
+        console.debug(`Invalid JSON received: ${msg}`);
         return;
     } // Consider sending an error message?
 
@@ -397,41 +397,47 @@ function sendToRawWs(ws, msgObj) {
  * Routes message to the correct function based on msg.type
  */
 function routeMessageType(ws, msg) {
-    console.log('Entering switch with: ' + msg.type);
-    switch (msg.type) {
-        case 'JOINGAME': // Implemented. Needs msg verification. Consider not using destructuring, and verify in func.
-            joinGame(ws, msg);
-            break;
 
-        case 'LEAVEGAME': // Implemented.
-            leaveGame(ws, msg);
-            break;
+    if(msg.type === "PING"){
+        msg.type = "PONG"
+        sendToRawWs(ws, msg); // Don't route or log, send back a pong.
+    } else {
+        console.log('Entering switch with: ' + msg.type);
+        switch (msg.type) {
+            case 'JOINGAME': // Implemented. Needs msg verification. Consider not using destructuring, and verify in func.
+                joinGame(ws, msg);
+                break;
 
-        case 'RECONNECTGAME': // Implemented.
-            reconnectToGame(ws, msg);
-            break;
+            case 'LEAVEGAME': // Implemented.
+                leaveGame(ws, msg);
+                break;
 
-        case 'CREATEGAME': // Implemented.
-            createGame(ws, msg);
-            break;
+            case 'RECONNECTGAME': // Implemented.
+                reconnectToGame(ws, msg);
+                break;
 
-        case 'MESSAGEALLGAME': // Implemented. Consider not messaging original sender.
-            messageAllPlayers(msg);
-            break;
-        case 'MESSAGEALLOTHERSGAME':
-            messageAllOtherPlayers(msg);
-            break;
-        // Consider a message others
-        case 'MESSAGEONEGAME': // Implemented.
-            messageOnePlayer(msg);
-            break;
+            case 'CREATEGAME': // Implemented.
+                createGame(ws, msg);
+                break;
 
-        case 'MESSAGEHOSTGAME': // Implemented.
-            messageHost(msg);
-            break;
+            case 'MESSAGEALLGAME': // Implemented. Consider not messaging original sender.
+                messageAllPlayers(msg);
+                break;
+            case 'MESSAGEALLOTHERSGAME':
+                messageAllOtherPlayers(msg);
+                break;
+            // Consider a message others
+            case 'MESSAGEONEGAME': // Implemented.
+                messageOnePlayer(msg);
+                break;
 
-        default:
-            console.debug(`Invalid Message: ${message}`);
+            case 'MESSAGEHOSTGAME': // Implemented.
+                messageHost(msg);
+                break;
+
+            default:
+                console.debug(`Invalid Message: ${message}`);
+        }
     }
 }
 

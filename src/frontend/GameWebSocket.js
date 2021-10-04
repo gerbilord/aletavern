@@ -14,6 +14,7 @@ export default class GameWebSocket {
     constructor(logging) {
         const wsPath = 'ws://' + window.location.host + '/game';
         this.ws = new WebSocket(wsPath);
+        this.ws.addEventListener('open', this.sendPing.bind(this))
         this.ws.addEventListener('message', this.messageHandler.bind(this));
         this.ws.addEventListener('close', this.closeHandler.bind(this));
         this.logging = logging;
@@ -76,8 +77,13 @@ export default class GameWebSocket {
     messageHandler(event) {
         const msgObj = JSON.parse(event.data);
 
-        if (this.logging) {
+        if (this.logging && msgObj.type !== 'PONG') {
             console.log(msgObj);
+        }
+
+        if(msgObj.type === 'PONG'){
+            console.log("PONG");
+            setTimeout(()=>this.sendPing(), 5000)
         }
 
         if (msgObj.type === 'CREATEGAME') {
@@ -215,6 +221,15 @@ export default class GameWebSocket {
         this.ws.send(JSON.stringify(joinMessageObj));
 
         return promise;
+    }
+
+    sendPing(){
+        const pingMessageObj = {
+            type: 'PING',
+            playerId: sessionStorage.getItem('playerId')
+        }
+        console.log("PING");
+        this.ws.send(JSON.stringify(pingMessageObj));
     }
 
     sendMessageToAll(msg) {
