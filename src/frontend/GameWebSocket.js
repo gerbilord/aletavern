@@ -13,6 +13,7 @@ export default class GameWebSocket {
     // TODO add boolean to accept or reject failure messages.
 
     constructor(logging) {
+        this.wsOpenedBefore = false; // Used to tell if open event is the inital open event or a reconnect.
         const wsPath = 'ws://' + window.location.host + '/game';
         this.ws = new ReconnectingWebSocket(wsPath);
         this.ws.addEventListener('open', this.openHandler.bind(this))
@@ -224,7 +225,17 @@ export default class GameWebSocket {
     }
 
     openHandler(){
-        console.log("Opening!");
+        if(this.wsOpenedBefore){ // If the websocket was opened before
+            // it is a reconnect event.
+            console.log("Reconnected.");
+            this.reconnectGame(false);
+        } else {
+            // otherwise it is the first open event!
+            console.log("Opening!");
+            this.wsOpenedBefore = true;
+        }
+
+        // this.sendPing(); // Needed, commented out for reconnect testing.
     }
 
     sendPing(){
@@ -272,9 +283,11 @@ export default class GameWebSocket {
         this.ws.send(JSON.stringify(sendMessageObj)); // Add try catch. Reconnect on catch
     }
 
-    reconnectGame() {
-        // TODO reconnect doesn't reconnect if ws closed. Only if a refresh happened
-        this.loadData();
+    reconnectGame(shouldLoadData = true) {
+
+        if(shouldLoadData){
+            this.loadData();
+        }
 
         // Resolve server response when
         let promise = new Promise((resolve) => {

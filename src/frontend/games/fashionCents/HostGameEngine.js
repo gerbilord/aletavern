@@ -19,7 +19,7 @@ export default class HostGameEngine {
     }
 
     listenForPlayers() {
-        const onPlayerJoinGame = (serverResponse) =>{
+        const onPlayerConnect = (serverResponse) =>{
             const player = {};
             player.name = serverResponse.data.playerName;
             player.id = serverResponse.playerId;
@@ -27,7 +27,8 @@ export default class HostGameEngine {
             this.updatePlayerStacks();
         };
 
-        this.ws.onOtherJoinGame.push(onPlayerJoinGame);
+        this.ws.onOtherJoinGame.push(onPlayerConnect);
+        this.ws.onOtherReconnectGame.push(onPlayerConnect);
     }
 
     updatePlayerStacks(stacksToUpdate=[]) {
