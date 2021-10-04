@@ -1,6 +1,7 @@
 // noinspection SpellCheckingInspection
 
 import * as ListUtils from 'Utils/listUtils';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 export default class GameWebSocket {
     // TODO make sure websocket is still alive!
@@ -13,8 +14,8 @@ export default class GameWebSocket {
 
     constructor(logging) {
         const wsPath = 'ws://' + window.location.host + '/game';
-        this.ws = new WebSocket(wsPath);
-        this.ws.addEventListener('open', this.sendPing.bind(this))
+        this.ws = new ReconnectingWebSocket(wsPath);
+        this.ws.addEventListener('open', this.openHandler.bind(this))
         this.ws.addEventListener('message', this.messageHandler.bind(this));
         this.ws.addEventListener('close', this.closeHandler.bind(this));
         this.logging = logging;
@@ -82,7 +83,6 @@ export default class GameWebSocket {
         }
 
         if(msgObj.type === 'PONG'){
-            console.log("PONG");
             setTimeout(()=>this.sendPing(), 5000)
         }
 
@@ -223,12 +223,15 @@ export default class GameWebSocket {
         return promise;
     }
 
+    openHandler(){
+        console.log("Opening!");
+    }
+
     sendPing(){
         const pingMessageObj = {
             type: 'PING',
             playerId: sessionStorage.getItem('playerId')
         }
-        console.log("PING");
         this.ws.send(JSON.stringify(pingMessageObj));
     }
 
