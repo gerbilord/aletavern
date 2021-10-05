@@ -33,6 +33,10 @@
     margin: 10px;
 }
 
+.fc-flex-container-center {
+    justify-content: center;
+}
+
 .fc-selected {
     border-style: solid;
     border-color: red;
@@ -50,4 +54,8 @@
     border-style: solid;
     border-color: deepskyblue;
     border-width: 7px;
+}
+
+.fc-flex-right-column{
+    margin-left: auto;
 }

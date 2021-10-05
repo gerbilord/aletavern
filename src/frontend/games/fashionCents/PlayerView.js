@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Popup from 'reactjs-popup';
 import Stack from 'Games/fashionCents/StackView';
+import Card from './CardView';
+import CardObject from './Card'
 import StackObject from 'Games/fashionCents/Stack'
 import CONSTANTS from 'Games/fashionCents/fcConstants';
 import Command from 'Games/fashionCents/Command';
@@ -17,32 +19,41 @@ function removeDefault(list){
 export default (props) => {
     const ws = props.gameWrapper.gameEngine.ws;
     const stackNameToStackUpdater = {};
+    const stackNameToStack = {};
 
     const [stackList, setStackList] = useState([]);
 
 
     const [store1Stack, setStore1Stack] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.STORE1] = store1Stack;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STORE1] = setStore1Stack;
 
     const [store2Stack, setStore2Stack] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.STORE2] = store2Stack;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STORE2] = setStore2Stack;
 
     const [player1GuyStack, setPlayer1GuyStack] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER1_GUY] = player1GuyStack;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER1_GUY] = setPlayer1GuyStack;
 
     const [player2GuyStack, setPlayer2GuyStack] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER2_GUY] = player2GuyStack;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER2_GUY] = setPlayer2GuyStack;
 
     const [player1DeckStack, setPlayer1DeckStack] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER1_DECK] = player1DeckStack;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER1_DECK] = setPlayer1DeckStack;
 
     const [player2DeckStack, setPlayer2DeckStack] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER2_DECK] = player2DeckStack;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER2_DECK] = setPlayer2DeckStack;
 
     const [player1DiscardStack, setPlayer1DiscardStack] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER1_DISCARD] = player1DiscardStack;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER1_DISCARD] = setPlayer1DiscardStack;
 
     const [player2DiscardStack, setPlayer2DiscardStack] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER2_DISCARD] = player2DiscardStack;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER2_DISCARD] = setPlayer2DiscardStack;
 
 
@@ -51,6 +62,9 @@ export default (props) => {
     const [cardSelectorStack, setCardSelectorStack] = useState({});
 
     const [command, setCommand] = useState(new Command());
+
+    const [zoomedStackName, setZoomedStackName] = useState(null);
+    const [isZoomedStackFaceUp, setIsZoomedStackFaceUp] = useState(true);
 
     useEffect(
         ()=>{
@@ -80,23 +94,6 @@ export default (props) => {
         []
     );
 
-    const createMoveCardCommand = (fromStack, toStack)=>{
-        return (card) =>{
-
-            const command = new Command();
-            command.type = CONSTANTS.COMMAND_TYPE.MOVE;
-            command.fromStack = fromStack;
-            command.toStack = toStack;
-            command.selectedCards.push(card);
-
-            const message = {};
-            message[CONSTANTS.MESSAGE_TYPE_KEY] = CONSTANTS.MESSAGE_TYPE.COMMAND;
-            message[CONSTANTS.COMMAND] = command;
-
-            ws.sendMessageToHost(message);
-        };
-    };
-
     const sendCommand = () => {
         const message = {};
         message[CONSTANTS.MESSAGE_TYPE_KEY] = CONSTANTS.MESSAGE_TYPE.COMMAND;
@@ -106,7 +103,8 @@ export default (props) => {
         setCommand(new Command());
     }
 
-    const onStackClick = (e, stack) =>{
+    const onStackClick = (e, stackProps) =>{
+        const stack = stackProps.stack;
         const isSelected = stack.isAnyCardInStack(command.selectedCards);
 
         if(isSelected){
@@ -126,7 +124,8 @@ export default (props) => {
         }
     }
 
-    const onStackRightClick = (e, stack)=>{
+    const onStackRightClick = (e, stackProps)=>{
+        const stack = stackProps.stack;
         e.preventDefault();
         if(stack.cards.length > 0){
             setCardSelectorStack(stack);
@@ -134,13 +133,33 @@ export default (props) => {
         }
     }
 
-    const onCardInCardSelectorClicked = (e, card, stack) =>{
-        const newCommand = new Command();
-        newCommand.type = CONSTANTS.COMMAND_TYPE.MOVE; // Declare that it will be a move command.
-        newCommand.fromStack = stack.name; // Set the stack to the one the card exists
-        newCommand.selectedCards.push(card); // And clicked card.
-        setCommand(Command.fromJson(newCommand)); // And update our command, Command.fromJson is to make a copy so react knows to update.
-        setCardSelectorOpen(false);
+    const onStackMouseEnter = (e, stackProps)=>{
+        const stack = stackProps.stack;
+        const isFaceUp = stackProps.isFaceUp;
+
+        setZoomedStackName(stack.name);
+        setIsZoomedStackFaceUp(isFaceUp);
+
+    }
+
+    const onCardInCardSelectorClicked = (e, clickedCard, stackProps) =>{
+        const stack = stackProps.stack;
+
+        if(command?.fromStack === stack.name){ // if it is the same stack
+            if(command.selectedCards.some(selectedCard=> selectedCard.equals(clickedCard))){ // card is already selected, remove it
+                command.selectedCards = command.selectedCards.filter(selectedCard=>!selectedCard.equals(clickedCard));
+                setCommand(Command.fromJson(command)); // And update our command, Command.fromJson is to make a copy so react knows to update.
+            } else { // card isn't selected, add it to the selection
+                command.selectedCards.push(clickedCard);
+                setCommand(Command.fromJson(command)); // And update our command, Command.fromJson is to make a copy so react knows to update.
+            }
+        } else { // if we are pulling from a different stack
+            const newCommand = new Command();
+            newCommand.type = CONSTANTS.COMMAND_TYPE.MOVE; // Declare that it will be a move command.
+            newCommand.fromStack = stack.name; // Set the stack to the one the card exists
+            newCommand.selectedCards.push(clickedCard); // And clicked card.
+            setCommand(Command.fromJson(newCommand)); // And update our command, Command.fromJson is to make a copy so react knows to update.
+        }
     }
 
     return (
@@ -150,88 +169,109 @@ export default (props) => {
                 open={cardSelectorOpen}
                 setOpen={setCardSelectorOpen}
                 stack={cardSelectorStack}
-                onCardClicked={onCardInCardSelectorClicked}
+                onCardClick={onCardInCardSelectorClicked}
                 cardSizeClass={"fc-card-medium"}
+                command={command}
             />
             <div className={"fc-flex-container"}>
-                <Stack stack={player1GuyStack}
-                       setStack={setPlayer1GuyStack}
-                       command={command}
-                       setCommand={setCommand}
-                       sendCommand={sendCommand}
-                       onClick={onStackClick}
-                       onRightClick={onStackRightClick}
-                       sizeClass={"fc-card-large"}
-                />
-                <Stack stack={player1DeckStack}
-                       setStack={setPlayer1DeckStack}
-                       command={command}
-                       setCommand={setCommand}
-                       sendCommand={sendCommand}
-                       onClick={onStackClick}
-                       onRightClick={onStackRightClick}
-                       sizeClass={"fc-card-medium"}
-                       isFaceUp={false}
-                />
-                <Stack stack={player1DiscardStack}
-                       setStack={setPlayer1DiscardStack}
-                       command={command}
-                       setCommand={setCommand}
-                       sendCommand={sendCommand}
-                       onClick={onStackClick}
-                       onRightClick={onStackRightClick}
-                       sizeClass={"fc-card-medium"}
-                />
-            </div>
-            <div className={"fc-flex-container"}>
-                <Stack stack={player2GuyStack}
-                       setStack={setPlayer2GuyStack}
-                       command={command}
-                       setCommand={setCommand}
-                       sendCommand={sendCommand}
-                       onClick={onStackClick}
-                       onRightClick={onStackRightClick}
-                       sizeClass={"fc-card-large"}
-                />
-                <Stack stack={player2DeckStack}
-                       setStack={setPlayer2DeckStack}
-                       command={command}
-                       setCommand={setCommand}
-                       sendCommand={sendCommand}
-                       onClick={onStackClick}
-                       onRightClick={onStackRightClick}
-                       sizeClass={"fc-card-medium"}
-                       isFaceUp={false}
-                />
-                <Stack stack={player2DiscardStack}
-                       setStack={setPlayer2DiscardStack}
-                       command={command}
-                       setCommand={setCommand}
-                       sendCommand={sendCommand}
-                       onClick={onStackClick}
-                       onRightClick={onStackRightClick}
-                       sizeClass={"fc-card-medium"}
-                />
-            </div>
-            <div className={"fc-flex-container"}>
-                <Stack setStack={setStore1Stack}
-                       stack={store1Stack}
-                       command={command}
-                       setCommand={setCommand}
-                       sendCommand={sendCommand}
-                       onClick={onStackClick}
-                       onRightClick={onStackRightClick}
-                       sizeClass={"fc-card-small"}
-                />
-                <Stack setStack={setStore2Stack}
-                       stack={store2Stack}
-                       command={command}
-                       setCommand={setCommand}
-                       sendCommand={sendCommand}
-                       onClick={onStackClick}
-                       onRightClick={onStackRightClick}
-                       sizeClass={"fc-card-small"}
-                />
+                <div>
+                    <div className={"fc-flex-container"}>
+                        <Stack stack={player1GuyStack}
+                               setStack={setPlayer1GuyStack}
+                               command={command}
+                               setCommand={setCommand}
+                               sendCommand={sendCommand}
+                               onClick={onStackClick}
+                               onRightClick={onStackRightClick}
+                               onMouseEnter={onStackMouseEnter}
+                               sizeClass={"fc-card-large"}
+                        />
+                        <Stack stack={player1DeckStack}
+                               setStack={setPlayer1DeckStack}
+                               command={command}
+                               setCommand={setCommand}
+                               sendCommand={sendCommand}
+                               onClick={onStackClick}
+                               onRightClick={onStackRightClick}
+                               onMouseEnter={onStackMouseEnter}
+                               sizeClass={"fc-card-medium"}
+                               isFaceUp={false}
+                        />
+                        <Stack stack={player1DiscardStack}
+                               setStack={setPlayer1DiscardStack}
+                               command={command}
+                               setCommand={setCommand}
+                               sendCommand={sendCommand}
+                               onClick={onStackClick}
+                               onRightClick={onStackRightClick}
+                               onMouseEnter={onStackMouseEnter}
+                               sizeClass={"fc-card-medium"}
+                        />
+                    </div>
+                    <div className={"fc-flex-container"}>
+                        <Stack stack={player2GuyStack}
+                               setStack={setPlayer2GuyStack}
+                               command={command}
+                               setCommand={setCommand}
+                               sendCommand={sendCommand}
+                               onClick={onStackClick}
+                               onRightClick={onStackRightClick}
+                               onMouseEnter={onStackMouseEnter}
+                               sizeClass={"fc-card-large"}
+                        />
+                        <Stack stack={player2DeckStack}
+                               setStack={setPlayer2DeckStack}
+                               command={command}
+                               setCommand={setCommand}
+                               sendCommand={sendCommand}
+                               onClick={onStackClick}
+                               onRightClick={onStackRightClick}
+                               onMouseEnter={onStackMouseEnter}
+                               sizeClass={"fc-card-medium"}
+                               isFaceUp={false}
+                        />
+                        <Stack stack={player2DiscardStack}
+                               setStack={setPlayer2DiscardStack}
+                               command={command}
+                               setCommand={setCommand}
+                               sendCommand={sendCommand}
+                               onClick={onStackClick}
+                               onRightClick={onStackRightClick}
+                               onMouseEnter={onStackMouseEnter}
+                               sizeClass={"fc-card-medium"}
+                        />
+                    </div>
+                    <div className={"fc-flex-container"}>
+                        <Stack setStack={setStore1Stack}
+                               stack={store1Stack}
+                               command={command}
+                               setCommand={setCommand}
+                               sendCommand={sendCommand}
+                               onClick={onStackClick}
+                               onRightClick={onStackRightClick}
+                               onMouseEnter={onStackMouseEnter}
+                               sizeClass={"fc-card-small"}
+                        />
+                        <Stack setStack={setStore2Stack}
+                               stack={store2Stack}
+                               command={command}
+                               setCommand={setCommand}
+                               sendCommand={sendCommand}
+                               onClick={onStackClick}
+                               onRightClick={onStackRightClick}
+                               onMouseEnter={onStackMouseEnter}
+                               sizeClass={"fc-card-small"}
+                        />
+                    </div>
+                </div>
+                <div className={"fc-flex-right-column"}>
+                    <Stack
+                        stack={stackNameToStack[zoomedStackName]}
+                        command={command}
+                        isFaceUp={isZoomedStackFaceUp}
+                        sizeClass={"fc-card-large"}
+                    />
+                </div>
             </div>
         </div>
     );

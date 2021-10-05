@@ -4,31 +4,55 @@ import classNames from 'classnames';
 import CardView from 'Games/fashionCents/CardView';
 import './FashionCents.css';
 import Popup from 'reactjs-popup';
+import StackView from 'Games/fashionCents/StackView';
+import Stack from './Stack';
+import PropTypes from 'prop-types';
+
+const propTypes = {
+    open: PropTypes.bool.isRequired,
+    setOpen: PropTypes.func.isRequired,
+    stack: PropTypes.object.isRequired,
+    onCardClick: PropTypes.func,
+    cardSizeClass: PropTypes.string,
+    command: PropTypes.object
+}
+
+const defaultProps = {
+    onCardClick: ()=>{},
+    cardSizeClass: "",
+    command: null
+}
 
 export default (props) => {
     let {open, setOpen,
         stack,
-        onCardClicked, // is passed clickEvent, card, stack
-        cardSizeClass} = props;
+        onCardClick, // is passed clickEvent, card, stack
+        cardSizeClass,
+        command} = props;
 
     if(!open){ return null; }
-
-    const onCardClickedWrapper = (...args) => {
-        onCardClicked(...args, stack);
-    };
 
     return (
         <Popup
             open={open}
             closeOnDocumentClick
+            closeOnEscape
+            overlayStyle = {{ background: 'rgba(0,0,0,0.7)' }}
             onClose={()=>setOpen(false)}
         >
-            <div className={classNames("fc-flex-container", "fc-flex-container-wrap", "fc-card-selector")}>
+            <div className={classNames("fc-flex-container", "fc-flex-container-wrap", "fc-flex-container-center", "fc-card-selector")}>
                 {stack.cards.map((card)=>{
-                    return <CardView
-                        card={card}
-                        className={cardSizeClass}
-                        onClick={onCardClicked == null ? undefined : onCardClickedWrapper}
+                    const placeHolderStack = new Stack(); // The single card is really just a stack with a single card!
+                    placeHolderStack.cards.push(card);
+                    const onStackClickWrapper = (e, phStackProps) => { // We want to call the event handler with the stack the card truly is in
+                        onCardClick(e, card, {stack}); // not the fake ph stack.
+                    }
+                    return <StackView
+                        stack={placeHolderStack}
+                        sizeClass={cardSizeClass}
+                        onClick={onStackClickWrapper}
+                        command={command}
+                        key={card.toString()}
                     />
                 })}
             </div>
