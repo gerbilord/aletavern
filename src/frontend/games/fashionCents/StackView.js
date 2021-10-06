@@ -58,8 +58,6 @@ const StackView = (props) => {
     const mainContent =
         (<div onClick={onEventWrapper(onClick)}
               onContextMenu={onEventWrapper(onRightClick)}
-              onMouseEnter={onEventWrapper(onMouseEnter)}
-              onMouseLeave={onEventWrapper(onMouseLeave)}
               className={classNames(sizeClass, "fc-stack-placeholder-color", {"fc-selected":isSelected, "fc-unselected":!isSelected, "fc-clickable":isClickable})}>
             {stack?.cards?.length > 0 && stack?.cards?.slice(0).reverse().map(
                 (card, index) =>{
@@ -81,31 +79,36 @@ const StackView = (props) => {
         </div>);
 
     return (
-        <Popup
-            className={"fc-popup-menu"}
-            trigger={mainContent}
-            position="right top"
-            on="hover"
-            closeOnDocumentClick
-            mouseLeaveDelay={150}
-            mouseEnterDelay={150}
-            contentStyle={{ padding: '0px', border: 'none' }}
-            arrow={false}
+        <div
+            onMouseEnter={onEventWrapper(onMouseEnter)}
+            onMouseLeave={onEventWrapper(onMouseLeave)}
         >
-            { stack?.cards?.length > 0 &&
-            <div>
-                {hoverMenuActions.map(({displayName, onClick})=>{
-                    return <div className={"fc-clickable fc-popup-menu-content-item"}
-                                onClick={onEventWrapper(onClick)}
-                                key={displayName}
-                    >
-                        {displayName}
-                    </div>;
-                })}
-            </div>
-            }
-        </Popup>
+            <Popup
+                className={"fc-popup-menu"}
+                trigger={mainContent}
+                position="right top"
+                on="hover"
+                closeOnDocumentClick
+                mouseLeaveDelay={150}
+                mouseEnterDelay={500}
+                contentStyle={{ padding: '0px', border: 'none' }}
+                arrow={false}
+            >
+                { stack?.cards?.length > 0 &&
+                <div>
+                    {hoverMenuActions.map(({displayName, onClick})=>{
+                        return <div className={"fc-clickable fc-popup-menu-content-item"}
+                                    onClick={onEventWrapper(onClick)}
+                                    key={displayName}
+                        >
+                            {displayName}
+                        </div>;
+                    })}
+                </div>
+                }
+            </Popup>
 
+        </div>
     );
 }
 StackView.propTypes = propTypes;

@@ -2,6 +2,11 @@
     position: absolute;
 }
 
+.fc-card-tiny {
+    height: 52px;
+    width: 32px;
+}
+
 .fc-card-small {
     height: 105px;
     width: 75px;
@@ -73,4 +78,10 @@
 
 .fc-clickable {
     cursor: pointer;
+}
+
+.fc-scrollable {
+    max-height: 90vh;
+    max-width: 90vw;
+    overflow: auto;
 }

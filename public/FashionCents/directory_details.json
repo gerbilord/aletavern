@@ -1,8 +1,21 @@
 [
-    "./FashionCents/Cards/player1/deck/card_details.json",
-    "./FashionCents/Cards/player1/guy/card_details.json",
-    "./FashionCents/Cards/player2/deck/card_details.json",
-    "./FashionCents/Cards/player2/guy/card_details.json",
-    "./FashionCents/Cards/store1/card_details.json",
-    "./FashionCents/Cards/store2/card_details.json"
+    "./FashionCents/Cards/Guy Arts/card_details.json",
+    "./FashionCents/Cards/P1 Deck/card_details.json",
+    "./FashionCents/Cards/P2 Deck/card_details.json",
+    "./FashionCents/Cards/P3 Deck/card_details.json",
+    "./FashionCents/Cards/P4 Deck/card_details.json",
+    "./FashionCents/Cards/P5 Deck/card_details.json",
+    "./FashionCents/Cards/P6 Deck/card_details.json",
+    "./FashionCents/Cards/Socks/card_details.json",
+    "./FashionCents/Cards/Sponsors (Gold Deck)/card_details.json",
+    "./FashionCents/Cards/Storefront (Blue Deck)/card_details.json",
+    "./FashionCents/Cards/Street Vendor 1/card_details.json",
+    "./FashionCents/Cards/Street Vendor 2/card_details.json",
+    "./FashionCents/Cards/Street Vendor 3/card_details.json",
+    "./FashionCents/Cards/Street Vendor 4/card_details.json",
+    "./FashionCents/Cards/Street Vendor 5/card_details.json",
+    "./FashionCents/Cards/Street Vendor 6/card_details.json",
+    "./FashionCents/Cards/Street Vendor 7/card_details.json",
+    "./FashionCents/Cards/Street Vendor 8/card_details.json",
+    "./FashionCents/Cards/Wardrobes and Storefront Top/card_details.json"
 ]

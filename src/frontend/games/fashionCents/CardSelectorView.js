@@ -13,13 +13,11 @@ const propTypes = {
     setOpen: PropTypes.func.isRequired,
     stack: PropTypes.object.isRequired,
     onCardClick: PropTypes.func,
-    cardSizeClass: PropTypes.string,
     command: PropTypes.object
 }
 
 const defaultProps = {
     onCardClick: ()=>{},
-    cardSizeClass: "",
     command: null
 }
 
@@ -27,10 +25,18 @@ export default (props) => {
     let {open, setOpen,
         stack,
         onCardClick, // is passed clickEvent, card, stack
-        cardSizeClass,
         command} = props;
 
     if(!open){ return null; }
+
+    let cardSizeClass = "fc-card-medium";
+    if(stack?.cards?.length > 15){
+        cardSizeClass = "fc-card-small"
+    }
+    if(stack?.cards?.length > 70){
+        cardSizeClass = "fc-card-tiny"
+    }
+
 
     return (
         <Popup
@@ -39,8 +45,9 @@ export default (props) => {
             closeOnEscape
             overlayStyle = {{ background: 'rgba(0,0,0,0.7)' }}
             onClose={()=>setOpen(false)}
+            lockScroll={true}
         >
-            <div className={classNames("fc-flex-container", "fc-flex-container-wrap", "fc-flex-container-center", "fc-card-selector")}>
+            <div className={classNames("fc-flex-container", "fc-flex-container-wrap", "fc-flex-container-center", "fc-card-selector", "fc-scrollable")}>
                 {stack.cards.map((card)=>{
                     const placeHolderStack = new Stack(); // The single card is really just a stack with a single card!
                     placeHolderStack.cards.push(card);
