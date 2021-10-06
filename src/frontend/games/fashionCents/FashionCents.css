@@ -59,3 +59,18 @@
 .fc-flex-right-column{
     margin-left: auto;
 }
+
+.fc-popup-menu-content {
+    margin: auto;  
+    background: rgb(161, 161, 161);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px;
+}
+
+.fc-popup-menu-content .fc-popup-menu-content-item:hover {
+    background: rgb(100,100,100);
+}
+
+.fc-clickable {
+    cursor: pointer;
+}

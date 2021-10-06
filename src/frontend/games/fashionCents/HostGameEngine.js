@@ -144,6 +144,8 @@ export default class HostGameEngine {
 
         if(command.type === CONSTANTS.COMMAND_TYPE.MOVE){
             this.executeMoveCommand(command);
+        } else if (command.type === CONSTANTS.COMMAND_TYPE.SHUFFLE){
+            this.executeShuffleCommand(command);
         } else {
             this.log("" + command.type +" unknown");
         }
@@ -161,6 +163,15 @@ export default class HostGameEngine {
             this.updatePlayerStacks([fromStack.name, toStack.name]);
         } else {
             this.log("Move command failed. Missing argument.");
+        }
+    }
+
+
+    executeShuffleCommand(command){
+        const stackToShuffle = this.stacks[command.fromStack];
+        if(stackToShuffle!=null){
+            listUtils.shuffleList(stackToShuffle.cards);
+            this.updatePlayerStacks([stackToShuffle.name]);
         }
     }
 

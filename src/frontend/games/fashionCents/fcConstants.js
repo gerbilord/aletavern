@@ -11,7 +11,8 @@ const CONSTANTS = Object.freeze({
     STACKS: 'stacks',
     COMMAND: 'command',
     COMMAND_TYPE: {
-        MOVE: "move"
+        MOVE: "move",
+        SHUFFLE: "shuffle"
     },
 
     STACK_NAMES: {

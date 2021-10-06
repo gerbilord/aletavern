@@ -94,12 +94,15 @@ export default (props) => {
         []
     );
 
-    const sendCommand = () => {
+    const makeCommandMessage = (commandObject)=>{
         const message = {};
         message[CONSTANTS.MESSAGE_TYPE_KEY] = CONSTANTS.MESSAGE_TYPE.COMMAND;
-        message[CONSTANTS.COMMAND] = command;
+        message[CONSTANTS.COMMAND] = commandObject;
+        return message;
+    }
 
-        ws.sendMessageToHost(message);
+    const sendCommand = () => {
+        ws.sendMessageToHost(makeCommandMessage(command));
         setCommand(new Command());
     }
 
@@ -142,6 +145,23 @@ export default (props) => {
 
     }
 
+    const selectAllCards = (e, stackProps)=>{
+        const newCommand = new Command();
+        newCommand.type = CONSTANTS.COMMAND_TYPE.MOVE;
+        newCommand.fromStack = stackProps.stack.name;
+        newCommand.selectedCards = stackProps.stack.cards;
+        setCommand(newCommand);
+    }
+
+    const onStackShuffle = (e, stackProps)=>{
+        const stackNameToShuffle = stackProps.stack.name;
+        const shuffleCommand = new Command();
+        shuffleCommand.type = CONSTANTS.COMMAND_TYPE.SHUFFLE;
+        shuffleCommand.fromStack = stackNameToShuffle;
+
+        ws.sendMessageToHost(makeCommandMessage(shuffleCommand));
+    }
+
     const onCardInCardSelectorClicked = (e, clickedCard, stackProps) =>{
         const stack = stackProps.stack;
 
@@ -161,6 +181,10 @@ export default (props) => {
             setCommand(Command.fromJson(newCommand)); // And update our command, Command.fromJson is to make a copy so react knows to update.
         }
     }
+    const basicActions = [
+        { displayName: "Shuffle", onClick: onStackShuffle },
+        { displayName: "Select All", onClick: selectAllCards}
+    ];
 
     return (
         <div>
@@ -185,6 +209,7 @@ export default (props) => {
                                onRightClick={onStackRightClick}
                                onMouseEnter={onStackMouseEnter}
                                sizeClass={"fc-card-large"}
+                               hoverMenuActions={basicActions}
                         />
                         <Stack stack={player1DeckStack}
                                setStack={setPlayer1DeckStack}
@@ -196,6 +221,7 @@ export default (props) => {
                                onMouseEnter={onStackMouseEnter}
                                sizeClass={"fc-card-medium"}
                                isFaceUp={false}
+                               hoverMenuActions={basicActions}
                         />
                         <Stack stack={player1DiscardStack}
                                setStack={setPlayer1DiscardStack}
@@ -206,6 +232,7 @@ export default (props) => {
                                onRightClick={onStackRightClick}
                                onMouseEnter={onStackMouseEnter}
                                sizeClass={"fc-card-medium"}
+                               hoverMenuActions={basicActions}
                         />
                     </div>
                     <div className={"fc-flex-container"}>
@@ -218,6 +245,7 @@ export default (props) => {
                                onRightClick={onStackRightClick}
                                onMouseEnter={onStackMouseEnter}
                                sizeClass={"fc-card-large"}
+                               hoverMenuActions={basicActions}
                         />
                         <Stack stack={player2DeckStack}
                                setStack={setPlayer2DeckStack}
@@ -229,6 +257,7 @@ export default (props) => {
                                onMouseEnter={onStackMouseEnter}
                                sizeClass={"fc-card-medium"}
                                isFaceUp={false}
+                               hoverMenuActions={basicActions}
                         />
                         <Stack stack={player2DiscardStack}
                                setStack={setPlayer2DiscardStack}
@@ -239,6 +268,7 @@ export default (props) => {
                                onRightClick={onStackRightClick}
                                onMouseEnter={onStackMouseEnter}
                                sizeClass={"fc-card-medium"}
+                               hoverMenuActions={basicActions}
                         />
                     </div>
                     <div className={"fc-flex-container"}>
@@ -251,6 +281,7 @@ export default (props) => {
                                onRightClick={onStackRightClick}
                                onMouseEnter={onStackMouseEnter}
                                sizeClass={"fc-card-small"}
+                               hoverMenuActions={basicActions}
                         />
                         <Stack setStack={setStore2Stack}
                                stack={store2Stack}
@@ -261,6 +292,7 @@ export default (props) => {
                                onRightClick={onStackRightClick}
                                onMouseEnter={onStackMouseEnter}
                                sizeClass={"fc-card-small"}
+                               hoverMenuActions={basicActions}
                         />
                     </div>
                 </div>

@@ -6,6 +6,7 @@ import './FashionCents.css';
 import Command from 'Games/fashionCents/Command';
 import Stack from './Stack';
 import CardView from 'Games/fashionCents/CardView';
+import Popup from 'reactjs-popup';
 
 const propTypes = {
     stack: PropTypes.object,
@@ -15,6 +16,7 @@ const propTypes = {
     onRightClick: PropTypes.func,
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
+    hoverMenuActions: PropTypes.arrayOf(PropTypes.shape({displayName: PropTypes.string, onClick:PropTypes.func})),
     sizeClass: PropTypes.string
 }
 
@@ -26,6 +28,7 @@ const defaultProps = {
     onRightClick: ()=>{},
     onMouseEnter: ()=>{},
     onMouseLeave: ()=>{},
+    hoverMenuActions: [],
     sizeClass: "",
 }
 
@@ -35,13 +38,10 @@ const StackView = (props) => {
         command,
         onClick, onRightClick,
         onMouseEnter, onMouseLeave,
+        hoverMenuActions,
         sizeClass} = props;
 
-    if(stack?.cards == null){
-        return <p>Empty</p>;
-    }
-
-    const isSelected = stack.isAnyCardInStack(command.selectedCards); // Is selected is based off command. It will update when command does.
+    const isSelected = stack instanceof Stack ? stack.isAnyCardInStack(command.selectedCards) : false; // Is selected is based off command. It will update when command does.
 
     const onEventWrapper = (onEventFunction) =>{
         return (e)=>{
@@ -49,13 +49,19 @@ const StackView = (props) => {
         }
     }
 
-    return (
-        <div onClick={onEventWrapper(onClick)}
-             onContextMenu={onEventWrapper(onRightClick)}
-             onMouseEnter={onEventWrapper(onMouseEnter)}
-             onMouseLeave={onEventWrapper(onMouseLeave)}
-             className={classNames(sizeClass, "fc-stack-placeholder-color", {"fc-selected":isSelected, "fc-unselected":!isSelected})}>
-            {stack.cards.slice(0).reverse().map(
+    let isClickable = false;
+
+    if(stack?.cards?.length > 0 || (command?.fromStack !== stack?.name && command?.selectedCards.length > 0)){
+        isClickable = true;
+    }
+
+    const mainContent =
+        (<div onClick={onEventWrapper(onClick)}
+              onContextMenu={onEventWrapper(onRightClick)}
+              onMouseEnter={onEventWrapper(onMouseEnter)}
+              onMouseLeave={onEventWrapper(onMouseLeave)}
+              className={classNames(sizeClass, "fc-stack-placeholder-color", {"fc-selected":isSelected, "fc-unselected":!isSelected, "fc-clickable":isClickable})}>
+            {stack?.cards?.length > 0 && stack?.cards?.slice(0).reverse().map(
                 (card, index) =>{
                     return (<CardView
                         className={classNames(sizeClass, "fc-stacked")}
@@ -64,7 +70,7 @@ const StackView = (props) => {
                     />)
                 })
             }
-            {!isFaceUp && stack.cards.length > 0 && (
+            {!isFaceUp && stack?.cards?.length > 0 && (
                 <CardView
                     className={classNames(sizeClass, "fc-stacked")}
                     card={stack.cards[0]}
@@ -72,8 +78,34 @@ const StackView = (props) => {
                     key={stack.cards[0].toString() + "back"}
                 />)
             }
+        </div>);
 
-        </div>
+    return (
+        <Popup
+            className={"fc-popup-menu"}
+            trigger={mainContent}
+            position="right top"
+            on="hover"
+            closeOnDocumentClick
+            mouseLeaveDelay={150}
+            mouseEnterDelay={150}
+            contentStyle={{ padding: '0px', border: 'none' }}
+            arrow={false}
+        >
+            { stack?.cards?.length > 0 &&
+            <div>
+                {hoverMenuActions.map(({displayName, onClick})=>{
+                    return <div className={"fc-clickable fc-popup-menu-content-item"}
+                                onClick={onEventWrapper(onClick)}
+                                key={displayName}
+                    >
+                        {displayName}
+                    </div>;
+                })}
+            </div>
+            }
+        </Popup>
+
     );
 }
 StackView.propTypes = propTypes;

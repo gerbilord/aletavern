@@ -20,21 +20,20 @@ export function createRemoveItemCallback(listToRemoveFrom, itemToRemove) {
     };
 }
 
+// Randomizes a list in place.
 export function shuffleList(array) {
-    let currentIndex = array.length,
-        temporaryValue,
-        randomIndex;
+    let currentIndex = array.length, randomIndex;
 
     // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
+    while (currentIndex !== 0) {
+
         // Pick a remaining element...
         randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
+        currentIndex--;
 
         // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
     }
 
     return array;
