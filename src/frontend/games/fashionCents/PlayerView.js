@@ -40,6 +40,10 @@ export default (props) => {
     stackNameToStack[CONSTANTS.STACK_NAMES.STOREFRONT] = storeStack;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STOREFRONT] = setStoreStack;
 
+    const[donationStack, setDonationStack] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.DONATION_BIN] = donationStack;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.DONATION_BIN] = setDonationStack;
+
 
 // ##########################################################################
 
@@ -290,8 +294,10 @@ export default (props) => {
         const stack = stackProps.stack;
         const isFaceUp = stackProps.isFaceUp;
 
-        setZoomedStackName(stack.name);
-        setIsZoomedStackFaceUp(isFaceUp);
+        if(stack){
+            setZoomedStackName(stack.name);
+            setIsZoomedStackFaceUp(isFaceUp);
+        }
     }
 
     const selectAllCards = (e, stackProps)=>{

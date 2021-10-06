@@ -80,9 +80,10 @@ const StackView = (props) => {
 
     return (
         <div
-            onMouseEnter={onEventWrapper(onMouseEnter)}
-            onMouseLeave={onEventWrapper(onMouseLeave)}
         >
+            <div
+                onMouseEnter={onEventWrapper(onMouseEnter)}
+                onMouseLeave={onEventWrapper(onMouseLeave)}>
             <Popup
                 className={"fc-popup-menu"}
                 trigger={mainContent}
@@ -107,7 +108,7 @@ const StackView = (props) => {
                 </div>
                 }
             </Popup>
-
+            </div>
         </div>
     );
 }

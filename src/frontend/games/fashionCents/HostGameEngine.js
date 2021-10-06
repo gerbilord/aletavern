@@ -53,47 +53,58 @@ export default class HostGameEngine {
         this.stackList = stackList;
     }
 
+    // Fetches the list of directories, sets it for our class, then calls getAllStacks, then setup the rest of the game.
     setupStacks(){
         fetch('FashionCents/directory_details.json')
             .then((response)=>response.json())
             .then((jsonData)=>this.setStackList(jsonData))
-            .then(()=>{this.getAllStacks()});
+            .then(()=>{this.getAllStacks()
+                .then(()=>{this.setupGame();}
+            )});
     }
 
     getAllStacks() {
-        // stack path, then stack name
-        this.getStack("./FashionCents/Cards/P1 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER1_DECK);
-        this.getStack("./FashionCents/Cards/P2 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER2_DECK);
-        this.getStack("./FashionCents/Cards/P3 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER3_DECK);
-        this.getStack("./FashionCents/Cards/P4 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER4_DECK);
-        this.getStack("./FashionCents/Cards/P5 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER5_DECK);
-        this.getStack("./FashionCents/Cards/P6 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER6_DECK);
+        return Promise.all([
+            // stack path, then stack name
+            this.getStack("./FashionCents/Cards/P1 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER1_DECK),
+            this.getStack("./FashionCents/Cards/P2 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER2_DECK),
+            this.getStack("./FashionCents/Cards/P3 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER3_DECK),
+            this.getStack("./FashionCents/Cards/P4 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER4_DECK),
+            this.getStack("./FashionCents/Cards/P5 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER5_DECK),
+            this.getStack("./FashionCents/Cards/P6 Deck/card_details.json", CONSTANTS.STACK_NAMES.PLAYER6_DECK),
 
-        this.getStack("./FashionCents/Cards/Guy Arts/card_details.json", CONSTANTS.STACK_NAMES.GUYS);
-        this.getStack("./FashionCents/Cards/Socks/card_details.json", CONSTANTS.STACK_NAMES.SOCKS);
-        this.getStack("./FashionCents/Cards/Sponsors (Gold Deck)/card_details.json", CONSTANTS.STACK_NAMES.SPONSORS);
-        this.getStack("./FashionCents/Cards/Storefront (Blue Deck)/card_details.json", CONSTANTS.STACK_NAMES.STOREFRONT);
+            this.getStack("./FashionCents/Cards/Guy Arts/card_details.json", CONSTANTS.STACK_NAMES.GUYS),
+            this.getStack("./FashionCents/Cards/Socks/card_details.json", CONSTANTS.STACK_NAMES.SOCKS),
+            this.getStack("./FashionCents/Cards/Sponsors (Gold Deck)/card_details.json", CONSTANTS.STACK_NAMES.SPONSORS),
+            this.getStack("./FashionCents/Cards/Storefront (Blue Deck)/card_details.json", CONSTANTS.STACK_NAMES.STOREFRONT),
 
-        this.getStack("./FashionCents/Cards/Street Vendor 1/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR1);
-        this.getStack("./FashionCents/Cards/Street Vendor 2/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR2);
-        this.getStack("./FashionCents/Cards/Street Vendor 3/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR3);
-        this.getStack("./FashionCents/Cards/Street Vendor 4/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR4);
-        this.getStack("./FashionCents/Cards/Street Vendor 5/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR5);
-        this.getStack("./FashionCents/Cards/Street Vendor 6/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR6);
-        this.getStack("./FashionCents/Cards/Street Vendor 7/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR7);
-        this.getStack("./FashionCents/Cards/Street Vendor 8/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR8, true);
+            this.getStack("./FashionCents/Cards/Street Vendor 1/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR1),
+            this.getStack("./FashionCents/Cards/Street Vendor 2/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR2),
+            this.getStack("./FashionCents/Cards/Street Vendor 3/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR3),
+            this.getStack("./FashionCents/Cards/Street Vendor 4/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR4),
+            this.getStack("./FashionCents/Cards/Street Vendor 5/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR5),
+            this.getStack("./FashionCents/Cards/Street Vendor 6/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR6),
+            this.getStack("./FashionCents/Cards/Street Vendor 7/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR7),
+            this.getStack("./FashionCents/Cards/Street Vendor 8/card_details.json", CONSTANTS.STACK_NAMES.STREET_VENDOR8)
+            ]
+        ).then((allStacks)=>this.createAllStacks(allStacks));
+
     }
 
-
-    // TODO fix, doneAfter is not effective.
-    getStack(stackPath, stackName, doneAfter=false){
-        fetch(stackPath)
-            .then((response)=>response.json())
-            .then((jsonData)=>this.setupStack(jsonData, stackName))
-            .then(()=>{if(doneAfter){this.startGame()}});
+    getStack(stackPath, stackName){
+        return fetch(stackPath).then((response)=>response.json())
+            .then((jsonData)=>{return {stack: jsonData, stackName: stackName}});
     }
 
-    setupStack(stackData, stackName){
+    createAllStacks(allStacks){
+        allStacks.forEach(
+            ({stack, stackName})=>{
+                this.createStack(stack, stackName);
+            }
+        );
+    }
+
+    createStack(stackData, stackName){
         this.stacks[stackName] = new Stack();
 
         this.stacks[stackName].name = stackName;
@@ -112,22 +123,20 @@ export default class HostGameEngine {
         }
     }
 
-    setupEmptyStack(stackName){
-        this.stacks[stackName] = new Stack();
-        this.stacks[stackName].name = stackName;
-    }
-
     createCard(cardData){
         const cardId = this.totalCards;
         this.totalCards++;
         return new Card(cardId,cardData.location, "./FashionCents/Cards/Wardrobes and Storefront Top/FC_Cards_Wardrobe_Purple small.png") // TODO Make card back dynamic
     }
 
-    startGame(){
+    setupGame(){
         this.log("Json Data loaded.");
 
         this.log("Running specific game logic");
-        this.setupGame();
+        this.setupEmptyStacks();
+
+        // this.dealCards(); TODO implement and run these methods.
+        // this.shuffleCards();
 
         this.log("Syncing player stacks.")
         this.updatePlayerStacks();
@@ -137,7 +146,7 @@ export default class HostGameEngine {
 
     }
 
-    setupGame(){
+    setupEmptyStacks(){
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER1_DISCARD);
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER2_DISCARD);
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER3_DISCARD);
@@ -170,6 +179,13 @@ export default class HostGameEngine {
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.STREET_SPOT3);
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.STREET_SPOT4);
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.STREET_SPOT5);
+
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.DONATION_BIN);
+    }
+
+    setupEmptyStack(stackName){
+        this.stacks[stackName] = new Stack();
+        this.stacks[stackName].name = stackName;
     }
 
     listenForCommands() {
