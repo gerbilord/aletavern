@@ -1,0 +1,27 @@
+[
+    {
+        "location": "default",
+        "count": 1
+    },
+    {
+        "location": "./FashionCents/Cards/Wardrobes and Storefront Top/FC_Cards_FastFashion_V4.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Wardrobes and Storefront Top/FC_Cards_Wardrobe_Blue small.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Wardrobes and Storefront Top/FC_Cards_Wardrobe_Green small.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Wardrobes and Storefront Top/FC_Cards_Wardrobe_Orange small.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Wardrobes and Storefront Top/FC_Cards_Wardrobe_Purple small.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Wardrobes and Storefront Top/FC_Cards_Wardrobe_Red small.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Wardrobes and Storefront Top/FC_Cards_Wardrobe_Yellow small.png"
+    }
+]

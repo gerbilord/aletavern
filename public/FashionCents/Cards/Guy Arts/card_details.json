@@ -1,0 +1,24 @@
+[
+    {
+        "location": "default",
+        "count": 1
+    },
+    {
+        "location": "./FashionCents/Cards/Guy Arts/Guy_blue.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Guy Arts/Guy_green.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Guy Arts/Guy_orange.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Guy Arts/Guy_purple.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Guy Arts/Guy_red.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Guy Arts/Guy_yellow.png"
+    }
+]
