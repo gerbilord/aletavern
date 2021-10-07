@@ -154,6 +154,13 @@ export default class HostGameEngine {
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER5_DISCARD);
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER6_DISCARD);
 
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER1_SPONSOR);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER2_SPONSOR);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER3_SPONSOR);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER4_SPONSOR);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER5_SPONSOR);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER6_SPONSOR);
+
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER1_HAND);
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER2_HAND);
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.PLAYER3_HAND);

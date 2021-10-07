@@ -47,7 +47,7 @@ export default (props) => {
 
 // ##########################################################################
 
-    //1
+    // 1
     const [player1Discard, setPlayer1Discard] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER1_DISCARD] = player1Discard;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER1_DISCARD] = setPlayer1Discard;
@@ -60,6 +60,9 @@ export default (props) => {
     const [player1Deck, setPlayer1Deck] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER1_DECK] = player1Deck;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER1_DECK] = setPlayer1Deck;
+    const [player1Sponsor, setPlayer1Sponsor] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER1_SPONSOR] = player1Sponsor;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER1_SPONSOR] = setPlayer1Sponsor;
 
     const [streetVendor1, setStreetVendor1] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.STREET_VENDOR1] = streetVendor1;
@@ -88,6 +91,9 @@ export default (props) => {
     const [player2Deck, setPlayer2Deck] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER2_DECK] = player2Deck;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER2_DECK] = setPlayer2Deck;
+    const [player2Sponsor, setPlayer2Sponsor] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER2_SPONSOR] = player2Sponsor;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER2_SPONSOR] = setPlayer2Sponsor;
 
     const [streetVendor2, setStreetVendor2] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.STREET_VENDOR2] = streetVendor2;
@@ -115,6 +121,9 @@ export default (props) => {
     const [player3Deck, setPlayer3Deck] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER3_DECK] = player3Deck;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER3_DECK] = setPlayer3Deck;
+    const [player3Sponsor, setPlayer3Sponsor] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER3_SPONSOR] = player3Sponsor;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER3_SPONSOR] = setPlayer3Sponsor;
 
     const [streetVendor3, setStreetVendor3] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.STREET_VENDOR3] = streetVendor3;
@@ -142,6 +151,9 @@ export default (props) => {
     const [player4Deck, setPlayer4Deck] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER4_DECK] = player4Deck;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER4_DECK] = setPlayer4Deck;
+    const [player4Sponsor, setPlayer4Sponsor] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER4_SPONSOR] = player4Sponsor;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER4_SPONSOR] = setPlayer4Sponsor;
 
     const [streetVendor4, setStreetVendor4] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.STREET_VENDOR4] = streetVendor4;
@@ -168,6 +180,9 @@ export default (props) => {
     const [player5Deck, setPlayer5Deck] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER5_DECK] = player5Deck;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER5_DECK] = setPlayer5Deck;
+    const [player5Sponsor, setPlayer5Sponsor] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER5_SPONSOR] = player5Sponsor;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER5_SPONSOR] = setPlayer5Sponsor;
 
     const [streetVendor5, setStreetVendor5] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.STREET_VENDOR5] = streetVendor5;
@@ -194,6 +209,10 @@ export default (props) => {
     const [player6Deck, setPlayer6Deck] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER6_DECK] = player6Deck;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER6_DECK] = setPlayer6Deck;
+    const [player6Sponsor, setPlayer6Sponsor] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER6_SPONSOR] = player6Sponsor;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.PLAYER6_SPONSOR] = setPlayer6Sponsor;
+
 
     const [streetVendor6, setStreetVendor6] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.STREET_VENDOR6] = streetVendor6;
@@ -219,6 +238,7 @@ export default (props) => {
 
     const [zoomedStackName, setZoomedStackName] = useState(null);
     const [isZoomedStackFaceUp, setIsZoomedStackFaceUp] = useState(true);
+    const [zoomedStackLabel, setZoomedStackLabel] = useState("");
 
     useEffect(
         ()=>{
@@ -297,6 +317,7 @@ export default (props) => {
         if(stack){
             setZoomedStackName(stack.name);
             setIsZoomedStackFaceUp(isFaceUp);
+            setZoomedStackLabel(stackProps.label);
         }
     }
 
@@ -341,11 +362,12 @@ export default (props) => {
         { displayName: "Select All", onClick: selectAllCards}
     ];
 
-    const createBasicStack = (stackName, sizeClass, isFaceUp=true)=>{
+    const createBasicStack = (stackName, stackLabel, sizeClass, isFaceUp=true, labelSizeClass="")=>{
         return (
             <Stack
                 stack={stackNameToStack[stackName]}
                 setStack={stackNameToStackUpdater[stackName]}
+                label={stackLabel}
                 command={command}
                 setCommand={setCommand}
                 sendCommand={sendCommand}
@@ -354,6 +376,7 @@ export default (props) => {
                 onMouseEnter={onStackMouseEnter}
                 isFaceUp={isFaceUp}
                 sizeClass={sizeClass}
+                labelSizeClass={labelSizeClass}
                 hoverMenuActions={basicActions}
             />
         );
@@ -361,7 +384,6 @@ export default (props) => {
 
     return (
         <div>
-            <h1>Fashion Cents</h1>
             <CardSelectorView
                 open={cardSelectorOpen}
                 setOpen={setCardSelectorOpen}
@@ -369,59 +391,97 @@ export default (props) => {
                 onCardClick={onCardInCardSelectorClicked}
                 command={command}
             />
-            <div className={"fc-flex-container"}>
+            <div className={"fc-flex-container fc-background-image-div"}>
                 <div>
                     <div className={"fc-flex-container"}>
-                        {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_GUY, "fc-card-large")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_HAND, "fc-card-medium", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_DECK, "fc-card-medium", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_DISCARD, "fc-card-medium")}
+                        <div className={"fc-flex-container"}>
+                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_GUY, "", "fc-card-large")}
+                            <div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_HAND, "HAND", "fc-card-half-large", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_DECK, "DECK", "fc-card-half-large", false)}
+                                </div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_DISCARD, "DISCARD", "fc-card-half-large")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_SPONSOR, "SPONSOR", "fc-card-half-large")}
+                                </div>
+                            </div>
+                        </div>
+                        <div className={"fc-flex-container"}>
+                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_GUY, "", "fc-card-large")}
+                            <div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_HAND, "HAND","fc-card-half-large", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_DECK, "DECK", "fc-card-half-large", false)}
+                                </div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_DISCARD, "DISCARD", "fc-card-half-large")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_SPONSOR, "SPONSOR", "fc-card-half-large")}
+                                </div>
+                            </div>
+                        </div>
+                        <div className={"fc-flex-container"}>
+                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_GUY, "", "fc-card-large")}
+                            <div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_HAND, "HAND", "fc-card-half-large", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_DECK, "DECK", "fc-card-half-large", false)}
+                                </div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_DISCARD, "DISCARD", "fc-card-half-large")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_SPONSOR, "SPONSOR", "fc-card-half-large")}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className={"fc-flex-container"}>
-                        {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_GUY, "fc-card-large")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_HAND, "fc-card-medium", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_DECK, "fc-card-medium", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_DISCARD, "fc-card-medium")}
+                    <div className={"fc-flex-container fc-flex-container-center fc-div-max-width-screen"}>
+                        <div className={"fc-flex-container"}>
+                            <div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STOREFRONT, "STOREFRONT", "fc-card-small", false, "fc-card-tiny-text")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT1, "STORE", "fc-card-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT2, "STORE", "fc-card-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT3, "STORE", "fc-card-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT4, "STORE", "fc-card-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT5, "STORE", "fc-card-small")}
+                                </div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.DONATION_BIN, "DONATION", "fc-card-small", true, "fc-card-tiny-text")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT1, "STREET", "fc-card-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT2,"STREET", "fc-card-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT3,"STREET", "fc-card-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT4,"STREET", "fc-card-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT5,"STREET", "fc-card-small")}
+                                </div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.GUYS, "GUYS", "fc-card-tiny", false, "fc-card-tiny-text")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.SOCKS, "SOCKS", "fc-card-tiny", false, "fc-card-tiny-text")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.SPONSORS, "SPONSORS", "fc-card-tiny", false, "fc-card-tiny-text")}
+                                </div>
+
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR1, "", "fc-card-tiny", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR2, "", "fc-card-tiny", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR3, "", "fc-card-tiny", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR4, "", "fc-card-tiny", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR5, "", "fc-card-tiny", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR6, "", "fc-card-tiny", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR7, "", "fc-card-tiny", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR8, "", "fc-card-tiny", false)}
+                                </div>
+                            </div>
+                            <div className={"fc-flex-right-column"}>
+                                <Stack
+                                    stack={stackNameToStack[zoomedStackName]}
+                                    label={zoomedStackLabel}
+                                    command={command}
+                                    isFaceUp={isZoomedStackFaceUp}
+                                    sizeClass={"fc-card-huge"}
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <div className={"fc-flex-container"}>
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STOREFRONT, "fc-card-small", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT1, "fc-card-small")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT2, "fc-card-small")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT3, "fc-card-small")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT4, "fc-card-small")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STORE_SPOT5, "fc-card-small")}
-                    </div>
-                    <div className={"fc-flex-container"}>
-                        {createBasicStack(CONSTANTS.STACK_NAMES.DONATION_BIN, "fc-card-small", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT1, "fc-card-small")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT2, "fc-card-small")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT3, "fc-card-small")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT4, "fc-card-small")}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_SPOT5, "fc-card-small")}
-                    </div>
-                    <div className={"fc-flex-container"}>
-                        {createBasicStack(CONSTANTS.STACK_NAMES.GUYS, "fc-card-tiny", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.SOCKS, "fc-card-tiny", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.SPONSORS, "fc-card-tiny", false)}
-                    </div>
-                    <div className={"fc-flex-container"}>
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR1, "fc-card-tiny", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR2, "fc-card-tiny", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR3, "fc-card-tiny", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR4, "fc-card-tiny", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR5, "fc-card-tiny", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR6, "fc-card-tiny", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR7, "fc-card-tiny", false)}
-                        {createBasicStack(CONSTANTS.STACK_NAMES.STREET_VENDOR8, "fc-card-tiny", false)}
-                    </div>
-                </div>
-                <div className={"fc-flex-right-column"}>
-                    <Stack
-                        stack={stackNameToStack[zoomedStackName]}
-                        command={command}
-                        isFaceUp={isZoomedStackFaceUp}
-                        sizeClass={"fc-card-large"}
-                    />
+
                 </div>
             </div>
         </div>

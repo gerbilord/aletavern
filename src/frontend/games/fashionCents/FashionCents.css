@@ -1,3 +1,8 @@
+.fc-background-image-div {
+    background-image: url("http://aletavern.herokuapp.com/FashionCents/Artwork/FC_KS_Mat_Empty.jpg");
+    background-size: cover;
+}
+
 .fc-stacked {
     position: absolute;
 }
@@ -5,6 +10,10 @@
 .fc-card-tiny {
     height: 52px;
     width: 32px;
+}
+
+.fc-card-tiny-text {
+    font-size: 9px;
 }
 
 .fc-card-small {
@@ -22,8 +31,18 @@
     width: 250px;
 }
 
+.fc-card-huge {
+    height: 420px;
+    width: 300px;
+}
+
+.fc-card-half-large {
+    height: 140px;
+    width: 100px;
+}
+
 .fc-stack-placeholder-color {
-    background-color: #c8cece;
+    background: rgba(255, 255, 255, .7);
 }
 
 .fc-flex-container {
@@ -44,12 +63,14 @@
 
 .fc-selected {
     border-style: solid;
+    border-radius: 5px;
     border-color: red;
     border-width: 7px;
 }
 
 .fc-unselected {
     border-style: solid;
+    border-radius: 5px;
     border-color: transparent;
     border-width: 7px;
 }
@@ -69,7 +90,27 @@
     margin: auto;  
     background: rgb(161, 161, 161);
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 30px;
+    font-size: 20px;
+}
+
+.fc-card-counter-container {
+    display: flex;
+    flex-direction: row-reverse;
+    position: absolute;
+}
+
+.fc-card-counter {
+    font-family: Arial, Helvetica, sans-serif;
+    background: rgb(194, 47, 47);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 2px;
+    width: 20px;
+    height: 20px;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    user-select: none;
 }
 
 .fc-popup-menu-content .fc-popup-menu-content-item:hover {
@@ -84,4 +125,32 @@
     max-height: 90vh;
     max-width: 90vw;
     overflow: auto;
+}
+
+.fc-div-max-width-screen {
+    max-width: 2000px;
+    width: 100vw;
+}
+
+.fc-label-container {
+    display: flex;
+    flex-direction: column-reverse;
+    height: 100%;
+    position: relative;
+    top: 10px;
+}
+
+.fc-label{
+    font-family: Arial, Helvetica, sans-serif;
+    background: rgb(0,0,0);
+    border-radius: 5px;
+    border-style: solid;
+    border-color: rgb(0,0,0);
+    margin-top: auto;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    color: white;
+    user-select: none;
+    z-index: 1;
 }

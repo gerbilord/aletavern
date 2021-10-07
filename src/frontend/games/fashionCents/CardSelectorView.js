@@ -29,7 +29,11 @@ export default (props) => {
 
     if(!open){ return null; }
 
-    let cardSizeClass = "fc-card-medium";
+    let cardSizeClass = "fc-card-large";
+
+    if(stack?.cards?.length > 8){
+        cardSizeClass = "fc-card-medium"
+    }
     if(stack?.cards?.length > 15){
         cardSizeClass = "fc-card-small"
     }
@@ -60,6 +64,7 @@ export default (props) => {
                         onClick={onStackClickWrapper}
                         command={command}
                         key={card.toString()}
+                        showCardCounter={false}
                     />
                 })}
             </div>

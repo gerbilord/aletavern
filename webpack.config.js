@@ -32,11 +32,10 @@ module.exports = {
                 include: path.resolve(__dirname, './src/frontend'),
                 exclude: /\.module\.css$/,
             },
-            /*,
             {
                 test: /\.(png|jpe?g|gif)$/,
                 loader: 'url-loader?limit=10000&name=img/[name].[ext]'
-            } */
+            }
         ],
     },
 

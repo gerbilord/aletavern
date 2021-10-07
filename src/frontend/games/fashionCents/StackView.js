@@ -10,6 +10,7 @@ import Popup from 'reactjs-popup';
 
 const propTypes = {
     stack: PropTypes.object,
+    label: PropTypes.string,
     isFaceUp: PropTypes.bool,
     command: PropTypes.object,
     onClick: PropTypes.func,
@@ -17,11 +18,14 @@ const propTypes = {
     onMouseEnter: PropTypes.func,
     onMouseLeave: PropTypes.func,
     hoverMenuActions: PropTypes.arrayOf(PropTypes.shape({displayName: PropTypes.string, onClick:PropTypes.func})),
-    sizeClass: PropTypes.string
+    sizeClass: PropTypes.string,
+    labelSizeClass: PropTypes.string,
+    showCardCounter: PropTypes.bool,
 }
 
 const defaultProps = {
     stack: null,
+    label: "",
     isFaceUp: true,
     command: null,
     onClick: ()=>{},
@@ -30,16 +34,21 @@ const defaultProps = {
     onMouseLeave: ()=>{},
     hoverMenuActions: [],
     sizeClass: "",
+    labelSizeClass: "",
+    showCardCounter: true,
 }
 
 const StackView = (props) => {
     let {stack,
+        label,
         isFaceUp,
         command,
         onClick, onRightClick,
         onMouseEnter, onMouseLeave,
         hoverMenuActions,
-        sizeClass} = props;
+        sizeClass,
+        labelSizeClass,
+        showCardCounter} = props;
 
     const isSelected = stack instanceof Stack ? stack.isAnyCardInStack(command.selectedCards) : false; // Is selected is based off command. It will update when command does.
 
@@ -58,7 +67,7 @@ const StackView = (props) => {
     const mainContent =
         (<div onClick={onEventWrapper(onClick)}
               onContextMenu={onEventWrapper(onRightClick)}
-              className={classNames(sizeClass, "fc-stack-placeholder-color", {"fc-selected":isSelected, "fc-unselected":!isSelected, "fc-clickable":isClickable})}>
+              className={classNames(sizeClass, "fc-stack-placeholder-color", "fc-relative-position", {"fc-selected":isSelected, "fc-unselected":!isSelected, "fc-clickable":isClickable})}>
             {stack?.cards?.length > 0 && stack?.cards?.slice(0).reverse().map(
                 (card, index) =>{
                     return (<CardView
@@ -75,6 +84,19 @@ const StackView = (props) => {
                     isFaceUp={false}
                     key={stack.cards[0].toString() + "back"}
                 />)
+            }
+            { stack?.cards?.length > 1 &&  showCardCounter &&
+                <div className={"fc-card-counter-container"}>
+                    <div className={"fc-card-counter"}>
+                        {stack.cards.length}
+                    </div>
+                </div>
+
+            }
+            { label !== "" &&
+                <div className={"fc-label-container"}>
+                    <div className={"fc-label " + labelSizeClass}>{label}</div>
+                </div>
             }
         </div>);
 
@@ -98,7 +120,7 @@ const StackView = (props) => {
                 { stack?.cards?.length > 0 &&
                 <div>
                     {hoverMenuActions.map(({displayName, onClick})=>{
-                        return <div className={"fc-clickable fc-popup-menu-content-item"}
+                        return <div className={"fc-clickable fc-popup-menu-content-item "}
                                     onClick={onEventWrapper(onClick)}
                                     key={displayName}
                         >

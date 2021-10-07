@@ -44,6 +44,13 @@ const CONSTANTS = Object.freeze({
         PLAYER5_DISCARD: "player5_discard",
         PLAYER6_DISCARD: "player6_discard",
 
+        PLAYER1_SPONSOR: "player1_sponsor",
+        PLAYER2_SPONSOR: "player2_sponsor",
+        PLAYER3_SPONSOR: "player3_sponsor",
+        PLAYER4_SPONSOR: "player4_sponsor",
+        PLAYER5_SPONSOR: "player5_sponsor",
+        PLAYER6_SPONSOR: "player6_sponsor",
+
         STREET_VENDOR1: "street_vendor1",
         STREET_VENDOR2: "street_vendor2",
         STREET_VENDOR3: "street_vendor3",
