@@ -117,7 +117,7 @@ const StackView = (props) => {
                 contentStyle={{ padding: '0px', border: 'none' }}
                 arrow={false}
             >
-                { stack?.cards?.length > 0 &&
+                { stack?.cards?.length > 1 &&
                 <div>
                     {hoverMenuActions.map(({displayName, onClick})=>{
                         return <div className={"fc-clickable fc-popup-menu-content-item "}
