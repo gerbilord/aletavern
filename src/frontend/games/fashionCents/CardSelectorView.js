@@ -52,7 +52,7 @@ export default (props) => {
             lockScroll={true}
         >
             <div className={classNames("fc-flex-container", "fc-flex-container-wrap", "fc-flex-container-center", "fc-card-selector", "fc-scrollable")}
-            onContextMenu={(e)=>{e.preventDefault(); setOpen(false);}}>
+            onContextMenu={(e)=>{e.preventDefault(); e.stopPropagation(); setOpen(false);}}>
                 {stack.cards.map((card)=>{
                     const placeHolderStack = new Stack(); // The single card is really just a stack with a single card!
                     placeHolderStack.cards.push(card);
