@@ -12,7 +12,6 @@ const propTypes = {
     stack: PropTypes.object,
     label: PropTypes.string,
     isFaceUp: PropTypes.bool,
-    command: PropTypes.object,
     onClick: PropTypes.func,
     onRightClick: PropTypes.func,
     onMouseEnter: PropTypes.func,
@@ -21,13 +20,14 @@ const propTypes = {
     sizeClass: PropTypes.string,
     labelSizeClass: PropTypes.string,
     showCardCounter: PropTypes.bool,
+    isSelected:PropTypes.bool,
+    isClickable:PropTypes.bool,
 }
 
 const defaultProps = {
     stack: null,
     label: "",
     isFaceUp: true,
-    command: null,
     onClick: ()=>{},
     onRightClick: ()=>{},
     onMouseEnter: ()=>{},
@@ -36,21 +36,22 @@ const defaultProps = {
     sizeClass: "",
     labelSizeClass: "",
     showCardCounter: true,
+    isSelected: false,
+    isClickable: true,
 }
 
 const StackView = (props) => {
     let {stack,
         label,
         isFaceUp,
-        command,
         onClick, onRightClick,
         onMouseEnter, onMouseLeave,
         hoverMenuActions,
         sizeClass,
         labelSizeClass,
-        showCardCounter} = props;
-
-    const isSelected = stack instanceof Stack ? stack.isAnyCardInStack(command.selectedCards) : false; // Is selected is based off command. It will update when command does.
+        showCardCounter,
+        isClickable,
+        isSelected} = props;
 
     const onEventWrapper = (onEventFunction) =>{
         return (e)=>{
@@ -58,17 +59,11 @@ const StackView = (props) => {
         }
     }
 
-    let isClickable = false;
-
-    if(stack?.cards?.length > 0 || (command?.fromStack !== stack?.name && command?.selectedCards.length > 0)){
-        isClickable = true;
-    }
-
     const mainContent =
         (<div onClick={onEventWrapper(onClick)}
               onContextMenu={onEventWrapper(onRightClick)}
               className={classNames(sizeClass, "fc-stack-placeholder-color", "fc-relative-position", {"fc-selected":isSelected, "fc-unselected":!isSelected, "fc-clickable":isClickable})}>
-            {stack?.cards?.length > 0 && stack?.cards?.slice(0).reverse().map(
+            {stack?.cards?.length > 0 && (isFaceUp || stack?.cards?.length < 25) && stack?.cards?.slice(0).reverse().map(
                 (card, index) =>{
                     return (<CardView
                         className={classNames(sizeClass, "fc-stacked")}

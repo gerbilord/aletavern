@@ -51,7 +51,8 @@ export default (props) => {
             onClose={()=>setOpen(false)}
             lockScroll={true}
         >
-            <div className={classNames("fc-flex-container", "fc-flex-container-wrap", "fc-flex-container-center", "fc-card-selector", "fc-scrollable")}>
+            <div className={classNames("fc-flex-container", "fc-flex-container-wrap", "fc-flex-container-center", "fc-card-selector", "fc-scrollable")}
+            onContextMenu={(e)=>{e.preventDefault(); setOpen(false);}}>
                 {stack.cards.map((card)=>{
                     const placeHolderStack = new Stack(); // The single card is really just a stack with a single card!
                     placeHolderStack.cards.push(card);
@@ -62,10 +63,11 @@ export default (props) => {
                         stack={placeHolderStack}
                         sizeClass={cardSizeClass}
                         onClick={onStackClickWrapper}
-                        command={command}
                         key={card.toString()}
                         showCardCounter={false}
-                    />
+                        isSelected={stack?.isAnyCardInStack?.(command?.selectedCards) || false}
+                        isClickable={true}
+                />
                 })}
             </div>
         </Popup>

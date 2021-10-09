@@ -363,6 +363,14 @@ export default (props) => {
     ];
 
     const createBasicStack = (stackName, stackLabel, sizeClass, isFaceUp=true, labelSizeClass="")=>{
+        const stack = stackNameToStack[stackName];
+
+        let isClickable = false;
+        if(stack?.cards?.length > 0 || (command?.fromStack !== stack?.name && command?.selectedCards.length > 0)){
+            isClickable = true;
+        }
+        const isSelected = stack?.isAnyCardInStack?.(command?.selectedCards) || false;
+
         return (
             <Stack
                 stack={stackNameToStack[stackName]}
@@ -378,6 +386,8 @@ export default (props) => {
                 sizeClass={sizeClass}
                 labelSizeClass={labelSizeClass}
                 hoverMenuActions={basicActions}
+                isClickable={isClickable}
+                isSelected={isSelected}
             />
         );
     };
@@ -477,6 +487,8 @@ export default (props) => {
                                     command={command}
                                     isFaceUp={isZoomedStackFaceUp}
                                     sizeClass={"fc-card-huge"}
+                                    isClickable={false}
+                                    isSelected={stackNameToStack[zoomedStackName]?.isAnyCardInStack?.(command.selectedCards) || false}
                                 />
                             </div>
                         </div>
