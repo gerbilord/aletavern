@@ -65,7 +65,7 @@ export default (props) => {
                         onClick={onStackClickWrapper}
                         key={card.toString()}
                         showCardCounter={false}
-                        isSelected={stack?.isAnyCardInStack?.(command?.selectedCards) || false}
+                        isSelected={command?.selectedCards?.some(someCard=>someCard.equals(card)) || false}
                         isClickable={true}
                 />
                 })}
