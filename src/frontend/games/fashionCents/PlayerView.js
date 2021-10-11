@@ -391,6 +391,12 @@ export default (props) => {
 
     return (
         <div>
+            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_GUY, "", "fc-card-large")}
+            {createBasicStack(CONSTANTS.STACK_NAMES.GUYS, "GUYS", "fc-card-large")}
+        </div>
+    )
+/*    return (
+        <div>
             <CardSelectorView
                 open={cardSelectorOpen}
                 setOpen={setCardSelectorOpen}
@@ -494,5 +500,5 @@ export default (props) => {
                 </div>
             </div>
         </div>
-    );
+    );*/
 }
