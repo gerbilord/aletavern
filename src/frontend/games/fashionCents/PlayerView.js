@@ -278,7 +278,7 @@ export default (props) => {
 
     const sendCommand = useCallback(() => {
         console.log("SENDING COMMAND");
-        console.log(moment().valueOf())
+        console.log(moment.now())
         ws.sendMessageToHost(makeCommandMessage(command));
         setCommand(new Command());
     }, [command]);
@@ -392,13 +392,14 @@ export default (props) => {
         );
     };
 
-    return (
+    // for testing
+/*    return (
         <div>
             {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_GUY, "", "fc-card-large")}
             {createBasicStack(CONSTANTS.STACK_NAMES.GUYS, "GUYS", "fc-card-large")}
         </div>
-    )
-/*    return (
+    )*/
+    return (
         <div>
             <CardSelectorView
                 open={cardSelectorOpen}
@@ -503,5 +504,5 @@ export default (props) => {
                 </div>
             </div>
         </div>
-    );*/
+    );
 }
