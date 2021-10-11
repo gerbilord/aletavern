@@ -20,6 +20,20 @@ export default class Stack {
         return false;
     }
 
+    equals(otherStack){
+        if(this.cards.length !== otherStack?.cards?.length) {
+            return false;
+        }
+
+        for (let cardIndex in otherStack.cards){
+            if(!this.cards[cardIndex].equals(otherStack.cards[cardIndex])){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     static fromJson(jsonStack) {
         const newStack = new Stack();
         newStack.name = jsonStack.name;

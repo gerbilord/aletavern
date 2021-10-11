@@ -7,6 +7,7 @@ import Command from 'Games/fashionCents/Command';
 import Stack from './Stack';
 import CardView from 'Games/fashionCents/CardView';
 import Popup from 'reactjs-popup';
+import ImageStackView from 'Games/fashionCents/ImageStackView';
 
 const propTypes = {
     stack: PropTypes.object,
@@ -63,24 +64,20 @@ const StackView = (props) => {
         (<div onClick={onEventWrapper(onClick)}
               onContextMenu={onEventWrapper(onRightClick)}
               className={classNames(sizeClass, "fc-stack-placeholder-color", "fc-relative-position", {"fc-selected":isSelected, "fc-unselected":!isSelected, "fc-clickable":isClickable})}>
-            {stack?.cards?.length > 0 && stack?.cards?.slice(0).reverse().map(
-                (card, index) =>{
-                    return (<CardView
-                        className={classNames(sizeClass, "fc-stacked")}
-                        card={card}
-                        key={card.toString()}
-                    />)
-                })
+            {stack?.cards?.length > 0 &&
+                <ImageStackView
+                    imageClassName={classNames(sizeClass, "fc-stacked")}
+                    images={stack.cards.map(card=>card.url)}
+                />
             }
-            {!isFaceUp && stack?.cards?.length > 0 && (
-                <CardView
-                    className={classNames(sizeClass, "fc-stacked")}
-                    card={stack.cards[0]}
-                    isFaceUp={false}
-                    key={stack.cards[0].toString() + "back"}
-                />)
+
+            { !isFaceUp && stack?.cards?.length > 0 &&
+                <ImageStackView
+                    imageClassName={classNames(sizeClass, "fc-stacked")}
+                    images={[stack.cards[0].cardBackUrl]}
+                />
             }
-            { stack?.cards?.length > 1 &&  showCardCounter &&
+            { stack?.cards?.length > 1 && showCardCounter &&
                 <div className={"fc-card-counter-container"}>
                     <div className={"fc-card-counter"}>
                         {stack.cards.length}
@@ -132,4 +129,4 @@ const StackView = (props) => {
 StackView.propTypes = propTypes;
 StackView.defaultProps = defaultProps;
 
-export default memo(StackView);
+export default StackView;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Popup from 'reactjs-popup';
 import Stack from 'Games/fashionCents/StackView';
 import Card from './CardView';
@@ -275,12 +275,12 @@ export default (props) => {
         return message;
     }
 
-    const sendCommand = () => {
+    const sendCommand = useCallback(() => {
         ws.sendMessageToHost(makeCommandMessage(command));
         setCommand(new Command());
-    }
+    }, [command]);
 
-    const onStackClick = (e, stackProps) =>{
+    const onStackClick = useCallback((e, stackProps) =>{
         const stack = stackProps.stack;
         const isSelected = stack.isAnyCardInStack(command.selectedCards);
 
@@ -299,7 +299,7 @@ export default (props) => {
                 sendCommand(); // This clears the command for us.
             }
         }
-    }
+    }, [command]);
 
     const onStackRightClick = (e, stackProps)=>{
         const stack = stackProps.stack;
@@ -310,7 +310,7 @@ export default (props) => {
         }
     }
 
-    const onStackMouseEnter = (e, stackProps)=>{
+    const onStackMouseEnter = useCallback( (e, stackProps)=>{
         const stack = stackProps.stack;
         const isFaceUp = stackProps.isFaceUp;
 
@@ -319,15 +319,15 @@ export default (props) => {
             setIsZoomedStackFaceUp(isFaceUp);
             setZoomedStackLabel(stackProps.label);
         }
-    }
+    },[zoomedStackName, zoomedStackLabel, isZoomedStackFaceUp]);
 
-    const selectAllCards = (e, stackProps)=>{
+    const selectAllCards = useCallback( (e, stackProps)=>{
         const newCommand = new Command();
         newCommand.type = CONSTANTS.COMMAND_TYPE.MOVE;
         newCommand.fromStack = stackProps.stack.name;
         newCommand.selectedCards = stackProps.stack.cards;
         setCommand(newCommand);
-    }
+    }, [command]);
 
     const onStackShuffle = (e, stackProps)=>{
         const stackNameToShuffle = stackProps.stack.name;
@@ -338,7 +338,7 @@ export default (props) => {
         ws.sendMessageToHost(makeCommandMessage(shuffleCommand));
     }
 
-    const onCardInCardSelectorClicked = (e, clickedCard, stackProps) =>{
+    const onCardInCardSelectorClicked = useCallback( (e, clickedCard, stackProps) =>{
         const stack = stackProps.stack;
 
         if(command?.fromStack === stack.name){ // if it is the same stack
@@ -356,7 +356,8 @@ export default (props) => {
             newCommand.selectedCards.push(clickedCard); // And clicked card.
             setCommand(Command.fromJson(newCommand)); // And update our command, Command.fromJson is to make a copy so react knows to update.
         }
-    }
+    }, [command]);
+
     const basicActions = [
         { displayName: "Shuffle", onClick: onStackShuffle },
         { displayName: "Select All", onClick: selectAllCards}
@@ -374,18 +375,14 @@ export default (props) => {
         return (
             <Stack
                 stack={stackNameToStack[stackName]}
-                setStack={stackNameToStackUpdater[stackName]}
                 label={stackLabel}
-                command={command}
-                setCommand={setCommand}
-                sendCommand={sendCommand}
+                isFaceUp={isFaceUp}
                 onClick={onStackClick}
                 onRightClick={onStackRightClick}
                 onMouseEnter={onStackMouseEnter}
-                isFaceUp={isFaceUp}
+                hoverMenuActions={basicActions}
                 sizeClass={sizeClass}
                 labelSizeClass={labelSizeClass}
-                hoverMenuActions={basicActions}
                 isClickable={isClickable}
                 isSelected={isSelected}
             />
