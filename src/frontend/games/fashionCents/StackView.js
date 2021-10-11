@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import CONSTANTS from 'Games/fashionCents/fcConstants';
 import classNames from 'classnames';
@@ -63,7 +63,7 @@ const StackView = (props) => {
         (<div onClick={onEventWrapper(onClick)}
               onContextMenu={onEventWrapper(onRightClick)}
               className={classNames(sizeClass, "fc-stack-placeholder-color", "fc-relative-position", {"fc-selected":isSelected, "fc-unselected":!isSelected, "fc-clickable":isClickable})}>
-            {stack?.cards?.length > 0 && (isFaceUp || stack?.cards?.length < 25) && stack?.cards?.slice(0).reverse().map(
+            {stack?.cards?.length > 0 && stack?.cards?.slice(0).reverse().map(
                 (card, index) =>{
                     return (<CardView
                         className={classNames(sizeClass, "fc-stacked")}
@@ -132,4 +132,4 @@ const StackView = (props) => {
 StackView.propTypes = propTypes;
 StackView.defaultProps = defaultProps;
 
-export default StackView;
+export default memo(StackView);
