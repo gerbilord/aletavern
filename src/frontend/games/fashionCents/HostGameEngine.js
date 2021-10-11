@@ -37,6 +37,7 @@ export default class HostGameEngine {
         message[CONSTANTS.STACKS] = this.stacks;
         message[CONSTANTS.STACKS_TO_UPDATE] = stacksToUpdate;
 
+        console.log("UPDATING STACKS")
         this.ws.sendMessageToAllOthers(message);
     }
 

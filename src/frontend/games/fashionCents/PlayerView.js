@@ -276,6 +276,7 @@ export default (props) => {
     }
 
     const sendCommand = useCallback(() => {
+        console.log("SENDING COMMAND");
         ws.sendMessageToHost(makeCommandMessage(command));
         setCommand(new Command());
     }, [command]);
