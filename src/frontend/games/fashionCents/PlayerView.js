@@ -7,6 +7,7 @@ import StackObject from 'Games/fashionCents/Stack'
 import CONSTANTS from 'Games/fashionCents/fcConstants';
 import Command from 'Games/fashionCents/Command';
 import CardSelectorView from 'Games/fashionCents/CardSelectorView';
+import moment from 'moment';
 
 
 var getUrl = window.location;
@@ -277,6 +278,7 @@ export default (props) => {
 
     const sendCommand = useCallback(() => {
         console.log("SENDING COMMAND");
+        console.log(moment().valueOf())
         ws.sendMessageToHost(makeCommandMessage(command));
         setCommand(new Command());
     }, [command]);

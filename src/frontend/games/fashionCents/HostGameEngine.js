@@ -5,6 +5,7 @@ import * as listUtils from 'Utils/listUtils';
 
 import CONSTANTS from 'Games/fashionCents/fcConstants';
 import Command from 'Games/fashionCents/Command';
+import moment from 'moment';
 
 export default class HostGameEngine {
     constructor(ws) {
@@ -38,6 +39,7 @@ export default class HostGameEngine {
         message[CONSTANTS.STACKS_TO_UPDATE] = stacksToUpdate;
 
         console.log("UPDATING STACKS")
+        console.log(moment().valueOf())
         this.ws.sendMessageToAllOthers(message);
     }
 

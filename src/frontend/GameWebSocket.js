@@ -2,6 +2,7 @@
 
 import * as ListUtils from 'Utils/listUtils';
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import moment from 'moment';
 
 export default class GameWebSocket {
     // TODO make sure websocket is still alive!
@@ -81,6 +82,7 @@ export default class GameWebSocket {
 
         if (this.logging && msgObj.type !== 'PONG') {
             console.log(msgObj);
+            console.log(moment().valueOf())
         }
 
         if(msgObj.type === 'PONG'){
