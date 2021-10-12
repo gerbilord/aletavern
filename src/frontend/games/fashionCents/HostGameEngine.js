@@ -35,12 +35,26 @@ export default class HostGameEngine {
     updatePlayerStacks(stacksToUpdate=[]) {
         const message = {};
         message[CONSTANTS.MESSAGE_TYPE_KEY] = CONSTANTS.MESSAGE_TYPE.UPDATE_STACKS;
-        message[CONSTANTS.STACKS] = this.stacks;
+        message[CONSTANTS.STACKS] = this.getStackObjectsToUpdate(stacksToUpdate);
         message[CONSTANTS.STACKS_TO_UPDATE] = stacksToUpdate;
 
         console.log("SENDING UPDATING STACKS")
         console.log(moment.now())
         this.ws.sendMessageToAllOthers(message);
+    }
+
+    getStackObjectsToUpdate(stacksToUpdate){
+        if (stacksToUpdate == null || stacksToUpdate.length === 0) {
+            return this.stacks;
+        }
+
+        const stackObjectsToUpdate = {};
+
+        stacksToUpdate.forEach((stackToUpdate)=>{
+            stackObjectsToUpdate[stackToUpdate] = this.stacks[stackToUpdate];
+        });
+
+        return stackObjectsToUpdate;
     }
 
     setLogUpdater(updateLogs){
