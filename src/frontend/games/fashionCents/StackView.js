@@ -19,6 +19,7 @@ const propTypes = {
     onMouseLeave: PropTypes.func,
     hoverMenuActions: PropTypes.arrayOf(PropTypes.shape({displayName: PropTypes.string, onClick:PropTypes.func})),
     sizeClass: PropTypes.string,
+    otherClass: PropTypes.string,
     labelSizeClass: PropTypes.string,
     showCardCounter: PropTypes.bool,
     isSelected:PropTypes.bool,
@@ -35,6 +36,7 @@ const defaultProps = {
     onMouseLeave: ()=>{},
     hoverMenuActions: [],
     sizeClass: "",
+    otherClass: "",
     labelSizeClass: "",
     showCardCounter: true,
     isSelected: false,
@@ -49,6 +51,7 @@ const StackView = (props) => {
         onMouseEnter, onMouseLeave,
         hoverMenuActions,
         sizeClass,
+        otherClass,
         labelSizeClass,
         showCardCounter,
         isClickable,
@@ -63,7 +66,7 @@ const StackView = (props) => {
     const mainContent =
         (<div onClick={onEventWrapper(onClick)}
               onContextMenu={onEventWrapper(onRightClick)}
-              className={classNames(sizeClass, "fc-stack-placeholder-color", "fc-relative-position", {"fc-selected":isSelected, "fc-unselected":!isSelected, "fc-clickable":isClickable})}>
+              className={classNames(sizeClass, otherClass, "fc-stack-placeholder-color", "fc-relative-position", {"fc-selected":isSelected, "fc-unselected":!isSelected, "fc-clickable":isClickable})}>
             {stack?.cards?.length > 0 &&
                 <ImageStackView
                     imageClassName={classNames(sizeClass, "fc-stacked")}

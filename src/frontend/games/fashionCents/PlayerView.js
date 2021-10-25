@@ -284,6 +284,7 @@ export default (props) => {
     }, [command]);
 
     const onStackClick = useCallback((e, stackProps) =>{
+        e.stopPropagation();
         const stack = stackProps.stack;
         const isSelected = stack.isAnyCardInStack(command.selectedCards);
 
@@ -325,6 +326,8 @@ export default (props) => {
     },[zoomedStackName, zoomedStackLabel, isZoomedStackFaceUp]);
 
     const selectAllCards = useCallback( (e, stackProps)=>{
+        e.stopPropagation();
+
         const newCommand = new Command();
         newCommand.type = CONSTANTS.COMMAND_TYPE.MOVE;
         newCommand.fromStack = stackProps.stack.name;
@@ -333,6 +336,8 @@ export default (props) => {
     }, [command]);
 
     const onStackShuffle = (e, stackProps)=>{
+        e.stopPropagation();
+
         const stackNameToShuffle = stackProps.stack.name;
         const shuffleCommand = new Command();
         shuffleCommand.type = CONSTANTS.COMMAND_TYPE.SHUFFLE;
@@ -392,15 +397,10 @@ export default (props) => {
         );
     };
 
-    // for testing
-/*    return (
-        <div>
-            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_GUY, "", "fc-card-large")}
-            {createBasicStack(CONSTANTS.STACK_NAMES.GUYS, "GUYS", "fc-card-large")}
-        </div>
-    )*/
     return (
-        <div>
+        <div
+            onClick={()=>setCommand(new Command())}
+        >
             <CardSelectorView
                 open={cardSelectorOpen}
                 setOpen={setCardSelectorOpen}
@@ -494,6 +494,7 @@ export default (props) => {
                                     command={command}
                                     isFaceUp={isZoomedStackFaceUp}
                                     sizeClass={"fc-card-huge"}
+                                    otherClass={"fc-no-select"}
                                     isClickable={false}
                                     isSelected={stackNameToStack[zoomedStackName]?.isAnyCardInStack?.(command.selectedCards) || false}
                                 />
