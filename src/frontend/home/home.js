@@ -35,6 +35,12 @@ class Home extends React.Component {
                             <input
                                 type="text"
                                 placeholder="Game Id"
+                                onKeyDown={e=>{if(e.key === "Enter" && this.state.name.length !== 0 && this.state.gameId.length !== 0){
+                                    this.props.clickJoin(
+                                        this.state.gameId,
+                                        this.state.name
+                                    );
+                                }}}
                                 onChange={(event) =>
                                     this.setState({
                                         gameId: event.target.value,

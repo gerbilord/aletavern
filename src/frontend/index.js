@@ -83,7 +83,7 @@ class App extends React.Component {
 
     render() {
         switch (
-            this.state.currentGame //TODO consider making if instead
+            this.state.currentGame
         ) {
             case 'home':
                 return (
@@ -114,7 +114,7 @@ class App extends React.Component {
 
             default:
                 let GameView = this.currentGame.getGlobalGameView();
-                return <GameView gameWrapper={this.currentGame} />; // TODO seperate host and join view
+                return <GameView gameWrapper={this.currentGame} />;
         }
     }
 }
