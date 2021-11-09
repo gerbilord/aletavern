@@ -1,7 +1,7 @@
 import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
-import MessageObject from 'Icebreaker/IbShared/IbSharedGameLogic/IbMessage';
-import ViewData from 'Icebreaker/IbShared/IbSharedViews/IbSharedViewData';
+import MessageObject from 'Icebreaker/IbShared/IbMessage';
+import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 
 // noinspection JSUnusedGlobalSymbols
 
@@ -40,7 +40,7 @@ export default class AskPlayerQuestionRound {
             const message = new MessageObject(msgObj);
             if (
                 message.getSpecificRound() ===
-                    CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION &&
+                    CONSTANTS.ROUNDS.PROMPT &&
                 message.getMainMessageType() ===
                     CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS &&
                 message.getSender() !== this.hostWs.hostId // Don't listen to your own messages! // TODO Maybe check if person is in round?
@@ -107,7 +107,7 @@ export default class AskPlayerQuestionRound {
     // TODO Consider refactoring to start round. (currently type is start round).
     createStartRoundMessage(question) {
         const promptMessage = new MessageObject();
-        promptMessage.addRound(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
+        promptMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
         promptMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
         promptMessage.setData(question);
         return promptMessage.getMessage();
@@ -115,14 +115,14 @@ export default class AskPlayerQuestionRound {
 
     createEndRoundMessage() {
         const endRoundMessage = new MessageObject();
-        endRoundMessage.addRound(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
+        endRoundMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
         endRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
         return endRoundMessage.getMessage();
     }
 
     getViewData() {
         const viewData = new ViewData();
-        viewData.addViewType(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
+        viewData.addViewType(CONSTANTS.ROUNDS.PROMPT);
 
         const extraData = {timeLeft: this.timeLeft, playersYetToAnswer: this.playersYetToAnswer};
         viewData.setExtraData(extraData);

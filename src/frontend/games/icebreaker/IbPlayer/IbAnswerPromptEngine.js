@@ -1,7 +1,7 @@
 import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
-import MessageObject from 'Icebreaker/IbShared/IbSharedGameLogic/IbMessage';
-import ViewData from 'Icebreaker/IbShared/IbSharedViews/IbSharedViewData';
+import MessageObject from 'Icebreaker/IbShared/IbMessage';
+import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 
 export default class AnswerPromptRound {
     constructor(playerWs, prompt) {
@@ -28,11 +28,11 @@ export default class AnswerPromptRound {
         if(!this.answerSent){
             this.answerSent = true;
             const answerMessage = new MessageObject();
-            answerMessage.addRound(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
+            answerMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
             answerMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS);
             const data = {prompt:this.prompt, answer:this.currentAnswer}
             answerMessage.setData(data);
-            this.playerWs.sendMessageToHost(answerMessage.getMessage());
+            this.playerWs.sendMessageToHost(answerMessage.getMessage()); // TODO consider cleaning up when sending msg
         }
     }
 
@@ -41,7 +41,7 @@ export default class AnswerPromptRound {
             const message = new MessageObject(msgObj);
             if (message.getSender() === this.playerWs.hostId
                 && message.getSpecificMessageType() === CONSTANTS.MESSAGE_TYPE.END_ROUND
-                && message.getSpecificRound() === CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION
+                && message.getSpecificRound() === CONSTANTS.ROUNDS.PROMPT
             ) {
                 this.cleanUpAndEndRound();
             }
@@ -57,7 +57,7 @@ export default class AnswerPromptRound {
 
     getViewData() {
         const viewData = new ViewData();
-        viewData.addViewType(CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION);
+        viewData.addViewType(CONSTANTS.ROUNDS.PROMPT);
         const extraData = {prompt: this.prompt, answerSent: this.answerSent, updateAnswer: this.updateAnswer.bind(this), sendAnswer: this.sendAnswer.bind(this)};
         viewData.setExtraData(extraData);
 

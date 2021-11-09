@@ -1,8 +1,8 @@
-import CONSTANTS from '../../IbConstants';
-import MessageObject from 'Icebreaker/IbShared/IbSharedGameLogic/IbMessage';
+import CONSTANTS from '../IbConstants';
+import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import * as ListUtils from 'Utils/listUtils';
-import LobbyRound from 'Icebreaker/IbPlayer/IbPlayerGameLogic/IbPlayerRoundLogic/IbPlayerLobbyRoundEngine';
-import AnswerPromptRound from 'Icebreaker/IbPlayer/IbPlayerGameLogic/IbPlayerRoundLogic/IbPlayerSubRoundLogic/IbPlayerAnswerPromptRoundEngine';
+import LobbyRound from 'Icebreaker/IbPlayer/IbPlayerLobbyRoundEngine';
+import AnswerPromptRound from 'Icebreaker/IbPlayer/IbAnswerPromptEngine';
 
 export default class gameEngine {
     constructor(gameWebSocket) {
@@ -29,7 +29,7 @@ export default class gameEngine {
         switch (roundName) {
             case CONSTANTS.ROUNDS.LOBBY:
                 return new LobbyRound(this.ws, roundData);
-            case CONSTANTS.ROUNDS.ASK_PLAYERS_QUESTION:
+            case CONSTANTS.ROUNDS.PROMPT:
                 return new AnswerPromptRound(this.ws, roundData);
         }
     }

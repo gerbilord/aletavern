@@ -9,7 +9,7 @@ export function filterInPlace(listToFilter, filterFunction) {
 // Removes every matching (===) item from the list
 export function removeItemFromList(listToRemoveItemFrom, itemToRemove) {
     filterInPlace(listToRemoveItemFrom, (item) => {
-        return item === itemToRemove;
+        return item !== itemToRemove;
     });
 }
 

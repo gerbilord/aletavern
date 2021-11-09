@@ -11,8 +11,12 @@ const CONSTANTS = Object.freeze({
     ROUND_KEY: 'ROUND',
     ROUNDS: {
         LOBBY: 'LOBBY',
-        ASK_PLAYERS_QUESTION: 'ASKPLAYERSQUESTION',
-        QUIZ_PLAYERS: 'QUIZPLAYERS',
+        HOST_ASKS_TEXT_PROMPT_TO_ALL: 'HOSTASKTEXTPROMPTTOALL',
+        PROMPT: 'PROMPT',
+    },
+
+    PROMPT_TYPE:{
+        TEXT: "TEXT"
     },
 
     DATA_KEY: 'DATA',

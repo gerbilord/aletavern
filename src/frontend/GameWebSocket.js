@@ -82,8 +82,8 @@ export default class GameWebSocket {
 
         if (this.logging && msgObj.type !== 'PONG') {
             console.log(msgObj);
-            console.log(performance.now() - event.timeStamp);
-            console.log(moment.now())
+            // console.log(performance.now() - event.timeStamp);
+            // console.log(moment.now())
         }
 
         if(msgObj.type === 'PONG'){

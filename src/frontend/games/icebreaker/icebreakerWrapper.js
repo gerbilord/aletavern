@@ -1,8 +1,8 @@
-import HostView from './IbHost/IbHostViews/IbHostParentView';
-import HostGameEngine from './IbHost/IbHostGameLogic/IbHostGameEngine';
+import HostView from './IbHost/IbHostParentView';
+import HostGameEngine from './IbHost/IbHostGameEngine';
 
-import PlayerView from './IbPlayer/IbPlayerViews/IbPlayerParentView';
-import PlayerGameEngine from './IbPlayer/IbPlayerGameLogic/IbPlayerGameEngine';
+import PlayerView from './IbPlayer/IbPlayerParentView';
+import PlayerGameEngine from './IbPlayer/IbPlayerGameEngine';
 
 export default class icebreakerWrapper {
     // REQUIRED

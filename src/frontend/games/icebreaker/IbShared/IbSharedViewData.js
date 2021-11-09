@@ -16,6 +16,10 @@ export default class icebreakerViewData {
         return this.viewTypeHierarchy[0];
     }
 
+    getSpecificView() {
+        return this.viewTypeHierarchy[this.viewTypeHierarchy.length - 1]
+    }
+
     setExtraData(newData) {
         this.extraViewData = newData;
     }

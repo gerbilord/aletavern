@@ -7,6 +7,5 @@ export default class Player {
 
         this.name = playerName;
         this.id = playerId;
-        this.score = 0;
     }
 }

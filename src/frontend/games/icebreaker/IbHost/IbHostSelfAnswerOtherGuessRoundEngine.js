@@ -1,6 +1,6 @@
 import CONSTANTS from 'Icebreaker/IbConstants';
-import PromptPlayerRound from 'Icebreaker/IbHost/IbHostGameLogic/IbHostRoundLogic/IbHostSubRoundLogic/IbHostAskPlayerQuestionRoundEngine';
-import QuizPlayerRound from 'Icebreaker/IbHost/IbHostGameLogic/IbHostRoundLogic/IbHostSubRoundLogic/IbHostQuizPlayersRoundEngine';
+import PromptPlayerRound from 'Icebreaker/IbHost/IbHostAskPlayerQuestionRoundEngine';
+import QuizPlayerRound from 'Icebreaker/IbHost/IbHostQuizPlayersRoundEngine';
 
 export default class SelfAnswerOtherGuessEngine { // TODO consider abstracting to multi-round engine that takes in rounds
     constructor(gameWebSocket, players, prompts) {

@@ -1,7 +1,7 @@
 import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
-import MessageObject from 'Icebreaker/IbShared/IbSharedGameLogic/IbMessage';
-import ViewData from 'Icebreaker/IbShared/IbSharedViews/IbSharedViewData';
+import MessageObject from 'Icebreaker/IbShared/IbMessage';
+import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 
 
 
