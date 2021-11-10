@@ -4,7 +4,6 @@ export default function IbRoundComponentLoader(props) {
     const { ws, viewData, roundViews, viewLevel } = props;
 
     const viewTypes = viewData?.getViewTypes();
-    const extraData = viewData?.getExtraData();
 
     if (
         viewTypes &&
@@ -15,16 +14,15 @@ export default function IbRoundComponentLoader(props) {
         return (
             <ReactRoundView
                 ws={ws}
+                viewData={viewData}
                 viewLevel={viewLevel}
-                viewTypes={viewTypes}
-                extraData={extraData}
             />
         );
     } else {
         return (
             <div>
                 <h1>Icebreaker Game</h1>
-                <h2>No view data D;</h2>
+                <h2>No view data</h2>
             </div>
         );
     }

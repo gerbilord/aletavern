@@ -4,12 +4,12 @@ import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 
 export default class AnswerPromptRound {
-    constructor(playerWs, prompt) {
+    constructor(playerWs, startRoundMessage) {
         this.playerWs = playerWs;
         this.cleanUpFunctions = []; // run before ending round.
         this.cleanUpFunctions.push(this.sendAnswer.bind(this));
-
-        this.prompt = prompt;
+        this.startRoundMessage = startRoundMessage;
+        this.prompt = startRoundMessage.getData();
         this.currentAnswer = '';
         this.answerSent = false;
     }
@@ -58,6 +58,7 @@ export default class AnswerPromptRound {
     getViewData() {
         const viewData = new ViewData();
         viewData.addViewType(CONSTANTS.ROUNDS.PROMPT);
+        viewData.addViewType(this.startRoundMessage.getSpecificRound())
         const extraData = {prompt: this.prompt, answerSent: this.answerSent, updateAnswer: this.updateAnswer.bind(this), sendAnswer: this.sendAnswer.bind(this)};
         viewData.setExtraData(extraData);
 

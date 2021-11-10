@@ -6,9 +6,10 @@ import styles from 'Icebreaker/icebreaker.module.css';
 export default function Lobby(props) {
     const {
         ws,
-        viewTypes,
-        extraData: { startRoundFunction, canStartRound },
+        viewData,
     } = props;
+
+    const { startRoundFunction, canStartRound } = viewData?.getExtraData();
 
     return (
         <div className={styles.basic_col}>

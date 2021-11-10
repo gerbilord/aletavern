@@ -6,8 +6,10 @@ import Button from 'Frontend/baseComponents/Button';
 export default function HostAsksTextPromptToAllView(props) {
     const {
         ws: { gameId },
-        extraData: roundEngine,
+        viewData,
     } = props;
+
+    const roundEngine = viewData.getExtraData();
 
     const [timeLimit, setTimeLimit] = useState("0");
     const [prompt, setPrompt] = useState("");

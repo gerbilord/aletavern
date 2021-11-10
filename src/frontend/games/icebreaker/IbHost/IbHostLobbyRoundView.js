@@ -5,8 +5,10 @@ import styles from 'Icebreaker/icebreaker.module.css';
 export default function Lobby(props) {
     const {
         ws: { gameId },
-        extraData: players,
+        viewData,
     } = props;
+
+    const players = viewData.getExtraData();
 
     return (
         <div className={styles.basic_col}>

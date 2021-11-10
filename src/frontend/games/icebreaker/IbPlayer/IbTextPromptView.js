@@ -7,10 +7,15 @@ import Button from 'Frontend/baseComponents/Button'; //TODO make own components 
 
 import styles from 'Icebreaker/icebreaker.module.css';
 
-export default function AnswerRoundView(props) {
+export default function IbTextPromptView(props) {
+    const { viewData } = props;
+
     const {
-        extraData: { prompt, answerSent, updateAnswer, sendAnswer },
-    } = props;
+        prompt,
+        answerSent,
+        updateAnswer,
+        sendAnswer,
+    } = viewData?.getExtraData();
 
     const [userInput, updateUserInput] = useState('');
 

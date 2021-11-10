@@ -8,7 +8,7 @@ import IbRoundComponentLoader from 'Icebreaker/IbShared/IbRoundComponentLoader';
 
 // ROUND IMPORTS
 import LobbyRoundView from './IbPlayerLobbyRoundView';
-import AnswerPromptRoundView from 'Icebreaker/IbPlayer/IbTextPromptView';
+import AnswerPromptRoundView from 'Icebreaker/IbPlayer/AnswerPromptRoundView';
 
 // SET ROUND TO VIEW MAPPING
 const roundViews = [];

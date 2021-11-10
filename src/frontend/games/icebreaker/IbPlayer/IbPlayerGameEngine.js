@@ -18,24 +18,24 @@ export default class gameEngine {
             if (message.getSender() === this.ws.hostId
                 && message.getMainMessageType() === CONSTANTS.MESSAGE_TYPE.START_ROUND) {
                 ListUtils.removeItemFromList(this.ws.onMessageGame, startRoundListener);
-                this.startRound(message.getMainRound(), message.getData());
+                this.startRound(message);
             }
         };
 
         this.ws.onMessageGame.push(startRoundListener);
     }
 
-    getRoundObject(roundName, roundData) {
-        switch (roundName) {
+    getRoundObject(message) {
+        switch (message.getMainRound()) {
             case CONSTANTS.ROUNDS.LOBBY:
-                return new LobbyRound(this.ws, roundData);
+                return new LobbyRound(this.ws, message);
             case CONSTANTS.ROUNDS.PROMPT:
-                return new AnswerPromptRound(this.ws, roundData);
+                return new AnswerPromptRound(this.ws, message);
         }
     }
 
-    async startRound(roundName, roundData) {
-        this.currentRound = this.getRoundObject(roundName, roundData);
+    async startRound(message) {
+        this.currentRound = this.getRoundObject(message);
         await this.currentRound;
         this.currentRound = null;
         this.listenForStartRound();

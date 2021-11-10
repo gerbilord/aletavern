@@ -85,7 +85,7 @@ export default class GetPlayerPromptPromise {
     createStartRoundMessage(question) {
         const promptMessage = new MessageObject();
         promptMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
-        // promptMessage.addRound(this.promptType); // TODO uncomment when more prompt types exist
+        promptMessage.addRound(this.promptType);
         promptMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
         promptMessage.setData(question);
         return promptMessage.getMessage();

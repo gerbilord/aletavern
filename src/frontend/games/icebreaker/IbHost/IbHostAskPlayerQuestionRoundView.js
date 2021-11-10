@@ -6,9 +6,9 @@ import React from 'react';
 import styles from 'Icebreaker/icebreaker.module.css';
 
 export default function AnswerRoundView(props) {
-    const {
-        extraData: { playersYetToAnswer, timeLeft },
-    } = props;
+    const { viewData } = props;
+
+    const { playersYetToAnswer, timeLeft } = viewData.getExtraData();
 
     const secondsLeft = ~~(timeLeft / 1000); // Convert time from ms to seconds.
 
