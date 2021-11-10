@@ -57,11 +57,17 @@ export default function HostAsksTextPromptToAllView(props) {
                 />
                 <Button
                     buttonText = "Force End"
-                    clickHandler = {()=>{roundEngine.sendEndRound()}}
+                    clickHandler = {()=>{roundEngine.forceEnd()}}
                     passEvent = {false}
                     isDisabled={!roundEngine.isRoundActive}
                 />
             </div>
+            { roundEngine.isRoundActive &&
+            <div>
+                <div>Players yet to answer:</div>
+                {roundEngine.playersYetToAnswer.map(player=><div key={player.id}>{player.name}</div>)}
+            </div>
+            }
             <div>
                 {
                     roundEngine.playerAnswers.map((answer)=>{

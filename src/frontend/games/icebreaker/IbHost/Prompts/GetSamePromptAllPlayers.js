@@ -8,17 +8,24 @@ import GetPlayerPromptPromise from 'Icebreaker/IbHost/Prompts/GetPlayerPromptPro
 // noinspection JSUnusedGlobalSymbols
 
 export default class GetSamePromptAllPlayers {
-    constructor(hostWs, players, promptType, promptData, timeLimit) {
+    constructor(hostWs, players, promptType, promptData, timeLimit, functionsToRunOnIndividualResolve) {
         this.hostWs = hostWs;
         this.players = players;
         this.playerAnswers = [];
         this.promptType = promptType;
         this.promptData = promptData;
         this.timeLimit = timeLimit;
+        this.functionsToRunOnIndividualResolve = functionsToRunOnIndividualResolve;
     }
 
     ask() {
-        let playerPromptPromises = this.players.players.map((player)=> new GetPlayerPromptPromise(this.hostWs, player.id, this.promptType, this.promptData, this.timeLimit));
-        return Promise.all(playerPromptPromises);
+        this.playerPromptPromises = this.players.players.map((player)=> new GetPlayerPromptPromise(this.hostWs, player.id, this.promptType, this.promptData, this.timeLimit, this.functionsToRunOnIndividualResolve));
+        return Promise.all(this.playerPromptPromises);
+    }
+
+    forceEnd() {
+        if(this.playerPromptPromises){
+            this.playerPromptPromises.forEach(ppp => ppp.forceEnd());
+        }
     }
 }

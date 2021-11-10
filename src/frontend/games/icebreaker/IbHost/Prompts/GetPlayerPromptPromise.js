@@ -7,7 +7,7 @@ import PlayerPromptResponse from 'Icebreaker/IbHost/Prompts/PlayerPromptResponse
 // noinspection JSUnusedGlobalSymbols
 
 export default class GetPlayerPromptPromise {
-    constructor(hostWs, playerId, promptType, promptData, timeLimit) {
+    constructor(hostWs, playerId, promptType, promptData, timeLimit, functionsToRunOnResolve) {
         this.hostWs = hostWs;
         this.playerId = playerId;
         this.promptType = promptType;
@@ -16,9 +16,13 @@ export default class GetPlayerPromptPromise {
         this.playerAnswer = new PlayerPromptResponse();
         this.playerAnswer.setPlayerId(playerId);
         this.playerAnswer.setPromptType(promptType);
+        this.isResolved = false;
+        this.functionsToRunOnResolve = functionsToRunOnResolve || [];
 
+        this.forceEnd = this.forceEnd.bind(this);
 
         this.cleanUpFunctions = []; // run before ending promise
+        this.cleanUpFunctions.push(()=>this.isResolved = true);
     }
 
     // Get prompt
@@ -71,8 +75,11 @@ export default class GetPlayerPromptPromise {
     }
 
     cleanUpAndEndRound() {
-        this.cleanUpFunctions.forEach((func) => func()); // Remove all listeners created in this round.
-        this.resolve(this.playerAnswer); // (resolve promise)
+        if(!this.isResolved){
+            this.cleanUpFunctions.forEach((func) => func());
+            this.functionsToRunOnResolve.forEach((func) => func(this.playerAnswer));
+            this.resolve(this.playerAnswer); // (resolve promise)
+        }
     }
 
     createStartRoundMessage(question) {
@@ -82,6 +89,10 @@ export default class GetPlayerPromptPromise {
         promptMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
         promptMessage.setData(question);
         return promptMessage.getMessage();
+    }
+
+    forceEnd() {
+        this.cleanUpAndEndRound();
     }
 
 }

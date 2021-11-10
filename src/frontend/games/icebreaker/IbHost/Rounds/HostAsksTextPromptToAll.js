@@ -14,6 +14,7 @@ export default class AskPlayerQuestionRound {
         this.prompt = "";
         this.timeLimit  = null;
         this.playerAnswers = [];
+        this.playersYetToAnswer = [];
         this.isRoundActive = false;
         this.getViewData = this.getViewData.bind(this);
 
@@ -29,14 +30,27 @@ export default class AskPlayerQuestionRound {
         this.prompt = newPrompt;
     }
 
+    resetPlayersYetToAnswer(){
+        this.playersYetToAnswer = Array.from(this.players.players);
+    }
+
+    removePlayerFromPlayersYetToAnswer(playerPromptResponse){
+        if(playerPromptResponse?.playerId){
+            ListUtils.removeItemFromList(this.playersYetToAnswer, this.players.findPlayerFromId(playerPromptResponse.playerId));
+        }
+    }
+
     async sendPrompt(){
         if(!this.isRoundActive){
             this.isRoundActive = true;
             this.playerAnswers = [];
+            this.resetPlayersYetToAnswer();
             let timeout;
             if(this.timeLimit) { timeout = setTimeout(this.sendEndRound.bind(this), this.timeLimit);}
-            let promptPromise = new GetSamePromptAllPlayers(this.hostWs, this.players, CONSTANTS.PROMPT_TYPE.TEXT, this.prompt, this.timeLimit ? this.timeLimit + 1500 : null);
-            this.playerAnswers = await promptPromise.ask();
+            this.promptPromise = new GetSamePromptAllPlayers(this.hostWs, this.players,
+                CONSTANTS.PROMPT_TYPE.TEXT, this.prompt, this.timeLimit ? this.timeLimit + 1500 : null,
+                [(playerPromptResponse)=>this.removePlayerFromPlayersYetToAnswer(playerPromptResponse)]);
+            this.playerAnswers = await this.promptPromise.ask();
             console.log(this.playerAnswers);
             if(this.timeLimit){clearTimeout(timeout);}
             this.sendEndRound();
@@ -48,6 +62,11 @@ export default class AskPlayerQuestionRound {
             this.players.sendMessageToAllPlayers(this.createEndRoundMessage());
             this.isRoundActive = false;
         }
+    }
+
+    forceEnd() {
+        this.sendEndRound();
+        setTimeout(()=>this.promptPromise.forceEnd(), 1500);
     }
 
     createEndRoundMessage() {
