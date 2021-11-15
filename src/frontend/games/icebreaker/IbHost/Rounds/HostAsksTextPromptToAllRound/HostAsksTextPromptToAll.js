@@ -14,6 +14,7 @@ export default class AskPlayerQuestionRound {
         this.prompt = "";
         this.timeLimit  = null;
         this.playerAnswers = [];
+        this.playerAnswersHistory = [];
         this.playersYetToAnswer = [];
         this.isRoundActive = false;
         this.getViewData = this.getViewData.bind(this);
@@ -51,6 +52,7 @@ export default class AskPlayerQuestionRound {
                 CONSTANTS.PROMPT_TYPE.TEXT, this.prompt, this.timeLimit ? this.timeLimit + 1500 : null,
                 [(playerPromptResponse)=>this.removePlayerFromPlayersYetToAnswer(playerPromptResponse)]);
             this.playerAnswers = await this.promptPromise.ask();
+            this.playerAnswersHistory.push(this.playerAnswers);
             console.log(this.playerAnswers);
             if(this.timeLimit){clearTimeout(timeout);}
             this.sendEndRound();

@@ -1,0 +1,21 @@
+.ib-droppableChoiceList{
+    padding: 2vmin;
+}
+
+.ib-draggableText {
+    width: 50vmin;
+    height: 5vmin;
+    padding: 2vmin;
+    font-size: 3vmin;
+    margin-bottom: 2vmin;
+    background-color: lightseagreen;
+    color: white;
+    border-radius: 1vmin;
+    text-align: center;
+    user-select: none;
+    transition: background-color .2s ease;
+}
+
+.ib-draggableText.dragging {
+    background-color: seagreen;
+}

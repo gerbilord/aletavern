@@ -23,7 +23,7 @@ export default function IbTextPromptView(props) {
     // TODO add character limit.
     const handleSendMessage = () => {
         if (userInput.length > 0) {
-            sendAnswer(userInput);
+            sendAnswer();
         }
     };
 

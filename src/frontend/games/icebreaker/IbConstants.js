@@ -12,11 +12,13 @@ const CONSTANTS = Object.freeze({
     ROUNDS: {
         LOBBY: 'LOBBY',
         HOST_ASKS_TEXT_PROMPT_TO_ALL: 'HOSTASKTEXTPROMPTTOALL',
+        HOST_ASKS_RANK_PROMPT_TO_ALL: 'HOSTASKSRANKPROMPTTOALL',
         PROMPT: 'PROMPT',
     },
 
     PROMPT_TYPE:{
-        TEXT: "TEXT"
+        TEXT: "TEXT",
+        RANK: "RANK"
     },
 
     DATA_KEY: 'DATA',

@@ -64,19 +64,31 @@ export default function HostAsksTextPromptToAllView(props) {
                     isDisabled={!roundEngine.isRoundActive}
                 />
             </div>
+
             { roundEngine.isRoundActive &&
             <div>
                 <div>Players yet to answer:</div>
                 {roundEngine.playersYetToAnswer.map(player=><div key={player.id}>{player.name}</div>)}
             </div>
             }
-            <div>
-                {
-                    roundEngine.playerAnswers.map((answer)=>{
-                        return <div key={answer.playerId}>{roundEngine.players.findPlayerFromId(answer.playerId).name}: "{answer?.playerResponse?.answer}"</div>
+
+            { roundEngine.playerAnswersHistory &&
+
+                roundEngine.playerAnswersHistory.slice().reverse().map(
+                    (answerList)=> {
+                        return <div key={answerList[0].playerResponse.prompt.mainPrompt}>
+                            <strong>{answerList[0].playerResponse.prompt.mainPrompt}</strong>
+                            {
+                                answerList.map(
+                                    (answer) => {return <div key={answer.playerId}>
+                                        {roundEngine.players.findPlayerFromId(answer.playerId).name}: "{answer?.playerResponse?.answer}"
+                                    </div>
+                                    }
+                                )
+                            }
+                        </div>
                     })
-                }
-            </div>
+            }
         </div>
     );
 }

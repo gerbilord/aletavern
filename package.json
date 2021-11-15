@@ -36,6 +36,7 @@
         "prettier": "^2.0.5",
         "prop-types": "^15.7.2",
         "react": "^16.13.1",
+        "react-beautiful-dnd": "^13.1.0",
         "react-dom": "^16.13.1",
         "react-hexgrid": "^1.0.3",
         "reactjs-popup": "^2.0.5",

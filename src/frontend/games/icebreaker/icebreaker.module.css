@@ -19,6 +19,8 @@
     border-radius: 1.5vmin;
     background-color: steelblue;
     opacity: 0.8;
+    cursor: pointer;
+    user-select: none;
 }
 
 .global * button:active {
