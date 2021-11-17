@@ -14,6 +14,8 @@ import HostAsksMultipleChoicePromptToAllView
     from 'Icebreaker/IbHost/Rounds/HostAsksMultipleChoicePromptToAllRound/HostAsksMultipleChoicePromptToAllView';
 import HostAsksMatchingPromptToAllView
     from 'Icebreaker/IbHost/Rounds/HostAsksMatchingPromptToAll/HostAsksMatchingPromptToAllView';
+import HostSendsReadOnlyTextToAllView
+    from 'Icebreaker/IbHost/Rounds/HostSendsReadOnlyTextToAllRound/HostSendsReadOnlyTextToAllView';
 
 
 // SET ROUND TO VIEW MAPPING
@@ -23,6 +25,7 @@ roundViews[CONSTANTS.ROUNDS.HOST_ASKS_TEXT_PROMPT_TO_ALL] = HostAsksTextPromptTo
 roundViews[CONSTANTS.ROUNDS.HOST_ASKS_RANK_PROMPT_TO_ALL] = HostAsksRankPromptToAllView;
 roundViews[CONSTANTS.ROUNDS.HOST_ASKS_MULTIPLE_CHOICE_PROMPT_TO_ALL] = HostAsksMultipleChoicePromptToAllView;
 roundViews[CONSTANTS.ROUNDS.HOST_ASKS_MATCHING_PROMPT_TO_ALL] = HostAsksMatchingPromptToAllView;
+roundViews[CONSTANTS.ROUNDS.HOST_SENDS_READ_ONLY_TEXT_TO_ALL] = HostSendsReadOnlyTextToAllView;
 
 
 export default class IcebreakerView extends React.Component {
