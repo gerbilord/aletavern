@@ -60,7 +60,10 @@ export default function IbRankPromptView(props) {
         <div className={styles.basic_col}>
             <h2>{prompt.mainPrompt}</h2>
             <DragDropContext onDragEnd={onDragEnd}>
-                <DroppableChoiceList choices={userOrder} />
+                <DroppableChoiceList
+                    droppableId={'rankChoiceDroppableList'}
+                    choices={userOrder}
+                />
             </DragDropContext>
             <Button buttonText="Send" clickHandler={handleSendMessage} />
         </div>

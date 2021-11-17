@@ -38,3 +38,12 @@
 .ib-button.ib-unselected-choice {
     background-color: lightseagreen;
 }
+
+.ib-matching-category {
+    border: 3px solid black;
+}
+
+.ib-droppableChoiceList {
+    width: 50vmin;
+    min-height: 5vmin;
+}

@@ -10,12 +10,14 @@ import IbRoundComponentLoader from 'Icebreaker/IbShared/IbRoundComponentLoader';
 import TextRoundView from 'Icebreaker/IbPlayer/IbTextPromptView';
 import RankRoundView from 'Icebreaker/IbPlayer/IbRankPromptView';
 import MultipleChoiceRoundView from 'Icebreaker/IbPlayer/IbMultipleChoicePromptView'
+import MatchingPromptView from 'Icebreaker/IbPlayer/IbMatchingPromptView';
 
 // SET ROUND TO VIEW MAPPING
 const promptViews = [];
 promptViews[CONSTANTS.PROMPT_TYPE.TEXT] = TextRoundView;
 promptViews[CONSTANTS.PROMPT_TYPE.RANK] = RankRoundView;
 promptViews[CONSTANTS.PROMPT_TYPE.MULTIPLE_CHOICE] = MultipleChoiceRoundView;
+promptViews[CONSTANTS.PROMPT_TYPE.MATCHING] = MatchingPromptView;
 
 export default (props) => {
         const { viewLevel, viewData, ws} = props;
