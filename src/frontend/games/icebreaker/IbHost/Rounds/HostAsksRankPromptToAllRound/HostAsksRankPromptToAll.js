@@ -2,7 +2,7 @@ import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
-import GetSamePromptAllPlayers from 'Icebreaker/IbHost/Prompts/GetSamePromptAllPlayers';
+import Ib_GetSamePromptAllPlayers from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetSamePromptAllPlayers';
 import RankPrompt from 'Icebreaker/IbHost/Rounds/HostAsksRankPromptToAllRound/RankPrompt';
 
 // noinspection JSUnusedGlobalSymbols
@@ -57,7 +57,7 @@ export default class AskPlayerQuestionRound {
             this.resetPlayersYetToAnswer();
             let timeout;
             if(this.timeLimit) { timeout = setTimeout(this.sendEndRound.bind(this), this.timeLimit);}
-            this.promptPromise = new GetSamePromptAllPlayers(this.hostWs, this.players,
+            this.promptPromise = new Ib_GetSamePromptAllPlayers(this.hostWs, this.players,
                 CONSTANTS.PROMPT_TYPE.RANK, this.prompt, this.timeLimit ? this.timeLimit + 1500 : null,
                 [(playerPromptResponse)=>this.removePlayerFromPlayersYetToAnswer(playerPromptResponse)]);
             this.playerAnswers = await this.promptPromise.ask();

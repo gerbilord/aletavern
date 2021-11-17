@@ -1,7 +1,7 @@
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
-import DraggableText from 'Icebreaker/IbPlayer/DraggableText';
-export default function DroppableChoiceList(props) {
+import Ib_DraggableText from 'Icebreaker/IbPlayer/Ib_DraggableComponents/Ib_DraggableText';
+export default function Ib_DroppableChoiceList(props) {
     const {choices, droppableId} = props;
 
     return (<Droppable droppableId={droppableId}>
@@ -12,7 +12,7 @@ export default function DroppableChoiceList(props) {
                     {...provided.droppableProps}
                     className={"ib-droppableChoiceList"}
                 >
-                    {choices.map((choice, index) => choice !== '' && choice != null && <DraggableText key={choice} index={index} text={choice}/>)}
+                    {choices.map((choice, index) => choice !== '' && choice != null && <Ib_DraggableText key={choice} index={index} text={choice}/>)}
                     {provided.placeholder}
                 </div>
             )

@@ -1,17 +1,17 @@
 import React from 'react';
 
 import CONSTANTS from 'Icebreaker/IbConstants';
-import styles from '../icebreaker.module.css';
+import styles from '../../../icebreaker.module.css';
 
 // ROUND LOADER
 import IbRoundComponentLoader from 'Icebreaker/IbShared/IbRoundComponentLoader';
 
 // PROMPT IMPORTS
-import TextRoundView from 'Icebreaker/IbPlayer/IbTextPromptView';
-import RankRoundView from 'Icebreaker/IbPlayer/IbRankPromptView';
-import MultipleChoiceRoundView from 'Icebreaker/IbPlayer/IbMultipleChoicePromptView'
-import MatchingPromptView from 'Icebreaker/IbPlayer/IbMatchingPromptView';
-import ReadOnlyTextPromptView from 'Icebreaker/IbPlayer/IbReadOnlyTextPromptView';
+import TextRoundView from 'Icebreaker/IbPlayer/Ib_Rounds/Ib_PlayerAnswerPromptRound/Ib_Prompts/Ib_TextPromptView';
+import RankRoundView from 'Icebreaker/IbPlayer/Ib_Rounds/Ib_PlayerAnswerPromptRound/Ib_Prompts/Ib_RankPromptView';
+import MultipleChoiceRoundView from 'Icebreaker/IbPlayer/Ib_Rounds/Ib_PlayerAnswerPromptRound/Ib_Prompts/Ib_MultipleChoicePromptView'
+import MatchingPromptView from 'Icebreaker/IbPlayer/Ib_Rounds/Ib_PlayerAnswerPromptRound/Ib_Prompts/Ib_MatchingPromptView';
+import ReadOnlyTextPromptView from 'Icebreaker/IbPlayer/Ib_Rounds/Ib_PlayerAnswerPromptRound/Ib_Prompts/Ib_ReadOnlyTextPromptView';
 
 // SET ROUND TO VIEW MAPPING
 const promptViews = [];

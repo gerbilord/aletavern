@@ -8,11 +8,11 @@ import Button from 'Frontend/baseComponents/Button'; //TODO make own components 
 import styles from 'Icebreaker/icebreaker.module.css';
 import 'Icebreaker/icebreaker.css';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import DroppableChoiceList from 'Icebreaker/IbPlayer/DroppableChoiceList';
+import Ib_DroppableChoiceList from 'Icebreaker/IbPlayer/Ib_DraggableComponents/Ib_DroppableChoiceList';
 
 const DEFAULT_DROPPABLE_ID = 'UNMATCHED-DEFAULT';
 
-export default function IbMatchingPromptView(props) {
+export default function Ib_MatchingPromptView(props) {
     const { viewData } = props;
 
     const {
@@ -108,7 +108,7 @@ export default function IbMatchingPromptView(props) {
         <div className={styles.basic_col}>
             <h2>{prompt.mainPrompt}</h2>
             <DragDropContext onDragEnd={onDragEnd}>
-                <DroppableChoiceList
+                <Ib_DroppableChoiceList
                     key={DEFAULT_DROPPABLE_ID}
                     droppableId={DEFAULT_DROPPABLE_ID}
                     choices={unmatchedItems}
@@ -116,7 +116,7 @@ export default function IbMatchingPromptView(props) {
                 {prompt.categories.map((category) => (
                     <div key={category} className={'ib-matching-category'}>
                         {category}
-                        <DroppableChoiceList
+                        <Ib_DroppableChoiceList
                             droppableId={category}
                             choices={[userMatches[category]]}
                         />

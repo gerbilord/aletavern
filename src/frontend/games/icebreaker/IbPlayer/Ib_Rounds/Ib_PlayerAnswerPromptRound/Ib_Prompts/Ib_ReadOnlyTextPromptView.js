@@ -7,7 +7,7 @@ import Button from 'Frontend/baseComponents/Button'; //TODO make own components 
 
 import styles from 'Icebreaker/icebreaker.module.css';
 
-export default function IbReadOnlyTextPromptView(props) {
+export default function Ib_ReadOnlyTextPromptView(props) {
     const { viewData } = props;
 
     const {

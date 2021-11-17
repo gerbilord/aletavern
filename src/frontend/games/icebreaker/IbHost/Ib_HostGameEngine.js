@@ -1,6 +1,6 @@
-import Players from './IbPlayers';
+import Players from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Players';
 import LobbyRound from 'Icebreaker/IbHost/Rounds/LobbyRound/IbHostLobbyRoundEngine';
-import HostAsksTextPromptToAll from './Rounds/HostAsksTextPromptToAllRound/HostAsksTextPromptToAll'
+import HostAsksTextPromptToAll from 'Icebreaker/IbHost/Rounds/HostAsksTextPromptToAllRound/HostAsksTextPromptToAll'
 import HostAsksRankPromptToAll from 'Icebreaker/IbHost/Rounds/HostAsksRankPromptToAllRound/HostAsksRankPromptToAll';
 import HostAsksMultipleChoicePromptToAll
     from 'Icebreaker/IbHost/Rounds/HostAsksMultipleChoicePromptToAllRound/HostAsksMultipleChoicePromptToAll';

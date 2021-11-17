@@ -1,4 +1,4 @@
-export default class PlayerPromptResponse {
+export default class Ib_PlayerPromptResponse {
 
     constructor() {
     }

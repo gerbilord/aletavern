@@ -7,9 +7,9 @@ import Button from 'Frontend/baseComponents/Button'; //TODO make own components 
 
 import styles from 'Icebreaker/icebreaker.module.css';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import DroppableChoiceList from 'Icebreaker/IbPlayer/DroppableChoiceList';
+import Ib_DroppableChoiceList from 'Icebreaker/IbPlayer/Ib_DraggableComponents/Ib_DroppableChoiceList';
 
-export default function IbRankPromptView(props) {
+export default function Ib_RankPromptView(props) {
     const { viewData } = props;
 
     const {
@@ -60,7 +60,7 @@ export default function IbRankPromptView(props) {
         <div className={styles.basic_col}>
             <h2>{prompt.mainPrompt}</h2>
             <DragDropContext onDragEnd={onDragEnd}>
-                <DroppableChoiceList
+                <Ib_DroppableChoiceList
                     droppableId={'rankChoiceDroppableList'}
                     choices={userOrder}
                 />

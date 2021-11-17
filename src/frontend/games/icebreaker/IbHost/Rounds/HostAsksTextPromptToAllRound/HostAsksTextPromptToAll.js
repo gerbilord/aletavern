@@ -2,7 +2,7 @@ import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
-import GetSamePromptAllPlayers from 'Icebreaker/IbHost/Prompts/GetSamePromptAllPlayers';
+import GetSamePromptAllPlayers from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetSamePromptAllPlayers';
 
 // noinspection JSUnusedGlobalSymbols
 

@@ -1,4 +1,4 @@
-import Player from './IbPlayer';
+import Player from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Player';
 
 export default class Players {
     constructor(ws) {

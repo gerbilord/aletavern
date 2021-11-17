@@ -1,13 +1,7 @@
-import CONSTANTS from 'Icebreaker/IbConstants';
-import * as ListUtils from 'Utils/listUtils';
-import MessageObject from 'Icebreaker/IbShared/IbMessage';
-import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
-import PlayerPromptResponse from 'Icebreaker/IbHost/Prompts/PlayerPromptResponse';
-import GetPlayerPromptPromise from 'Icebreaker/IbHost/Prompts/GetPlayerPromptPromise';
+import GetPlayerPromptPromise from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetPlayerPromptPromise';
 
 // noinspection JSUnusedGlobalSymbols
-
-export default class GetSamePromptAllPlayers {
+export default class Ib_GetSamePromptAllPlayers {
     constructor(hostWs, players, promptType, promptData, timeLimit, functionsToRunOnIndividualResolve) {
         this.hostWs = hostWs;
         this.players = players;
