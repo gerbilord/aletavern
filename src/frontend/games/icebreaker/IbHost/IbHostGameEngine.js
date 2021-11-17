@@ -2,6 +2,8 @@ import Players from './IbPlayers';
 import LobbyRound from 'Icebreaker/IbHost/Rounds/LobbyRound/IbHostLobbyRoundEngine';
 import HostAsksTextPromptToAll from './Rounds/HostAsksTextPromptToAllRound/HostAsksTextPromptToAll'
 import HostAsksRankPromptToAll from 'Icebreaker/IbHost/Rounds/HostAsksRankPromptToAllRound/HostAsksRankPromptToAll';
+import HostAsksMultipleChoicePromptToAll
+    from 'Icebreaker/IbHost/Rounds/HostAsksMultipleChoicePromptToAllRound/HostAsksMultipleChoicePromptToAll';
 
 export default class GameEngine { // TODO consider abstracting to multi-round engine that takes in rounds
     constructor(gameWebSocket) {
@@ -9,7 +11,8 @@ export default class GameEngine { // TODO consider abstracting to multi-round en
         this.players = new Players(this.ws);
         this.rounds = [
             new LobbyRound(this.ws, this.players),
-            new HostAsksRankPromptToAll(this.ws, this.players),
+            new HostAsksMultipleChoicePromptToAll(this.ws, this.players),
+            //new HostAsksRankPromptToAll(this.ws, this.players),
             // new HostAsksTextPromptToAll(this.ws, this.players),
             // new SelfAnswerOtherGuessRound(
             //     this.ws,

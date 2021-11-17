@@ -17,5 +17,24 @@
 }
 
 .ib-draggableText.dragging {
+
+}
+
+.ib-button.ib-multiple-choice-choice {
+    width: 50vmin;
+    height: 6vmin;
+    font-size: 3vmin;
+    margin-bottom: 2vmin;
+    color: white;
+    border-radius: 1vmin;
+    text-align: center;
+    user-select: none;
+}
+
+.ib-button.ib-selected-choice {
     background-color: seagreen;
+}
+
+.ib-button.ib-unselected-choice {
+    background-color: lightseagreen;
 }
