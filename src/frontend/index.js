@@ -19,10 +19,10 @@ const ws = new GameWebSocket(true);
 const games = [];
 
 // GAME VARIABLE SETUP
-games['Quiplash'] = { game: Quiplash };
-games['Santorini'] = { game: Santorini };
+// games['Quiplash'] = { game: Quiplash };
+// games['Santorini'] = { game: Santorini };
 games['Icebreaker'] = { game: Icebreaker };
-games['Tomfoag'] = { game: Tomfoag };
+// games['Tomfoag'] = { game: Tomfoag };
 games['FashionCents'] = {game: FashionCents};
 
 
