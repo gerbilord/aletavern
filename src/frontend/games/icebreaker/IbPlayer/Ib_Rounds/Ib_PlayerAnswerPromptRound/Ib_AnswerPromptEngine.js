@@ -9,18 +9,10 @@ export default class AnswerPromptRound {
         this.cleanUpFunctions = []; // run before ending round.
         this.cleanUpFunctions.push(this.sendAnswer.bind(this));
         this.hostStartRoundMessage = hostStartRoundMessage;
-        this.prompt = hostStartRoundMessage.getData();
-        this.setDefaultCurrentAnswer();
+        this.promptData = hostStartRoundMessage.getData(); // Depends on promptType.
         this.answerSent = false;
     }
 
-    setDefaultCurrentAnswer(){
-        if(this.hostStartRoundMessage.getSpecificRound() === CONSTANTS.PROMPT_TYPE.RANK){
-            this.currentAnswer = [];
-        } else {
-            this.currentAnswer = '';
-        }
-    }
     // play round
     async then(endRound) {
         this.endRound = endRound;
@@ -28,7 +20,7 @@ export default class AnswerPromptRound {
     }
 
     updateAnswer(newAnswer) {
-        this.currentAnswer = newAnswer;
+        this.promptData.answer = newAnswer;
     }
 
     sendAnswer(){
@@ -37,8 +29,7 @@ export default class AnswerPromptRound {
             const answerMessage = new MessageObject();
             answerMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
             answerMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS);
-            const data = {prompt:this.prompt, answer:this.currentAnswer}
-            answerMessage.setData(data);
+            answerMessage.setData(this.promptData);
             this.playerWs.sendMessageToHost(answerMessage.getMessage()); // TODO consider cleaning up when sending msg
         }
     }
@@ -66,7 +57,7 @@ export default class AnswerPromptRound {
         const viewData = new ViewData();
         viewData.addViewType(CONSTANTS.ROUNDS.PROMPT);
         viewData.addViewType(this.hostStartRoundMessage.getSpecificRound())
-        const extraData = {prompt: this.prompt, answerSent: this.answerSent, updateAnswer: this.updateAnswer.bind(this), sendAnswer: this.sendAnswer.bind(this)};
+        const extraData = {promptData: this.promptData, answerSent: this.answerSent, updateAnswer: this.updateAnswer.bind(this), sendAnswer: this.sendAnswer.bind(this)};
         viewData.setExtraData(extraData);
 
         return viewData;

@@ -3,8 +3,6 @@ import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import PlayerPromptResponse from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_PlayerPromptResponse';
 
-// noinspection JSUnusedGlobalSymbols
-
 export default class Ib_GetPlayerPromptPromise {
     constructor(hostWs, playerId, promptType, promptData, timeLimit, functionsToRunOnResolve) {
         this.hostWs = hostWs;
@@ -12,19 +10,19 @@ export default class Ib_GetPlayerPromptPromise {
         this.promptType = promptType;
         this.promptData = promptData;
         this.timeLimit = timeLimit;
-        this.playerAnswer = new PlayerPromptResponse();
-        this.playerAnswer.setPlayerId(playerId);
-        this.playerAnswer.setPromptType(promptType);
+        this.playerPromptResponse = new PlayerPromptResponse();
+        this.playerPromptResponse.playerId = playerId;
+        this.playerPromptResponse.promptType = promptType;
         this.isResolved = false;
         this.functionsToRunOnResolve = functionsToRunOnResolve || [];
 
         this.forceEnd = this.forceEnd.bind(this);
 
         this.cleanUpFunctions = []; // run before ending promise
-        this.cleanUpFunctions.push(()=>this.isResolved = true);
+        this.cleanUpFunctions.push(()=>{this.isResolved = true});
     }
 
-    // Get prompt
+    // Resolves into a Ib_PlayerPromptResponse.js
     async then(resolve) {
         this.resolve = resolve;
 
@@ -50,7 +48,7 @@ export default class Ib_GetPlayerPromptPromise {
                 CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS &&
                 message.getSender() === this.playerId
             ) {
-                this.playerAnswer.setPlayerResponse(message.getData()); // Update player response.
+                this.playerPromptResponse.promptData = message.getData(); // Update player response.
                 this.cleanUpAndEndRound();
             }
         };
@@ -76,8 +74,8 @@ export default class Ib_GetPlayerPromptPromise {
     cleanUpAndEndRound() {
         if(!this.isResolved){
             this.cleanUpFunctions.forEach((func) => func());
-            this.functionsToRunOnResolve.forEach((func) => func(this.playerAnswer));
-            this.resolve(this.playerAnswer); // (resolve promise)
+            this.functionsToRunOnResolve.forEach((func) => func(this.playerPromptResponse));
+            this.resolve(this.playerPromptResponse); // (resolve promise)
         }
     }
 

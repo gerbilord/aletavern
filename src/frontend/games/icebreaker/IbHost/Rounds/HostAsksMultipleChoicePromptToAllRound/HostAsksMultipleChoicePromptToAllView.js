@@ -36,7 +36,7 @@ export default function HostAsksMultipleChoicePromptToAllView(props) {
                     placeholder="Prompt"
                     onChange={(event) => {
                         setPrompt(event.target.value);
-                        roundEngine.setMainPrompt(event.target.value);
+                        roundEngine.setPrompt(event.target.value);
                     }}
                     value={prompt}
                 />
@@ -94,7 +94,7 @@ export default function HostAsksMultipleChoicePromptToAllView(props) {
                 <strong>Current Choices:</strong>
                 <div>
                     {
-                        roundEngine.prompt.choices.map(choice=>{
+                        roundEngine.promptData.choices.map(choice=>{
                             return <div key={choice}>{choice}</div>
                         })
                     }
@@ -110,13 +110,13 @@ export default function HostAsksMultipleChoicePromptToAllView(props) {
             { roundEngine.playerAnswersHistory &&
 
             roundEngine.playerAnswersHistory.slice().reverse().map(
-                (answerList, index)=> {
-                    return <div key={answerList[0]?.playerResponse.prompt?.prompt + index}>
-                        <strong>{answerList[0]?.playerResponse?.prompt?.prompt}</strong>
+                (playerResponseList, index)=> {
+                    return <div key={playerResponseList[0].promptData?.prompt + index.toString()}>
+                        <strong>{playerResponseList[0]?.promptData?.prompt}</strong>
                         {
-                            answerList.map(
-                                (answer, index) => {return <div key={answer.playerId}>
-                                    {roundEngine.players.findPlayerFromId(answer.playerId).name}: "{answer?.playerResponse?.answer}"
+                            playerResponseList.map(
+                                (playerResponse, index) => {return <div key={playerResponse.playerId}>
+                                    {roundEngine.players.findPlayerFromId(playerResponse.playerId).name}: "{playerResponse?.promptData?.answer}"
                                 </div>
                                 }
                             )

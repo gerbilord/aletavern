@@ -11,7 +11,7 @@ export default function Ib_TextPromptView(props) {
     const { viewData } = props;
 
     const {
-        prompt,
+        promptData, // TextPrompt.js
         answerSent,
         updateAnswer,
         sendAnswer,
@@ -38,7 +38,7 @@ export default function Ib_TextPromptView(props) {
 
     return (
         <div className={styles.basic_col}>
-            <h2>{prompt}</h2>
+            <h2>{promptData.prompt}</h2>
             <input type="text" value={userInput} onChange={onChangeHandler} />
             <Button
                 buttonText="Send"

@@ -12,7 +12,7 @@ export default class AskPlayerQuestionRound {
         this.hostWs = hostWs;
         this.players = players;
 
-        this.prompt = new MatchingPrompt();
+        this.promptData = new MatchingPrompt();
         this.timeLimit  = null;
         this.playerAnswers = [];
         this.playerAnswersHistory = [];
@@ -29,20 +29,20 @@ export default class AskPlayerQuestionRound {
     }
 
     setMainPrompt(newPrompt){
-        this.prompt.mainPrompt = newPrompt;
+        this.promptData.mainPrompt = newPrompt;
     }
 
     addMatchable(newMatchable){
-        this.prompt.matchables.push(newMatchable);
+        this.promptData.matchables.push(newMatchable);
     }
 
     addCategory(newCategory){
-        this.prompt.categories.push(newCategory);
+        this.promptData.categories.push(newCategory);
     }
 
     resetPromptData(){
-        this.prompt.matchables = [];
-        this.prompt.categories = [];
+        this.promptData.matchables = [];
+        this.promptData.categories = [];
     }
 
     resetPlayersYetToAnswer(){
@@ -63,9 +63,9 @@ export default class AskPlayerQuestionRound {
             let timeout;
             if(this.timeLimit) { timeout = setTimeout(this.sendEndRound.bind(this), this.timeLimit);}
             this.promptPromise = new Ib_GetSamePromptAllPlayers(this.hostWs, this.players,
-                CONSTANTS.PROMPT_TYPE.MATCHING, this.prompt, this.timeLimit ? this.timeLimit + 1500 : null,
+                CONSTANTS.PROMPT_TYPE.MATCHING, this.promptData, this.timeLimit ? this.timeLimit + 1500 : null,
                 [(playerPromptResponse)=>this.removePlayerFromPlayersYetToAnswer(playerPromptResponse)]);
-            this.playerAnswers = await this.promptPromise.ask();
+            this.playerAnswers = await this.promptPromise;
             this.playerAnswersHistory.push(this.playerAnswers);
             console.log(this.playerAnswers);
             if(this.timeLimit){clearTimeout(timeout);}

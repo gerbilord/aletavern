@@ -75,13 +75,13 @@ export default function HostAsksTextPromptToAllView(props) {
             { roundEngine.playerAnswersHistory &&
 
                 roundEngine.playerAnswersHistory.slice().reverse().map(
-                    (answerList)=> {
-                        return <div key={answerList[0].playerResponse.prompt.mainPrompt}>
-                            <strong>{answerList[0].playerResponse.prompt.mainPrompt}</strong>
+                    (playerResponseList,index)=> {
+                        return <div key={playerResponseList[0].promptData.mainPrompt + index.toString()}>
+                            <strong>{playerResponseList[0].promptData.mainPrompt}</strong>
                             {
-                                answerList.map(
-                                    (answer) => {return <div key={answer.playerId}>
-                                        {roundEngine.players.findPlayerFromId(answer.playerId).name}: "{answer?.playerResponse?.answer}"
+                                playerResponseList.map(
+                                    (playerResponse) => {return <div key={playerResponse.playerId}>
+                                        {roundEngine.players.findPlayerFromId(playerResponse.playerId).name}: "{playerResponse?.promptData?.answer}"
                                     </div>
                                     }
                                 )

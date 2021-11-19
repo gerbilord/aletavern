@@ -3,5 +3,6 @@ export default class MatchingPrompt {
         this.mainPrompt = "";
         this.categories = [];
         this.matchables = [];
+        this.answer = {}; // Map of category -> matchable
     }
 }

@@ -112,7 +112,7 @@ export default function HostAsksMatchingPromptToAllView(props) {
                 <strong>Current Matchables:</strong>
                 <div>
                     {
-                        roundEngine.prompt.matchables.map(match=>{
+                        roundEngine.promptData.matchables.map(match=>{
                             return <div key={match}>{match}</div>
                         })
                     }
@@ -120,7 +120,7 @@ export default function HostAsksMatchingPromptToAllView(props) {
                 <strong>Current Categories:</strong>
                 <div>
                     {
-                        roundEngine.prompt.categories.map(categ=>{
+                        roundEngine.promptData.categories.map(categ=>{
                             return <div key={categ}>{categ}</div>
                         })
                     }
@@ -136,14 +136,14 @@ export default function HostAsksMatchingPromptToAllView(props) {
             { roundEngine.playerAnswersHistory &&
 
             roundEngine.playerAnswersHistory.slice().reverse().map(
-                (answerList, index)=> {
-                    return <div key={answerList[0]?.playerResponse.prompt?.mainPrompt + index}>
-                        <strong>{answerList[0]?.playerResponse?.prompt?.mainPrompt}</strong>
+                (playerResponseList, index)=> {
+                    return <div key={playerResponseList[0].promptData?.mainPrompt + index.toString()}>
+                        <strong>{playerResponseList[0]?.promptData?.mainPrompt}</strong>
                         {
-                            answerList.map(
-                                (answer) => {return <div key={answer.playerId}>
-                                    {roundEngine.players.findPlayerFromId(answer.playerId).name}: "{answer?.playerResponse?.prompt.categories.map(
-                                    (category)=>{return <span key={category}>{category}:{answer?.playerResponse?.answer[category]},</span>}
+                            playerResponseList.map(
+                                (playerResponse) => {return <div key={playerResponse.playerId}>
+                                    {roundEngine.players.findPlayerFromId(playerResponse.playerId).name}: "{playerResponse?.promptData.categories.map(
+                                    (category)=>{return <span key={category}>{category}:{playerResponse?.promptData.answer[category]},</span>}
                                 )}"
                                 </div>
                                 }

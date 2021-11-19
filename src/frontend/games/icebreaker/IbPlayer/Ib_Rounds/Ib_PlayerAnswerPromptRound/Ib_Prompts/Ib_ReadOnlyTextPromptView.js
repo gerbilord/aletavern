@@ -3,7 +3,6 @@
  */
 
 import React, { useState } from 'react';
-import Button from 'Frontend/baseComponents/Button'; //TODO make own components for game
 
 import styles from 'Icebreaker/icebreaker.module.css';
 
@@ -11,7 +10,7 @@ export default function Ib_ReadOnlyTextPromptView(props) {
     const { viewData } = props;
 
     const {
-        prompt,
+        promptData,
         answerSent,
         updateAnswer,
         sendAnswer,
@@ -19,7 +18,7 @@ export default function Ib_ReadOnlyTextPromptView(props) {
 
     return (
         <div className={styles.basic_col}>
-            <h2>{prompt}</h2>
+            <h2>{promptData.prompt}</h2>
         </div>
     );
 }

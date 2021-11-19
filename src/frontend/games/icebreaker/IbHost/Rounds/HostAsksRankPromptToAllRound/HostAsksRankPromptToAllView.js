@@ -94,7 +94,7 @@ export default function HostAsksRankPromptToAllView(props) {
                 <strong>Current Choices:</strong>
                 <div>
                     {
-                        roundEngine.prompt.choices.map(choice=>{
+                        roundEngine.promptData.choices.map(choice=>{
                             return <div key={choice}>{choice}</div>
                         })
                     }
@@ -110,13 +110,13 @@ export default function HostAsksRankPromptToAllView(props) {
             { roundEngine.playerAnswersHistory &&
 
             roundEngine.playerAnswersHistory.slice().reverse().map(
-                (answerList)=> {
-                    return <div key={answerList[0]?.playerResponse.prompt?.mainPrompt}>
-                        <strong>{answerList[0]?.playerResponse?.prompt?.mainPrompt}</strong>
+                (playerResponseList, index)=> {
+                    return <div key={playerResponseList[0]?.promptData?.mainPrompt + index.toString()}>
+                        <strong>{playerResponseList[0]?.promptData?.mainPrompt}</strong>
                         {
-                            answerList.map(
-                                (answer) => {return <div key={answer.playerId}>
-                                    {roundEngine.players.findPlayerFromId(answer.playerId).name}: "{answer?.playerResponse?.answer.map(
+                            playerResponseList.map(
+                                (playerResponse) => {return <div key={playerResponse.playerId}>
+                                    {roundEngine.players.findPlayerFromId(playerResponse.playerId).name}: "{playerResponse?.promptData?.answer.map(
                                         (choice)=>{return <span key={choice}>{choice},</span>}
                                 )}"
                                 </div>

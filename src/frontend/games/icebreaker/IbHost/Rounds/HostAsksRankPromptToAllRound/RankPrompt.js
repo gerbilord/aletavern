@@ -4,5 +4,6 @@ export default class RankPrompt {
         this.topText = "";
         this.bottomText = "";
         this.choices = [];
+        this.answer = []; // Choices in order of rank.
     }
 }

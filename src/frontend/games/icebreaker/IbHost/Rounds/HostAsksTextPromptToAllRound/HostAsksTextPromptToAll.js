@@ -3,6 +3,7 @@ import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 import GetSamePromptAllPlayers from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetSamePromptAllPlayers';
+import TextPrompt from 'Icebreaker/IbHost/Rounds/HostAsksTextPromptToAllRound/TextPrompt';
 
 // noinspection JSUnusedGlobalSymbols
 
@@ -11,7 +12,7 @@ export default class AskPlayerQuestionRound {
         this.hostWs = hostWs;
         this.players = players;
 
-        this.prompt = "";
+        this.promptData = new TextPrompt();
         this.timeLimit  = null;
         this.playerAnswers = [];
         this.playerAnswersHistory = [];
@@ -28,7 +29,7 @@ export default class AskPlayerQuestionRound {
     }
 
     setPrompt(newPrompt){
-        this.prompt = newPrompt;
+        this.promptData.prompt = newPrompt;
     }
 
     resetPlayersYetToAnswer(){
@@ -49,9 +50,9 @@ export default class AskPlayerQuestionRound {
             let timeout;
             if(this.timeLimit) { timeout = setTimeout(this.sendEndRound.bind(this), this.timeLimit);}
             this.promptPromise = new GetSamePromptAllPlayers(this.hostWs, this.players,
-                CONSTANTS.PROMPT_TYPE.TEXT, this.prompt, this.timeLimit ? this.timeLimit + 1500 : null,
+                CONSTANTS.PROMPT_TYPE.TEXT, this.promptData, this.timeLimit ? this.timeLimit + 1500 : null,
                 [(playerPromptResponse)=>this.removePlayerFromPlayersYetToAnswer(playerPromptResponse)]);
-            this.playerAnswers = await this.promptPromise.ask();
+            this.playerAnswers = await this.promptPromise;
             this.playerAnswersHistory.push(this.playerAnswers);
             console.log(this.playerAnswers);
             if(this.timeLimit){clearTimeout(timeout);}

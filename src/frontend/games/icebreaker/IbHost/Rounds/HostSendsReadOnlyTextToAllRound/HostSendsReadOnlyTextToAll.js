@@ -3,6 +3,7 @@ import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 import Ib_GetSamePromptAllPlayers from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetSamePromptAllPlayers';
+import ReadOnlyTextPrompt from 'Icebreaker/IbHost/Rounds/HostSendsReadOnlyTextToAllRound/ReadOnlyTextPrompt';
 
 // noinspection JSUnusedGlobalSymbols
 
@@ -11,7 +12,7 @@ export default class AskPlayerQuestionRound {
         this.hostWs = hostWs;
         this.players = players;
 
-        this.prompt = "";
+        this.promptData = new ReadOnlyTextPrompt();
         this.timeLimit  = null;
         this.isRoundActive = false;
         this.getViewData = this.getViewData.bind(this);
@@ -25,7 +26,7 @@ export default class AskPlayerQuestionRound {
     }
 
     setPrompt(newPrompt){
-        this.prompt = newPrompt;
+        this.promptData.prompt = newPrompt;
     }
 
     async sendPrompt(){
@@ -34,9 +35,9 @@ export default class AskPlayerQuestionRound {
             let timeout;
             if(this.timeLimit) { timeout = setTimeout(this.sendEndRound.bind(this), this.timeLimit);}
             this.promptPromise = new Ib_GetSamePromptAllPlayers(this.hostWs, this.players,
-                CONSTANTS.PROMPT_TYPE.READ_ONLY_TEXT, this.prompt, this.timeLimit ? this.timeLimit + 1500 : null,
+                CONSTANTS.PROMPT_TYPE.READ_ONLY_TEXT, this.promptData, this.timeLimit ? this.timeLimit + 1500 : null,
                 []);
-            this.playerAnswers = await this.promptPromise.ask();
+            this.playerAnswers = await this.promptPromise;
             if(this.timeLimit){clearTimeout(timeout);}
             this.sendEndRound();
         }

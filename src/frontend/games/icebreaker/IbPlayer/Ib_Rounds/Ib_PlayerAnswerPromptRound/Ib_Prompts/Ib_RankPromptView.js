@@ -13,13 +13,13 @@ export default function Ib_RankPromptView(props) {
     const { viewData } = props;
 
     const {
-        prompt,
+        promptData,
         answerSent,
         updateAnswer,
         sendAnswer,
     } = viewData?.getExtraData();
 
-    const [userOrder, setUserOrder] = useState(Array.from(prompt.choices));
+    const [userOrder, setUserOrder] = useState(Array.from(promptData.choices));
 
     useEffect(() => {
         updateAnswer(userOrder);
@@ -58,7 +58,7 @@ export default function Ib_RankPromptView(props) {
 
     return (
         <div className={styles.basic_col}>
-            <h2>{prompt.mainPrompt}</h2>
+            <h2>{promptData.mainPrompt}</h2>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Ib_DroppableChoiceList
                     droppableId={'rankChoiceDroppableList'}

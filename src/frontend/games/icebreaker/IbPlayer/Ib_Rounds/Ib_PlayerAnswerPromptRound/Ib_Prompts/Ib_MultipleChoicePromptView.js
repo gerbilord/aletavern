@@ -12,15 +12,15 @@ export default function IbTextPromptView(props) {
     const { viewData } = props;
 
     const {
-        prompt,
+        promptData,
         answerSent,
         updateAnswer,
         sendAnswer,
     } = viewData?.getExtraData();
 
     const [selectedChoice, setSelectedChoice] = useState('');
-    const choices = Array.from(prompt.choices);
-    const promptText = prompt.prompt;
+    const choices = Array.from(promptData.choices);
+    const promptText = promptData.prompt;
 
     const handleSendMessage = () => {
         if (selectedChoice.length > 0) {

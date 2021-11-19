@@ -9,23 +9,18 @@ import HostAsksMatchingPromptToAll
 import HostSendsReadOnlyTextToAll
     from 'Icebreaker/IbHost/Rounds/HostSendsReadOnlyTextToAllRound/HostSendsReadOnlyTextToAll';
 
-export default class GameEngine { // TODO consider abstracting to multi-round engine that takes in rounds
+export default class GameEngine {
     constructor(gameWebSocket) {
         this.ws = gameWebSocket;
         this.players = new Players(this.ws);
         this.rounds = [
             new LobbyRound(this.ws, this.players),
-            new HostSendsReadOnlyTextToAll(this.ws, this.players),
+            // new HostSendsReadOnlyTextToAll(this.ws, this.players),
             // new HostAsksMatchingPromptToAll(this.ws, this.players),
-            //new HostAsksMultipleChoicePromptToAll(this.ws, this.players),
-            //new HostAsksRankPromptToAll(this.ws, this.players),
-            // new HostAsksTextPromptToAll(this.ws, this.players),
-            // new SelfAnswerOtherGuessRound(
-            //     this.ws,
-            //     this.players,
-            //     ['PROMPT 1', 'PROMPT 2'], // TODO calculate prompts randomly
-            // ),
-        ]; //, 'selfAnswerOtherGuess', 'leaderboard'];
+            // new HostAsksMultipleChoicePromptToAll(this.ws, this.players),
+            // new HostAsksRankPromptToAll(this.ws, this.players),
+            new HostAsksTextPromptToAll(this.ws, this.players),
+        ];
 
         this.currentRound = null;
 

@@ -12,7 +12,7 @@ export default class AskPlayerQuestionRound {
         this.hostWs = hostWs;
         this.players = players;
 
-        this.prompt = new RankPrompt();
+        this.promptData = new RankPrompt();
         this.timeLimit  = null;
         this.playerAnswers = [];
         this.playerAnswersHistory = [];
@@ -29,15 +29,15 @@ export default class AskPlayerQuestionRound {
     }
 
     setMainPrompt(newPrompt){
-        this.prompt.mainPrompt = newPrompt;
+        this.promptData.mainPrompt = newPrompt;
     }
 
     addChoice(newChoice){
-        this.prompt.choices.push(newChoice);
+        this.promptData.choices.push(newChoice);
     }
 
     resetChoices(){
-        this.prompt.choices = [];
+        this.promptData.choices = [];
     }
 
     resetPlayersYetToAnswer(){
@@ -58,9 +58,9 @@ export default class AskPlayerQuestionRound {
             let timeout;
             if(this.timeLimit) { timeout = setTimeout(this.sendEndRound.bind(this), this.timeLimit);}
             this.promptPromise = new Ib_GetSamePromptAllPlayers(this.hostWs, this.players,
-                CONSTANTS.PROMPT_TYPE.RANK, this.prompt, this.timeLimit ? this.timeLimit + 1500 : null,
+                CONSTANTS.PROMPT_TYPE.RANK, this.promptData, this.timeLimit ? this.timeLimit + 1500 : null,
                 [(playerPromptResponse)=>this.removePlayerFromPlayersYetToAnswer(playerPromptResponse)]);
-            this.playerAnswers = await this.promptPromise.ask();
+            this.playerAnswers = await this.promptPromise;
             this.playerAnswersHistory.push(this.playerAnswers);
             console.log(this.playerAnswers);
             if(this.timeLimit){clearTimeout(timeout);}

@@ -1,29 +1,10 @@
 export default class Ib_PlayerPromptResponse {
 
+    playerId;
+    promptType; // CONSTANTS.PROMPT_TYPE.promptType
+    promptData;
+
     constructor() {
     }
 
-    setPromptType(promptType){
-        this.promptType = promptType;
-    }
-
-    getPromptType(){
-        return this.promptType;
-    }
-
-    setPlayerResponse(playerResponse){
-        this.playerResponse = playerResponse;
-    }
-
-    getPlayerResponse() {
-        return this.playerResponse;
-    }
-
-    setPlayerId(playerId){
-        this.playerId = playerId;
-    }
-
-    getPlayerId(){
-        return this.playerId;
-    }
 }
