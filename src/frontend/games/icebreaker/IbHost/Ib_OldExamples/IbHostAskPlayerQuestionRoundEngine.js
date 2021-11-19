@@ -3,24 +3,50 @@ import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 
-// noinspection JSUnusedGlobalSymbols
-
+/**
+ * @class
+ * @constructor
+ * @public
+ */
 export default class AskPlayerQuestionRound {
+
+    endRound;
+    hostWs;
+    players;
+    playersYetToAnswer;
+    playerAnswers = {}; // Map of playerIds -> playerAnswers. player answers
+    prompts; // Array of prompts.
+    groupSize;
+    timeToAnswer;
+    timeLeft;
+    cleanUpFunctions = []; // run before ending round.
+
+
+
+    /**
+     * @param hostWs
+     * @param players
+     * @param prompts
+     * @param groupSize
+     * @param timeToAnswer
+     */
     constructor(hostWs, players, prompts, groupSize, timeToAnswer) {
         this.hostWs = hostWs;
         this.players = players;
         this.playersYetToAnswer = [...players.players];
-        this.playerAnswers = [];
-        this.prompts = prompts; // Array of prompts.
+        this.prompts = prompts;
         this.groupSize = groupSize;
         this.timeToAnswer = timeToAnswer;
 
         this.timeLeft = timeToAnswer;
 
-        this.cleanUpFunctions = []; // run before ending round.
     }
 
     // play round
+    /**
+     * @param endRound
+     * @returns {Promise<playerAnswers>}
+     */
     async then(endRound) {
         this.endRound = endRound;
 
