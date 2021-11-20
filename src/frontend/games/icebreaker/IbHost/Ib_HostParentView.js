@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CONSTANTS from 'Icebreaker/IbConstants';
-import styles from '../icebreaker.module.css';
+import '../icebreaker.css';
 
 // ROUND LOADER
 import IbRoundComponentLoader from 'Icebreaker/IbShared/IbRoundComponentLoader';
@@ -50,7 +50,7 @@ export default class IcebreakerView extends React.Component {
         const { viewData } = this.state;
 
         return (
-            <div className={styles.global}>
+            <div className={"icebreaker"}>
                 <IbRoundComponentLoader
                     viewLevel={0}
                     roundViews={roundViews}

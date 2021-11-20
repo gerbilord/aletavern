@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import styles from 'Icebreaker/icebreaker.module.css';
+import 'Icebreaker/icebreaker.css';
 import Button from 'Frontend/baseComponents/Button';
 
 export default function HostAsksMatchingPromptToAllView(props) {
@@ -18,7 +18,7 @@ export default function HostAsksMatchingPromptToAllView(props) {
 
 
     return (
-        <div className={styles.basic_col}>
+        <div className={"basic_col"}>
             <h1>Icebreaker</h1>
             <h2>Room Code: {gameId}</h2>
             <br />

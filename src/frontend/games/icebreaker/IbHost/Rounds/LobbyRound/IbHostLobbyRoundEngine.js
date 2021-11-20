@@ -3,8 +3,6 @@ import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 
-// noinspection JSUnusedGlobalSymbols
-
 export default class LobbyRound {
     constructor(hostWs, players) {
         this.hostWs = hostWs;

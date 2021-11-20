@@ -1,7 +1,6 @@
 import React from 'react';
 
 import CONSTANTS from 'Icebreaker/IbConstants';
-import styles from '../../../icebreaker.module.css';
 
 // ROUND LOADER
 import IbRoundComponentLoader from 'Icebreaker/IbShared/IbRoundComponentLoader';

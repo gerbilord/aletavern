@@ -47,3 +47,72 @@
     width: 50vmin;
     min-height: 5vmin;
 }
+
+
+
+
+.icebreaker {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.icebreaker .basic_col {
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.icebreaker button {
+    width: 50vmin;
+    height: 8vmin;
+    font-size: 3vmin;
+    color: white;
+    margin: 1vmin;
+    border-radius: 1.5vmin;
+    background-color: steelblue;
+    opacity: 0.8;
+    cursor: pointer;
+    user-select: none;
+}
+
+.icebreaker button:active {
+    opacity: 1;
+}
+
+.icebreaker button:disabled {
+    opacity: 0.3;
+}
+
+.icebreaker input[type='text'] {
+    width: 50vmin;
+    height: 6vmin;
+    font-size: 3vmin;
+    margin: 1vmin;
+    text-align: center;
+}
+
+.icebreaker h1 {
+    font-size: 9vmin;
+}
+
+.icebreaker h2 {
+    font-size: 6vmin;
+}
+
+.icebreaker h3 {
+    font-size: 3vmin;
+}
+
+.icebreaker h4 {
+    font-size: 2.5vmin;
+}
+
+.icebreaker h1,
+.icebreaker h2,
+.icebreaker h3,
+.icebreaker h4,
+.icebreaker h5 {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    /* text-align: center; */
+}

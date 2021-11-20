@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 
-import styles from 'Icebreaker/icebreaker.module.css';
+import 'Icebreaker/icebreaker.css';
 
 export default function Ib_ReadOnlyTextPromptView(props) {
     const { viewData } = props;
@@ -17,7 +17,7 @@ export default function Ib_ReadOnlyTextPromptView(props) {
     } = viewData?.getExtraData();
 
     return (
-        <div className={styles.basic_col}>
+        <div className={'basic_col'}>
             <h2>{promptData.prompt}</h2>
         </div>
     );

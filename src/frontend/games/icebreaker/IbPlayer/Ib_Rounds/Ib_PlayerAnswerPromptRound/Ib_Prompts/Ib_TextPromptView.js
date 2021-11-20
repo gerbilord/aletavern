@@ -3,9 +3,9 @@
  */
 
 import React, { useState } from 'react';
-import Button from 'Frontend/baseComponents/Button'; //TODO make own components for game
+import Button from 'Frontend/baseComponents/Button';
 
-import styles from 'Icebreaker/icebreaker.module.css';
+import 'Icebreaker/icebreaker.css';
 
 export default function Ib_TextPromptView(props) {
     const { viewData } = props;
@@ -37,7 +37,7 @@ export default function Ib_TextPromptView(props) {
     }
 
     return (
-        <div className={styles.basic_col}>
+        <div className={'basic_col'}>
             <h2>{promptData.prompt}</h2>
             <input type="text" value={userInput} onChange={onChangeHandler} />
             <Button
