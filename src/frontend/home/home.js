@@ -30,8 +30,6 @@ class Home extends React.Component {
                                 value={this.state.name}
                             />
 
-                            <h2 className={styles.subTitle}>then</h2>
-
                             <input
                                 type="text"
                                 placeholder="Game Id"
@@ -62,8 +60,6 @@ class Home extends React.Component {
                                 }}
                             />
 
-                            <h3 className={styles.subTitle}>or</h3>
-
                             <Button
                                 buttonText="Create"
                                 isDisabled={this.state.name.length == 0}
@@ -72,7 +68,6 @@ class Home extends React.Component {
                                     this.setState({ selection: 'create' });
                                 }}
                             />
-                            <h3 className={styles.subTitle}>or</h3>
                             <Button
                                 buttonText="Reconnect"
                                 isDisabled={
