@@ -8,6 +8,7 @@ import HostAsksMatchingPromptToAll
     from 'Icebreaker/IbHost/Rounds/HostAsksMatchingPromptToAll/HostAsksMatchingPromptToAll';
 import HostSendsReadOnlyTextToAll
     from 'Icebreaker/IbHost/Rounds/HostSendsReadOnlyTextToAllRound/HostSendsReadOnlyTextToAll';
+import NeverHaveIEverGame from 'Icebreaker/IbHost/Rounds/NeverHaveIEverGame/NeverHaveIEverGame';
 
 export default class GameEngine {
     constructor(gameWebSocket) {
@@ -15,11 +16,12 @@ export default class GameEngine {
         this.players = new Players(this.ws);
         this.rounds = [
             new LobbyRound(this.ws, this.players),
-            // new HostSendsReadOnlyTextToAll(this.ws, this.players),
+            // new HostSendsReadOnlyTextToAll(this.ws, t his.players),
             // new HostAsksMatchingPromptToAll(this.ws, this.players),
             // new HostAsksMultipleChoicePromptToAll(this.ws, this.players),
             // new HostAsksRankPromptToAll(this.ws, this.players),
-            new HostAsksTextPromptToAll(this.ws, this.players),
+            // new HostAsksTextPromptToAll(this.ws, this.players)
+            new NeverHaveIEverGame(this.ws, this.players)
         ];
 
         this.currentRound = null;

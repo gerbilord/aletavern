@@ -25,6 +25,7 @@ export default function IbTextPromptView(props) {
     const handleSendMessage = () => {
         if (selectedChoice.length > 0) {
             sendAnswer();
+            setSelectedChoice('');
         }
     };
 

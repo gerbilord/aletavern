@@ -10,7 +10,12 @@ export default class AnswerPromptRound {
         this.cleanUpFunctions.push(this.sendAnswer.bind(this));
         this.hostStartRoundMessage = hostStartRoundMessage;
         this.promptData = hostStartRoundMessage.getData(); // Depends on promptType.
+        this.isPromptBatch = Array.isArray(this.promptData);
+        if(!this.isPromptBatch){
+            this.promptData = [this.promptData];
+        }
         this.answerSent = false;
+        this.currentPromptIndex = 0;
     }
 
     // play round
@@ -20,17 +25,26 @@ export default class AnswerPromptRound {
     }
 
     updateAnswer(newAnswer) {
-        this.promptData.answer = newAnswer;
+        this.promptData[this.currentPromptIndex].answer = newAnswer;
     }
 
     sendAnswer(){
-        if(!this.answerSent){
-            this.answerSent = true;
-            const answerMessage = new MessageObject();
-            answerMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
-            answerMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS);
-            answerMessage.setData(this.promptData);
-            this.playerWs.sendMessageToHost(answerMessage.getMessage()); // TODO consider cleaning up when sending msg
+        if(this.currentPromptIndex >= this.promptData.length - 1){
+            if(!this.answerSent){
+                this.answerSent = true;
+                const answerMessage = new MessageObject();
+                answerMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
+                answerMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS);
+
+                if(!this.isPromptBatch){
+                    this.promptData = this.promptData[0];
+                }
+
+                answerMessage.setData(this.promptData);
+                this.playerWs.sendMessageToHost(answerMessage.getMessage()); // TODO consider cleaning up when sending msg
+            }
+        } else {
+            this.currentPromptIndex++;
         }
     }
 
@@ -57,7 +71,7 @@ export default class AnswerPromptRound {
         const viewData = new ViewData();
         viewData.addViewType(CONSTANTS.ROUNDS.PROMPT);
         viewData.addViewType(this.hostStartRoundMessage.getSpecificRound())
-        const extraData = {promptData: this.promptData, answerSent: this.answerSent, updateAnswer: this.updateAnswer.bind(this), sendAnswer: this.sendAnswer.bind(this)};
+        const extraData = {promptData: this.promptData[this.currentPromptIndex], answerSent: this.answerSent, updateAnswer: this.updateAnswer.bind(this), sendAnswer: this.sendAnswer.bind(this)};
         viewData.setExtraData(extraData);
 
         return viewData;
