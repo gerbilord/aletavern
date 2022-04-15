@@ -5,10 +5,12 @@ module.exports = {
 
     target: 'node', // in order to ignore built-in modules like path, fs, etc.
 
+    devtool: 'inline-source-map',
+
     module: {
         rules: [
             {
-                test: /\.(js|jsx)$/, // babel loading in js and jsx files
+                test: /\.(js|jsx|ts|tsx)$/, // babel loading, see .babelrc for details
                 include: path.resolve(__dirname, './src/frontend'),
                 use: ['babel-loader'],
             },
@@ -40,7 +42,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.js', '.jsx', '.css'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.css'],
         alias: {
             Frontend: path.resolve(__dirname, './src/frontend'),
             Utils: path.resolve(__dirname, './src/frontend/utils'),

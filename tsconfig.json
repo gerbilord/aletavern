@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "ES6",
+    "target": "es5",
+    "sourceMap": true,
+    "allowJs": true,
+    "downlevelIteration": true,
+  },
+  "include": ["src/frontend"],
+  "exclude": [
+    "node_modules",
+    "public",
+    "src/backend"
+  ]
+}
