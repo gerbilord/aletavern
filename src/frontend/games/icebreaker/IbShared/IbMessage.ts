@@ -5,12 +5,12 @@ export default class icebreakerMessage {
     private messageObject: {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any};
     private sender: string | null;
 
-    constructor(messageData=null) {
+    constructor(messageData:any = null) {
 
         if (messageData) {
             if (messageData.data) {
                 // If gameWebSocketMessage
-                this.messageObject = {[CONSTANTS.MESSAGE_TYPE_KEY]: [], [CONSTANTS.ROUND_KEY]: [], data: messageData.data};
+                this.messageObject = messageData.data;
                 this.sender = messageData.playerId;
             } else {
                 // Else assume icebreakerMessage

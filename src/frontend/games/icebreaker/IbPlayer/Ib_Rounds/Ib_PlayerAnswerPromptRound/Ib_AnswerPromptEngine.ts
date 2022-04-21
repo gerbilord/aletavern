@@ -2,9 +2,19 @@ import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
+import GameWebSocket from 'Frontend/GameWebSocket';
 
 export default class AnswerPromptRound {
-    constructor(playerWs, hostStartRoundMessage) {
+    private playerWs: GameWebSocket;
+    private cleanUpFunctions: {():void}[];
+    private hostStartRoundMessage: MessageObject;
+    private promptData: any; // TODO - type this
+    private isPromptBatch: boolean;
+    private answerSent: boolean;
+    private currentPromptIndex: number;
+    private endRound: () => void;
+
+    constructor(playerWs : GameWebSocket, hostStartRoundMessage: MessageObject) {
         this.playerWs = playerWs;
         this.cleanUpFunctions = []; // run before ending round.
         this.cleanUpFunctions.push(this.sendAnswer.bind(this));
@@ -12,23 +22,23 @@ export default class AnswerPromptRound {
         this.promptData = hostStartRoundMessage.getData(); // Depends on promptType.
         this.isPromptBatch = Array.isArray(this.promptData);
         if(!this.isPromptBatch){
-            this.promptData = [this.promptData];
+            this.promptData = [this.promptData]; // TODO - always make promptData an array (even when there is only one prompt)
         }
         this.answerSent = false;
         this.currentPromptIndex = 0;
     }
 
     // play round
-    async then(endRound) {
+    async then(endRound): Promise<void> { // TODO: Change to play() to make Typescript happy.
         this.endRound = endRound;
         this.listenForRoundEnding();
     }
 
-    updateAnswer(newAnswer) {
+    updateAnswer(newAnswer):void {
         this.promptData[this.currentPromptIndex].answer = newAnswer;
     }
 
-    sendAnswer(){
+    sendAnswer(): void {
         if(this.currentPromptIndex >= this.promptData.length - 1){
             if(!this.answerSent){
                 this.answerSent = true;
@@ -36,11 +46,7 @@ export default class AnswerPromptRound {
                 answerMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
                 answerMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.ROUND_INSTRUCTIONS);
 
-                if(!this.isPromptBatch){
-                    this.promptData = this.promptData[0];
-                }
-
-                answerMessage.setData(this.promptData);
+                answerMessage.setData(this.isPromptBatch ? this.promptData : this.promptData[0]);
                 this.playerWs.sendMessageToHost(answerMessage.getMessage()); // TODO consider cleaning up when sending msg
             }
         } else {
@@ -48,7 +54,7 @@ export default class AnswerPromptRound {
         }
     }
 
-    listenForRoundEnding() {
+    listenForRoundEnding(): void {
         const endRoundListener = (msgObj) => {
             const message = new MessageObject(msgObj);
             if (message.getSender() === this.playerWs.hostId
@@ -62,12 +68,12 @@ export default class AnswerPromptRound {
         ListUtils.addObjectToListAndAddCleanUp(this.playerWs.onMessageGame, endRoundListener, this.cleanUpFunctions);
     }
 
-    cleanUpAndEndRound() {
+    cleanUpAndEndRound(): void {
         this.cleanUpFunctions.forEach((func) => func()); // Remove end round listener. Send answer if not sent yet.
         this.endRound(); // End the round. (resolve promise)
     }
 
-    getViewData() {
+    getViewData(): ViewData {
         const viewData = new ViewData();
         viewData.addViewType(CONSTANTS.ROUNDS.PROMPT);
         viewData.addViewType(this.hostStartRoundMessage.getSpecificRound())

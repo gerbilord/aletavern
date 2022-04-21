@@ -1,5 +1,5 @@
 export default class ReadOnlyTextPrompt {
-    private prompt: string;
+    public prompt: string;
 
     constructor() {
         this.prompt = "";
