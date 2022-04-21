@@ -2,68 +2,69 @@ import CONSTANTS from '../IbConstants';
 
 export default class icebreakerMessage {
     // Accepts serverMessage and serverMessage.data
-    constructor(messageData) {
-        this.messageObject = {};
-        this.sender = null; // We are sending message, sender will be populated by GameWebSocket.
+    private messageObject: {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any};
+    private sender: string | null;
 
-        this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY] = [];
-        this.messageObject[CONSTANTS.ROUND_KEY] = [];
+    constructor(messageData=null) {
 
         if (messageData) {
             if (messageData.data) {
                 // If gameWebSocketMessage
-                this.messageObject = messageData.data;
+                this.messageObject = {[CONSTANTS.MESSAGE_TYPE_KEY]: [], [CONSTANTS.ROUND_KEY]: [], data: messageData.data};
                 this.sender = messageData.playerId;
             } else {
                 // Else assume icebreakerMessage
                 this.messageObject = messageData;
+                this.sender = null;
             }
+        } else {
+            this.messageObject = {[CONSTANTS.MESSAGE_TYPE_KEY]: [], [CONSTANTS.ROUND_KEY]: [], data: {}};
         }
     }
 
-    addMessageType(newType) {
+    addMessageType(newType:string): void {
         this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY].push(newType);
     }
 
-    getMessageTypes() {
+    getMessageTypes(): string[] {
         return this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY];
     }
 
-    getMainMessageType() {
+    getMainMessageType(): string {
         return this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY][0];
     }
 
-    getSpecificMessageType() {
+    getSpecificMessageType(): string {
         const lastIndex = this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY].length - 1;
         return this.messageObject[CONSTANTS.MESSAGE_TYPE_KEY][lastIndex];
     }
 
-    addRound(newRound) {
+    addRound(newRound:string): void {
         this.messageObject[CONSTANTS.ROUND_KEY].push(newRound);
     }
 
-    getRounds() {
+    getRounds(): string[] {
         return this.messageObject[CONSTANTS.ROUND_KEY];
     }
 
-    getMainRound() {
+    getMainRound(): string {
         return this.messageObject[CONSTANTS.ROUND_KEY][0];
     }
 
-    getSpecificRound() {
+    getSpecificRound(): string {
         const lastIndex = this.messageObject[CONSTANTS.ROUND_KEY].length - 1;
         return this.messageObject[CONSTANTS.ROUND_KEY][lastIndex];
     }
 
-    setData(newData) {
+    setData(newData:any): void {
         this.messageObject[CONSTANTS.DATA_KEY] = newData;
     }
 
-    getData() {
+    getData(): any {
         return this.messageObject[CONSTANTS.DATA_KEY];
     }
 
-    getMessage() {
+    getMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
         return this.messageObject;
     }
 

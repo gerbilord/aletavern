@@ -2,7 +2,6 @@
 
 import * as ListUtils from 'Utils/listUtils';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import moment from 'moment';
 
 export default class GameWebSocket {
     // TODO make sure websocket is still alive!
@@ -13,7 +12,29 @@ export default class GameWebSocket {
 
     // TODO add boolean to accept or reject failure messages.
 
-    constructor(logging) {
+    private wsOpenedBefore: boolean;
+    private ws: ReconnectingWebSocket;
+    private readonly logging: boolean;
+
+    public gameId: string | undefined;
+    public playerId: string | undefined;
+    public playerName: string | undefined;
+    public hostId:  string | undefined;
+    public gameType:  string | undefined;
+
+    public onCreateGame: { (payload: {}): void; }[];
+    public onJoinGame: { (payload: {}): void; }[];
+    public onLeaveGame: { (payload: {}): void; }[];
+    public defaultOnCreateGame: { (payload: {}): void; }[];
+    public defaultOnJoinGame: { (payload: {}): void; }[];
+    public defaultOnReconnectGame: { (payload: {}): void; }[];
+    public onOtherLeaveGame: { (payload: {}): void; }[];
+    public onOtherJoinGame: { (payload: {}): void; }[];
+    public onReconnectGame: { (payload: {}): void; }[];
+    public onOtherReconnectGame: { (payload: {}): void; }[];
+    public onMessageGame: { (payload: {}): void; }[];
+
+    constructor(logging:boolean = false) {
         this.wsOpenedBefore = false; // Used to tell if open event is the inital open event or a reconnect.
         const wsPath = 'ws://' + window.location.host + '/game';
         this.ws = new ReconnectingWebSocket(wsPath);
@@ -25,7 +46,7 @@ export default class GameWebSocket {
         this.clearAllHandlers();
     }
 
-    clearAllHandlers() {
+    clearAllHandlers():void {
         this.onCreateGame = [];
         this.onJoinGame = [];
         this.onLeaveGame = [];
@@ -40,12 +61,12 @@ export default class GameWebSocket {
         this.onMessageGame = [];
     }
 
-    closeHandler(event){
+    closeHandler(event):void {
         console.log("Websocket closing. Event below");
         console.log(event);
     }
 
-    isHost() {
+    isHost():boolean {
         return !!(
             this.playerId &&
             this.hostId &&
@@ -53,7 +74,7 @@ export default class GameWebSocket {
         );
     }
 
-    setLocalDataFromServer(msgObj) {
+    setLocalDataFromServer(msgObj):void {
         if (msgObj) {
             this.gameId = msgObj.data.gameId;
             sessionStorage.setItem('gameId', this.gameId);
@@ -77,7 +98,7 @@ export default class GameWebSocket {
         }
     }
 
-    messageHandler(event) {
+    messageHandler(event):void {
         const msgObj = JSON.parse(event.data);
 
         if (this.logging && msgObj.type !== 'PONG') {
@@ -165,7 +186,7 @@ export default class GameWebSocket {
         }
     }
 
-    clearData() {
+    clearData():void {
         this.gameId = undefined;
         this.playerId = undefined;
         this.playerName = undefined;
@@ -175,7 +196,7 @@ export default class GameWebSocket {
         sessionStorage.clear(); // just clear everything // TODO dont remove everything. Some games may use it.
     }
 
-    loadData() {
+    loadData():void {
         this.gameId = sessionStorage.getItem('gameId');
         this.playerId = sessionStorage.getItem('playerId');
         this.playerName = sessionStorage.getItem('playerName');
@@ -183,7 +204,7 @@ export default class GameWebSocket {
         this.gameType = sessionStorage.getItem('gameType');
     }
 
-    createGame(gameType, name) {
+    createGame(gameType, name): Promise<any> {
         const dataObj = { gameType: gameType, playerName: name };
         const createMessageObj = { type: 'CREATEGAME', data: dataObj };
 
@@ -206,7 +227,7 @@ export default class GameWebSocket {
 
     // Returns a promise that resolves when websocket joins a game.
     // As an alternative, you can add your own listener to this.onJoinGame[]
-    joinGame(gameId, name) {
+    joinGame(gameId, name): Promise<any> {
         const dataObj = { gameId: gameId, playerName: name };
         const joinMessageObj = { type: 'JOINGAME', data: dataObj };
 
@@ -227,7 +248,7 @@ export default class GameWebSocket {
         return promise;
     }
 
-    openHandler(){
+    openHandler():void {
         if(this.wsOpenedBefore){ // If the websocket was opened before
             // it is a reconnect event.
             console.log("Reconnected.");
@@ -241,7 +262,7 @@ export default class GameWebSocket {
         this.sendPing();
     }
 
-    sendPing(){
+    sendPing():void {
         const pingMessageObj = {
             type: 'PING',
             playerId: sessionStorage.getItem('playerId')
@@ -249,7 +270,7 @@ export default class GameWebSocket {
         this.ws.send(JSON.stringify(pingMessageObj));
     }
 
-    sendMessageToAll(msg) {
+    sendMessageToAll(msg):void {
         const sendMessageObj = {
             type: 'MESSAGEALLGAME',
             playerId: sessionStorage.getItem('playerId'),
@@ -258,7 +279,7 @@ export default class GameWebSocket {
         this.ws.send(JSON.stringify(sendMessageObj));
     }
 
-    sendMessageToAllOthers(msg) {
+    sendMessageToAllOthers(msg):void {
         const sendMessageObj = {
             type: 'MESSAGEALLOTHERSGAME',
             playerId: sessionStorage.getItem('playerId'),
@@ -267,7 +288,7 @@ export default class GameWebSocket {
         this.ws.send(JSON.stringify(sendMessageObj));
     }
 
-    sendMessageToHost(msg) {
+    sendMessageToHost(msg):void {
         const sendMessageObj = {
             type: 'MESSAGEHOSTGAME',
             playerId: sessionStorage.getItem('playerId'),
@@ -276,7 +297,7 @@ export default class GameWebSocket {
         this.ws.send(JSON.stringify(sendMessageObj));
     }
 
-    sendMessageToOne(receiverId, msg) {
+    sendMessageToOne(receiverId, msg):void {
         const addressedMessage = { receiverId: receiverId, message: msg };
         const sendMessageObj = {
             type: 'MESSAGEONEGAME',
@@ -286,7 +307,7 @@ export default class GameWebSocket {
         this.ws.send(JSON.stringify(sendMessageObj)); // Add try catch. Reconnect on catch
     }
 
-    reconnectGame(shouldLoadData = true) {
+    reconnectGame(shouldLoadData = true):Promise<any> {
 
         if(shouldLoadData){
             this.loadData();
@@ -314,7 +335,7 @@ export default class GameWebSocket {
         return promise;
     }
 
-    leaveGame() {
+    leaveGame():void {
         const sendMessageObj = {
             type: 'LEAVEGAME',
             playerId: sessionStorage.getItem('playerId'),
@@ -322,7 +343,7 @@ export default class GameWebSocket {
         this.ws.send(JSON.stringify(sendMessageObj)); // TODO refactor stringify
     }
 
-    sendToServer(msg) {
+    sendToServer(msg):void {
         let msgObj;
         try {
             msgObj = JSON.stringify(msg);

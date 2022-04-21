@@ -2,9 +2,22 @@ import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import PlayerPromptResponse from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_PlayerPromptResponse';
+import Ib_PlayerPromptResponse from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_PlayerPromptResponse';
+import GameWebSocket from 'Frontend/GameWebSocket';
 
 export default class Ib_GetPlayerPromptPromise {
-    constructor(hostWs, playerId, promptType, promptData, timeLimit, functionsToRunOnResolve) {
+    private hostWs: GameWebSocket;
+    private playerId: string;
+    private promptType: string;
+    private promptData: any;
+    private timeLimit: number;
+    private playerPromptResponse: Ib_PlayerPromptResponse;
+    private isResolved: boolean;
+    private functionsToRunOnResolve: { (payload: {}): void; }[];
+    private cleanUpFunctions: { (): void; }[];
+    private resolve: { (payload: {}): void; };
+
+    constructor(hostWs: GameWebSocket, playerId: string, promptType: string, promptData:any, timeLimit:number, functionsToRunOnResolve:{ (payload: {}): void; }[]) {
         this.hostWs = hostWs;
         this.playerId = playerId;
         this.promptType = promptType;
@@ -23,7 +36,7 @@ export default class Ib_GetPlayerPromptPromise {
     }
 
     // Resolves into a Ib_PlayerPromptResponse.js
-    async then(resolve) {
+    async then(resolve: { (resolveValue: {}): void; }): Promise<void> {
         this.resolve = resolve;
 
         this.listenForPlayerAnswer();
@@ -31,14 +44,14 @@ export default class Ib_GetPlayerPromptPromise {
         this.startEndTimer();
     }
 
-    startEndTimer(){
+    startEndTimer(): void {
         if(this.timeLimit){
             const timeOut = setTimeout(()=>{this.cleanUpAndEndRound()}, this.timeLimit);
             this.cleanUpFunctions.push(()=>{clearTimeout(timeOut)});
         }
     }
 
-    listenForPlayerAnswer() {
+    listenForPlayerAnswer(): void {
         const updatePlayerAnswer = (msgObj) => {
             const message = new MessageObject(msgObj);
             if (
@@ -59,19 +72,19 @@ export default class Ib_GetPlayerPromptPromise {
         );
     }
 
-    sendPlayerPrompt() {
+    sendPlayerPrompt(): void {
         const promptMessage = this.createStartRoundMessage(this.promptData);
         this.hostWs.sendMessageToOne(this.playerId, promptMessage);
     }
 
-    addObjectToListAndCleanUp(objectList, object) {
+    addObjectToListAndCleanUp(objectList, object): void {
         this.cleanUpFunctions.push(
             ListUtils.createRemoveItemCallback(objectList, object)
         );
         objectList.push(object);
     }
 
-    cleanUpAndEndRound() {
+    cleanUpAndEndRound(): void {
         if(!this.isResolved){
             this.cleanUpFunctions.forEach((func) => func());
             this.functionsToRunOnResolve.forEach((func) => func(this.playerPromptResponse));
@@ -79,7 +92,7 @@ export default class Ib_GetPlayerPromptPromise {
         }
     }
 
-    createStartRoundMessage(question) {
+    createStartRoundMessage(question): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
         const promptMessage = new MessageObject();
         promptMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
         promptMessage.addRound(this.promptType);
@@ -88,7 +101,7 @@ export default class Ib_GetPlayerPromptPromise {
         return promptMessage.getMessage();
     }
 
-    forceEnd() {
+    forceEnd(): void {
         this.cleanUpAndEndRound();
     }
 

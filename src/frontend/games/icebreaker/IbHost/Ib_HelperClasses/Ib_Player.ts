@@ -1,5 +1,7 @@
 export default class Player {
-    constructor(serverPayload) {
+    public name: string;
+    public id: string;
+    constructor(serverPayload:any) {
         const {
             data: { playerName },
             playerId,

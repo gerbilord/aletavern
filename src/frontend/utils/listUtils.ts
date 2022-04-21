@@ -1,4 +1,4 @@
-export function filterInPlace(listToFilter, filterFunction) {
+export function filterInPlace<Type>(listToFilter: Type[], filterFunction: (item: Type) => boolean): void {
     listToFilter.splice(
         0,
         listToFilter.length,
@@ -7,21 +7,21 @@ export function filterInPlace(listToFilter, filterFunction) {
 }
 
 // Removes every matching (===) item from the list
-export function removeItemFromList(listToRemoveItemFrom, itemToRemove) {
+export function removeItemFromList<Type>(listToRemoveItemFrom: Type[], itemToRemove: Type): void {
     filterInPlace(listToRemoveItemFrom, (item) => {
         return item !== itemToRemove;
     });
 }
 
 // Returns a function that when run, removes the item from the list.
-export function createRemoveItemCallback(listToRemoveFrom, itemToRemove) {
+export function createRemoveItemCallback<Type>(listToRemoveFrom: Type[], itemToRemove: Type): () => void {
     return () => {
         removeItemFromList(listToRemoveFrom, itemToRemove);
     };
 }
 
 // Randomizes a list in place.
-export function shuffleList(array) {
+export function shuffleList(array: any[]): any[] {
     let currentIndex = array.length, randomIndex;
 
     // While there remain elements to shuffle...
@@ -35,11 +35,10 @@ export function shuffleList(array) {
         [array[currentIndex], array[randomIndex]] = [
             array[randomIndex], array[currentIndex]];
     }
-
     return array;
 }
 
-export function addObjectToListAndAddCleanUp(objectList, object, cleanUpFunctionList) {
+export function addObjectToListAndAddCleanUp<Type>(objectList: Type[], object: Type, cleanUpFunctionList: (() => void)[]): void {
     cleanUpFunctionList.push(
         createRemoveItemCallback(objectList, object)
     );

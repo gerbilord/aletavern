@@ -1,30 +1,33 @@
 export default class icebreakerViewData {
+    private readonly viewTypeHierarchy: string[];
+    private extraViewData: {};
+
     constructor() {
         this.viewTypeHierarchy = [];
         this.extraViewData = {};
     }
 
-    addViewType(newType) {
+    addViewType(newType:string): void {
         this.viewTypeHierarchy.push(newType);
     }
 
-    getViewTypes() {
+    getViewTypes(): string[] {
         return this.viewTypeHierarchy;
     }
 
-    getMainView() {
+    getMainView(): string {
         return this.viewTypeHierarchy[0];
     }
 
-    getSpecificView() {
+    getSpecificView(): string {
         return this.viewTypeHierarchy[this.viewTypeHierarchy.length - 1]
     }
 
-    setExtraData(newData) {
+    setExtraData(newData:{}): void {
         this.extraViewData = newData;
     }
 
-    getExtraData() {
+    getExtraData(): {} {
         return this.extraViewData;
     }
 }

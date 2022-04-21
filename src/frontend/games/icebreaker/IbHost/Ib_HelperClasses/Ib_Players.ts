@@ -1,7 +1,12 @@
 import Player from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Player';
+import GameWebSocket from 'Frontend/GameWebSocket';
 
 export default class Players {
-    constructor(ws) {
+    private hostWs: GameWebSocket;
+    players: Player[];
+    private vip: Player;
+
+    constructor(ws: GameWebSocket) {
         this.hostWs = ws;
         this.players = [];
         this.vip = null;
