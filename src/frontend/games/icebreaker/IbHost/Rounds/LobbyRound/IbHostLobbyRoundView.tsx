@@ -1,14 +1,16 @@
 import React from 'react';
 
 import 'Icebreaker/icebreaker.css';
+import {ReactRoundViewProps} from 'Icebreaker/IbShared/IbRoundComponentLoader';
+import Player from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Player';
 
-export default function Lobby(props) {
+export default function Lobby(props:ReactRoundViewProps) {
     const {
         ws: { gameId },
         viewData,
     } = props;
 
-    const players = viewData.getExtraData();
+    const players:Player[] = viewData.getExtraData();
 
     return (
         <div className={"basic_col"}>

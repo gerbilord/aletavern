@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 
 import 'Icebreaker/icebreaker.css';
 import Button from 'Frontend/baseComponents/Button';
+import gameEngine from './HostAsksMatchingPromptToAll'
+import {ReactRoundViewProps} from 'Icebreaker/IbShared/IbRoundComponentLoader';
 
-export default function HostAsksMatchingPromptToAllView(props) {
+export default function HostAsksMatchingPromptToAllView(props:ReactRoundViewProps) {
     const {
         ws: { gameId },
         viewData,
     } = props;
 
-    const roundEngine = viewData.getExtraData();
+    const roundEngine: gameEngine = viewData.getExtraData();
 
     const [timeLimit, setTimeLimit] = useState("0");
     const [prompt, setPrompt] = useState("");
@@ -142,7 +144,7 @@ export default function HostAsksMatchingPromptToAllView(props) {
                         {
                             playerResponseList.map(
                                 (playerResponse) => {return <div key={playerResponse.playerId}>
-                                    {roundEngine.players.findPlayerFromId(playerResponse.playerId).name}: "{playerResponse?.promptData.categories.map(
+                                    {roundEngine.players.findPlayerFromId(playerResponse.playerId)?.name}: "{playerResponse?.promptData.categories.map(
                                     (category)=>{return <span key={category}>{category}:{playerResponse?.promptData.answer[category]},</span>}
                                 )}"
                                 </div>

@@ -7,11 +7,11 @@ import GameWebSocket from 'Frontend/GameWebSocket';
 
 export default class Ib_GetPlayerPromptPromise {
     private hostWs: GameWebSocket;
-    private playerId: string;
+    playerId: string;
     private promptType: string;
-    private promptData: any;
+    promptData: any;
     private timeLimit: number;
-    private playerPromptResponse: Ib_PlayerPromptResponse;
+    private playerPromptResponse: Ib_PlayerPromptResponse<any>;
     private isResolved: boolean;
     private functionsToRunOnResolve: { (payload: {}): void; }[];
     private cleanUpFunctions: { (): void; }[];

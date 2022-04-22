@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 
 import 'Icebreaker/icebreaker.css';
 import Button from 'Frontend/baseComponents/Button';
+import gameEngine from './HostAsksMultipleChoicePromptToAll';
+import {ReactRoundViewProps} from 'Icebreaker/IbShared/IbRoundComponentLoader';
 
-export default function HostAsksRankPromptToAllView(props) {
+export default function HostAsksMultipleChoicePromptToAllView(props:ReactRoundViewProps) {
     const {
         ws: { gameId },
         viewData,
     } = props;
 
-    const roundEngine = viewData.getExtraData();
+    const roundEngine: gameEngine = viewData.getExtraData();
 
     const [timeLimit, setTimeLimit] = useState("0");
     const [prompt, setPrompt] = useState("");
@@ -36,7 +38,7 @@ export default function HostAsksRankPromptToAllView(props) {
                     placeholder="Prompt"
                     onChange={(event) => {
                         setPrompt(event.target.value);
-                        roundEngine.setMainPrompt(event.target.value);
+                        roundEngine.setPrompt(event.target.value);
                     }}
                     value={prompt}
                 />
@@ -111,14 +113,12 @@ export default function HostAsksRankPromptToAllView(props) {
 
             roundEngine.playerAnswersHistory.slice().reverse().map(
                 (playerResponseList, index)=> {
-                    return <div key={playerResponseList[0]?.promptData?.mainPrompt + index.toString()}>
-                        <strong>{playerResponseList[0]?.promptData?.mainPrompt}</strong>
+                    return <div key={playerResponseList[0].promptData?.prompt + index.toString()}>
+                        <strong>{playerResponseList[0]?.promptData?.prompt}</strong>
                         {
                             playerResponseList.map(
-                                (playerResponse) => {return <div key={playerResponse.playerId}>
-                                    {roundEngine.players.findPlayerFromId(playerResponse.playerId).name}: "{playerResponse?.promptData?.answer.map(
-                                        (choice)=>{return <span key={choice}>{choice},</span>}
-                                )}"
+                                (playerResponse, index) => {return <div key={playerResponse.playerId}>
+                                    {roundEngine.players.findPlayerFromId(playerResponse.playerId)?.name}: "{playerResponse?.promptData?.answer}"
                                 </div>
                                 }
                             )

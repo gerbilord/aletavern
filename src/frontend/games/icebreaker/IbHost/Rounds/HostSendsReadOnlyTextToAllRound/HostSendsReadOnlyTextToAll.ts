@@ -10,10 +10,10 @@ import Players from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Players';
 
 export default class HostSendsReadOnlyTextToAllRound {
     private hostWs: GameWebSocket;
-    private players: Players;
+    players: Players;
     private promptData: ReadOnlyTextPrompt;
     private timeLimit: number;
-    private isRoundActive: boolean;
+    isRoundActive: boolean;
     private endRound: () => void;
     private promptPromise: Ib_GetSamePromptAllPlayers;
 

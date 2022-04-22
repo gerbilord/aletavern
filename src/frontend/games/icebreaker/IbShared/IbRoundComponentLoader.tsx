@@ -1,7 +1,21 @@
 import React from 'react';
+import GameWebSocket from 'Frontend/GameWebSocket';
+import icebreakerViewData from 'Icebreaker/IbShared/IbSharedViewData';
+
+export type ReactRoundViewProps = {
+    ws: GameWebSocket;
+    viewData: icebreakerViewData;
+    viewLevel: number;
+
+};
 
 export default function IbRoundComponentLoader(props) {
-    const { ws, viewData, roundViews, viewLevel } = props;
+    const { ws, viewData, roundViews, viewLevel }:{
+        ws: GameWebSocket;
+        viewData: icebreakerViewData;
+        roundViews: any[];
+        viewLevel: number;
+    } = props;
 
     const viewTypes = viewData?.getViewTypes();
 

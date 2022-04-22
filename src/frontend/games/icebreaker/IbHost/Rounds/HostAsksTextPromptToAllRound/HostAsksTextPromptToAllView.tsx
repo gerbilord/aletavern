@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 
 import 'Icebreaker/icebreaker.css';
 import Button from 'Frontend/baseComponents/Button';
+import {ReactRoundViewProps} from 'Icebreaker/IbShared/IbRoundComponentLoader';
+import gameEngine from './HostAsksTextPromptToAll'
 
-export default function HostSendsReadOnlyTextToAllView(props) {
+export default function HostAsksTextPromptToAllView(props:ReactRoundViewProps) {
     const {
         ws: { gameId },
         viewData,
     } = props;
 
-    const roundEngine = viewData.getExtraData();
+    const roundEngine:gameEngine = viewData.getExtraData();
+
 
     const [timeLimit, setTimeLimit] = useState("0");
     const [prompt, setPrompt] = useState("");
@@ -52,7 +55,7 @@ export default function HostSendsReadOnlyTextToAllView(props) {
             </div>
             <div>
                 <Button
-                    buttonText = "Send read only text"
+                    buttonText = "Send prompts"
                     clickHandler = {()=>{roundEngine.sendPrompt()}}
                     passEvent = {false}
                     isDisabled={roundEngine.isRoundActive}
@@ -64,6 +67,31 @@ export default function HostSendsReadOnlyTextToAllView(props) {
                     isDisabled={!roundEngine.isRoundActive}
                 />
             </div>
+
+            { roundEngine.isRoundActive &&
+            <div>
+                <div>Players yet to answer:</div>
+                {roundEngine.playersYetToAnswer.map(player=><div key={player.id}>{player.name}</div>)}
+            </div>
+            }
+
+            { roundEngine.playerAnswersHistory &&
+
+                roundEngine.playerAnswersHistory.slice().reverse().map(
+                    (playerResponseList,index)=> {
+                        return <div key={playerResponseList[0].promptData.prompt + index.toString()}>
+                            <strong>{playerResponseList[0].promptData.prompt}</strong>
+                            {
+                                playerResponseList.map(
+                                    (playerResponse) => {return <div key={playerResponse.playerId}>
+                                        {roundEngine.players.findPlayerFromId(playerResponse.playerId)?.name}: "{playerResponse?.promptData?.answer}"
+                                    </div>
+                                    }
+                                )
+                            }
+                        </div>
+                    })
+            }
         </div>
     );
 }

@@ -13,13 +13,13 @@ import Ib_PlayerPromptResponse from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_Play
 
 export default class AskPlayerQuestionRound {
     private hostWs: GameWebSocket;
-    private players: Players;
-    private promptData: RankPrompt;
+    players: Players;
+    promptData: RankPrompt;
     private timeLimit: number;
-    private playerAnswers: any[];
-    private playerAnswersHistory: any[];
-    private isRoundActive: boolean;
-    private playersYetToAnswer: Player[];
+    private playerAnswers: Ib_PlayerPromptResponse<RankPrompt>[];
+    playerAnswersHistory: Ib_PlayerPromptResponse<RankPrompt>[][];
+    isRoundActive: boolean;
+    playersYetToAnswer: Player[];
     private endRound: {(resolveValue): void};
     private promptPromise: Ib_GetSamePromptAllPlayers;
 
@@ -57,7 +57,7 @@ export default class AskPlayerQuestionRound {
         this.playersYetToAnswer = Array.from(this.players.players);
     }
 
-    removePlayerFromPlayersYetToAnswer(playerPromptResponse: Ib_PlayerPromptResponse): void{
+    removePlayerFromPlayersYetToAnswer(playerPromptResponse: Ib_PlayerPromptResponse<RankPrompt>): void{
         if(playerPromptResponse?.playerId){
             ListUtils.removeItemFromList(this.playersYetToAnswer, this.players.findPlayerFromId(playerPromptResponse.playerId));
         }

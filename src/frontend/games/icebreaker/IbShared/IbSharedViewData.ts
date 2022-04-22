@@ -1,6 +1,6 @@
 export default class icebreakerViewData {
     private readonly viewTypeHierarchy: string[];
-    private extraViewData: {};
+    private extraViewData: any;
 
     constructor() {
         this.viewTypeHierarchy = [];
@@ -27,7 +27,7 @@ export default class icebreakerViewData {
         this.extraViewData = newData;
     }
 
-    getExtraData(): {} {
+    getExtraData(): any {
         return this.extraViewData;
     }
 }

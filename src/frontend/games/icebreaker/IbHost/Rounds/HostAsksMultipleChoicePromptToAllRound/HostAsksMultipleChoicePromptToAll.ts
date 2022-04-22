@@ -6,18 +6,20 @@ import Ib_GetSamePromptAllPlayers from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_G
 import MultipleChoicePrompt from 'Icebreaker/IbHost/Rounds/HostAsksMultipleChoicePromptToAllRound/MultipleChoicePrompt';
 import GameWebSocket from 'Frontend/GameWebSocket';
 import Players from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Players';
+import Ib_PlayerPromptResponse from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_PlayerPromptResponse';
+import RankPrompt from 'Icebreaker/IbHost/Rounds/HostAsksRankPromptToAllRound/RankPrompt';
 
 // noinspection JSUnusedGlobalSymbols
 
 export default class AskPlayerQuestionRound {
     private hostWs: GameWebSocket;
-    private players: Players;
+    players: Players;
     private timeLimit: number;
-    private promptData: MultipleChoicePrompt;
-    private playerAnswers: any[];
-    private playerAnswersHistory: any[];
-    private isRoundActive: boolean;
-    private playersYetToAnswer: any[];
+    promptData: MultipleChoicePrompt;
+    private playerAnswers: Ib_PlayerPromptResponse<MultipleChoicePrompt>[];
+    playerAnswersHistory: Ib_PlayerPromptResponse<MultipleChoicePrompt>[][];
+    isRoundActive: boolean;
+    playersYetToAnswer: any[];
     private promptPromise: Ib_GetSamePromptAllPlayers;
     private endRound: { (resolvedValue): void};
 
@@ -35,7 +37,7 @@ export default class AskPlayerQuestionRound {
     }
 
     // play round
-    async then(endRound) {
+    async then(endRound): Promise<void> {
         this.endRound = endRound;
     }
 
@@ -55,7 +57,7 @@ export default class AskPlayerQuestionRound {
         this.playersYetToAnswer = Array.from(this.players.players);
     }
 
-    removePlayerFromPlayersYetToAnswer(playerPromptResponse):void{
+    removePlayerFromPlayersYetToAnswer(playerPromptResponse: Ib_PlayerPromptResponse<RankPrompt>):void{
         if(playerPromptResponse?.playerId){
             ListUtils.removeItemFromList(this.playersYetToAnswer, this.players.findPlayerFromId(playerPromptResponse.playerId));
         }
@@ -100,7 +102,7 @@ export default class AskPlayerQuestionRound {
         return endRoundMessage.getMessage();
     }
 
-    setTimeLimit(newTimeLimit){
+    setTimeLimit(newTimeLimit: any): void {
 
         let intLimit = 0;
 
