@@ -13,7 +13,9 @@
       "Utils/*": ["src/frontend/utils/*"],
       "Games/*": ["src/frontend/games/*"],
       "Icebreaker/*": ["src/frontend/games/Icebreaker/*"]
-    }
+    },
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/frontend"],
   "exclude": [

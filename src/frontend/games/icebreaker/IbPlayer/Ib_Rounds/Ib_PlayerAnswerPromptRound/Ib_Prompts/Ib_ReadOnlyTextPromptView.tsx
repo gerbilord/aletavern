@@ -2,11 +2,10 @@
  * @prettier
  */
 
-import React, { useState } from 'react';
-
 import 'Icebreaker/icebreaker.css';
+import React from 'react';
 
-export default function Ib_ReadOnlyTextPromptView(props) {
+export default function Ib_ReadOnlyTextPromptView(props: { viewData: any }) {
     const { viewData } = props;
 
     const {
