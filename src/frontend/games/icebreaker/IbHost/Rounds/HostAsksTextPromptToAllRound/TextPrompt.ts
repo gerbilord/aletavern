@@ -1,6 +1,6 @@
 export default class TextPrompt {
-    private prompt: string;
-    private answer: string;
+    public prompt: string;
+    public answer: string;
 
     constructor() {
         this.prompt = "";

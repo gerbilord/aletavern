@@ -24,7 +24,7 @@ export default class Ib_GetSamePromptAllPlayers {
     }
 
     // Resolves into an array of Ib_PlayerPromptResponse.js
-    then(resolve): Promise<any> {
+    then(resolve): Promise<any[]> {
         this.resolve = resolve;
         this.playerPromptPromises = this.players.players.map((player)=> new GetPlayerPromptPromise(this.hostWs, player.id, this.promptType, this.promptData, this.timeLimit, this.functionsToRunOnIndividualResolve));
         return Promise.all(this.playerPromptPromises).then((ppps)=>resolve(ppps));

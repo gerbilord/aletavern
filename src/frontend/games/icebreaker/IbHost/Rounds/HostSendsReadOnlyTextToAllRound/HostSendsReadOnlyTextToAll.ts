@@ -28,15 +28,15 @@ export default class HostSendsReadOnlyTextToAllRound {
     }
 
     // play round
-    async then(endRound) {
+    async then(endRound): Promise<void> {
         this.endRound = endRound;
     }
 
-    setPrompt(newPrompt){
+    setPrompt(newPrompt:string): void {
         this.promptData.prompt = newPrompt;
     }
 
-    async sendPrompt(){
+    async sendPrompt():Promise<void> {
         if(!this.isRoundActive){
             this.isRoundActive = true;
             let timeout;
@@ -50,26 +50,26 @@ export default class HostSendsReadOnlyTextToAllRound {
         }
     }
 
-    sendEndRound() {
+    sendEndRound(): void {
         if(this.isRoundActive){
             this.players.sendMessageToAllPlayers(this.createEndRoundMessage());
             this.isRoundActive = false;
         }
     }
 
-    forceEnd() {
+    forceEnd(): void {
         this.sendEndRound();
         setTimeout(()=>this.promptPromise.forceEnd(), 1500);
     }
 
-    createEndRoundMessage() {
+    createEndRoundMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
         const endRoundMessage = new MessageObject();
         endRoundMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
         endRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
         return endRoundMessage.getMessage();
     }
 
-    setTimeLimit(newTimeLimit : any){
+    setTimeLimit(newTimeLimit : any): void {
 
         let intLimit: number = 0;
 
@@ -83,7 +83,7 @@ export default class HostSendsReadOnlyTextToAllRound {
 
     }
 
-    getViewData() {
+    getViewData():ViewData {
         const viewData = new ViewData();
         viewData.addViewType(CONSTANTS.ROUNDS.HOST_SENDS_READ_ONLY_TEXT_TO_ALL);
         viewData.setExtraData(this);

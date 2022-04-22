@@ -2,9 +2,17 @@ import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
+import GameWebSocket from 'Frontend/GameWebSocket';
+import Players from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Players';
 
 export default class LobbyRound {
-    constructor(hostWs, players) {
+    private hostWs: GameWebSocket;
+    private players: Players;
+    private cleanUpFunctions: {():void}[];
+    private viewData: ViewData;
+    private endRound: {():any};
+
+    constructor(hostWs: GameWebSocket, players: Players) {
         this.hostWs = hostWs;
         this.players = players;
         this.cleanUpFunctions = []; // run before ending round.
@@ -15,14 +23,14 @@ export default class LobbyRound {
     }
 
     // play round
-    async then(endRound) {
+    async then(endRound): Promise<any> {
         this.endRound = endRound;
 
         this.listenForPlayerEndingLobby();
         this.listenForNewPlayers();
     }
 
-    listenForPlayerEndingLobby() {
+    listenForPlayerEndingLobby(): void {
         const endWhenPlayerAsks = (msgObj) => {
             const message = new MessageObject(msgObj);
             if (
@@ -40,7 +48,7 @@ export default class LobbyRound {
         ListUtils.addObjectToListAndAddCleanUp(this.hostWs.onMessageGame, endWhenPlayerAsks, this.cleanUpFunctions);
     }
 
-    listenForNewPlayers() {
+    listenForNewPlayers(): void {
         const addNewPlayerOnJoin = (msgObj) => {
             const newPlayer = this.players.addPlayerFromServer(msgObj);
 
@@ -58,27 +66,27 @@ export default class LobbyRound {
         ListUtils.addObjectToListAndAddCleanUp(this.hostWs.onOtherJoinGame, addNewPlayerOnJoin, this.cleanUpFunctions);
     }
 
-    cleanUpAndEndRound() {
+    cleanUpAndEndRound(): void {
         this.players.sendMessageToAllPlayers(this.createEndRoundMessage()); // Notify players round is over.
         this.cleanUpFunctions.forEach((func) => func()); // Remove all listeners created in this round.
         this.endRound(); // End the round. (resolve promise)
     }
 
-    createStartRoundMessage() {
+    createStartRoundMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
         const startRoundMessage = new MessageObject();
         startRoundMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
         startRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
         return startRoundMessage.getMessage();
     }
 
-    createEndRoundMessage() {
+    createEndRoundMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
         const endRoundMessage = new MessageObject();
         endRoundMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
         endRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
         return endRoundMessage.getMessage();
     }
 
-    createNumberOfPlayersUpdateMessage() {
+    createNumberOfPlayersUpdateMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
         const playerUpdateMessage = new MessageObject();
         playerUpdateMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
         playerUpdateMessage.addMessageType(
@@ -88,7 +96,7 @@ export default class LobbyRound {
         return playerUpdateMessage.getMessage();
     }
 
-    getViewData() {
+    getViewData(): ViewData {
         return this.viewData;
     }
 }

@@ -1,9 +1,9 @@
 export default class RankPrompt {
-    private mainPrompt: string;
-    private topText: string;
-    private bottomText: string;
-    private choices: string[];
-    private answer: string[];
+    public mainPrompt: string;
+    public topText: string;
+    public bottomText: string;
+    public choices: string[];
+    public answer: string[];
 
     constructor() {
         this.mainPrompt = "";

@@ -4,23 +4,34 @@ import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 import Ib_GetSamePromptAllPlayers from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetSamePromptAllPlayers';
 import MultipleChoicePrompt from 'Icebreaker/IbHost/Rounds/HostAsksMultipleChoicePromptToAllRound/MultipleChoicePrompt';
+import GameWebSocket from 'Frontend/GameWebSocket';
+import Players from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Players';
 
 // noinspection JSUnusedGlobalSymbols
 
 export default class AskPlayerQuestionRound {
-    constructor(hostWs, players) {
+    private hostWs: GameWebSocket;
+    private players: Players;
+    private timeLimit: number;
+    private promptData: MultipleChoicePrompt;
+    private playerAnswers: any[];
+    private playerAnswersHistory: any[];
+    private isRoundActive: boolean;
+    private playersYetToAnswer: any[];
+    private promptPromise: Ib_GetSamePromptAllPlayers;
+    private endRound: { (resolvedValue): void};
+
+    constructor(hostWs: GameWebSocket, players: Players) {
         this.hostWs = hostWs;
         this.players = players;
 
         this.promptData = new MultipleChoicePrompt();
-        this.timeLimit  = null;
+        this.timeLimit  = 0;
         this.playerAnswers = [];
         this.playerAnswersHistory = [];
         this.playersYetToAnswer = [];
         this.isRoundActive = false;
         this.getViewData = this.getViewData.bind(this);
-
-        this.cleanUpFunctions = []; // run before ending round.
     }
 
     // play round
@@ -28,23 +39,23 @@ export default class AskPlayerQuestionRound {
         this.endRound = endRound;
     }
 
-    setPrompt(newPrompt){
+    setPrompt(newPrompt: string): void {
         this.promptData.prompt = newPrompt;
     }
 
-    addChoice(newChoice){
+    addChoice(newChoice: string):void{
         this.promptData.choices.push(newChoice);
     }
 
-    resetChoices(){
+    resetChoices():void{
         this.promptData.choices = [];
     }
 
-    resetPlayersYetToAnswer(){
+    resetPlayersYetToAnswer():void{
         this.playersYetToAnswer = Array.from(this.players.players);
     }
 
-    removePlayerFromPlayersYetToAnswer(playerPromptResponse){
+    removePlayerFromPlayersYetToAnswer(playerPromptResponse):void{
         if(playerPromptResponse?.playerId){
             ListUtils.removeItemFromList(this.playersYetToAnswer, this.players.findPlayerFromId(playerPromptResponse.playerId));
         }
@@ -58,8 +69,10 @@ export default class AskPlayerQuestionRound {
             let timeout;
             if(this.timeLimit) { timeout = setTimeout(this.sendEndRound.bind(this), this.timeLimit);}
             this.promptPromise = new Ib_GetSamePromptAllPlayers(this.hostWs, this.players,
-                CONSTANTS.PROMPT_TYPE.MULTIPLE_CHOICE, this.promptData, this.timeLimit ? this.timeLimit + 1500 : null,
+                CONSTANTS.PROMPT_TYPE.MULTIPLE_CHOICE, this.promptData, this.timeLimit ? this.timeLimit + 1500 : 0,
                 [(playerPromptResponse)=>this.removePlayerFromPlayersYetToAnswer(playerPromptResponse)]);
+
+            // @ts-ignore
             this.playerAnswers = await this.promptPromise;
             this.playerAnswersHistory.push(this.playerAnswers);
             console.log(this.playerAnswers);
@@ -68,19 +81,19 @@ export default class AskPlayerQuestionRound {
         }
     }
 
-    sendEndRound() {
+    sendEndRound():void{
         if(this.isRoundActive){
             this.players.sendMessageToAllPlayers(this.createEndRoundMessage());
             this.isRoundActive = false;
         }
     }
 
-    forceEnd() {
+    forceEnd():void{
         this.sendEndRound();
         setTimeout(()=>this.promptPromise.forceEnd(), 1500);
     }
 
-    createEndRoundMessage() {
+    createEndRoundMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
         const endRoundMessage = new MessageObject();
         endRoundMessage.addRound(CONSTANTS.ROUNDS.PROMPT);
         endRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
@@ -89,7 +102,7 @@ export default class AskPlayerQuestionRound {
 
     setTimeLimit(newTimeLimit){
 
-        let intLimit = null;
+        let intLimit = 0;
 
         try {
             intLimit = parseInt(newTimeLimit, 10);
@@ -97,11 +110,7 @@ export default class AskPlayerQuestionRound {
             console.log("Time limit is not a number");
         }
 
-        if(intLimit && intLimit > 0){
-            this.timeLimit = (intLimit * 1000);
-        } else {
-            this.timeLimit = null;
-        }
+        this.timeLimit = (intLimit * 1000);
     }
 
     getViewData() {

@@ -4,23 +4,36 @@ import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
 import GetSamePromptAllPlayers from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetSamePromptAllPlayers';
 import TextPrompt from 'Icebreaker/IbHost/Rounds/HostAsksTextPromptToAllRound/TextPrompt';
+import GameWebSocket from 'Frontend/GameWebSocket';
+import Players from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Players';
+import Ib_GetSamePromptAllPlayers from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetSamePromptAllPlayers';
+import Ib_PlayerPromptResponse from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_PlayerPromptResponse';
 
 // noinspection JSUnusedGlobalSymbols
 
 export default class AskPlayerQuestionRound {
-    constructor(hostWs, players) {
+    private hostWs: any;
+    private players: Players;
+    private promptData: TextPrompt
+    private timeLimit: number;
+    private playerAnswers: any[];
+    private playerAnswersHistory: any[];
+    private playersYetToAnswer: any[];
+    private isRoundActive: boolean;
+    private endRound: { ():any };
+    private promptPromise: Ib_GetSamePromptAllPlayers;
+
+    constructor(hostWs: GameWebSocket, players: Players) {
         this.hostWs = hostWs;
         this.players = players;
 
         this.promptData = new TextPrompt();
-        this.timeLimit  = null;
+        this.timeLimit  = 0;
         this.playerAnswers = [];
         this.playerAnswersHistory = [];
         this.playersYetToAnswer = [];
         this.isRoundActive = false;
         this.getViewData = this.getViewData.bind(this);
-
-        this.cleanUpFunctions = []; // run before ending round.
     }
 
     // play round
@@ -36,7 +49,7 @@ export default class AskPlayerQuestionRound {
         this.playersYetToAnswer = Array.from(this.players.players);
     }
 
-    removePlayerFromPlayersYetToAnswer(playerPromptResponse){
+    removePlayerFromPlayersYetToAnswer(playerPromptResponse: Ib_PlayerPromptResponse){
         if(playerPromptResponse?.playerId){
             ListUtils.removeItemFromList(this.playersYetToAnswer, this.players.findPlayerFromId(playerPromptResponse.playerId));
         }
@@ -50,9 +63,10 @@ export default class AskPlayerQuestionRound {
             let timeout;
             if(this.timeLimit) { timeout = setTimeout(this.sendEndRound.bind(this), this.timeLimit);}
             this.promptPromise = new GetSamePromptAllPlayers(this.hostWs, this.players,
-                CONSTANTS.PROMPT_TYPE.TEXT, this.promptData, this.timeLimit ? this.timeLimit + 1500 : null,
+                CONSTANTS.PROMPT_TYPE.TEXT, this.promptData, this.timeLimit ? this.timeLimit + 1500 : 0,
                 [(playerPromptResponse)=>this.removePlayerFromPlayersYetToAnswer(playerPromptResponse)]);
-            this.playerAnswers = await this.promptPromise;
+            // @ts-ignore
+            this.playerAnswers = await this.promptPromise; // Fix this to make typescript happy.
             this.playerAnswersHistory.push(this.playerAnswers);
             console.log(this.playerAnswers);
             if(this.timeLimit){clearTimeout(timeout);}
@@ -81,7 +95,7 @@ export default class AskPlayerQuestionRound {
 
     setTimeLimit(newTimeLimit){
 
-        let intLimit = null;
+        let intLimit = 0;
 
         try {
             intLimit = parseInt(newTimeLimit, 10);
@@ -89,14 +103,11 @@ export default class AskPlayerQuestionRound {
             console.log("Time limit is not a number");
         }
 
-        if(intLimit && intLimit > 0){
-            this.timeLimit = (intLimit * 1000);
-        } else {
-            this.timeLimit = null;
-        }
+        this.timeLimit = (intLimit * 1000);
+
     }
 
-    getViewData() {
+    getViewData():ViewData {
         const viewData = new ViewData();
         viewData.addViewType(CONSTANTS.ROUNDS.HOST_ASKS_TEXT_PROMPT_TO_ALL);
         viewData.setExtraData(this);
