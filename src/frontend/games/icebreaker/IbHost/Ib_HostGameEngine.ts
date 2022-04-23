@@ -9,8 +9,15 @@ import HostAsksMatchingPromptToAll
 import HostSendsReadOnlyTextToAll
     from 'Icebreaker/IbHost/Rounds/HostSendsReadOnlyTextToAllRound/HostSendsReadOnlyTextToAll';
 import NeverHaveIEverGame from 'Icebreaker/IbHost/Rounds/NeverHaveIEverGame/NeverHaveIEverGame';
+import GameWebSocket from 'Frontend/GameWebSocket';
+import icebreakerViewData from 'Icebreaker/IbShared/IbSharedViewData';
 
 export default class GameEngine {
+    ws: GameWebSocket;
+    private players: Players;
+    private rounds: any[]; // TODO Make interface playRound, fix then statements?
+    private currentRound: any; // TODO Make interface playRound
+
     constructor(gameWebSocket) {
         this.ws = gameWebSocket;
         this.players = new Players(this.ws);
@@ -29,7 +36,7 @@ export default class GameEngine {
         this.runGameLoop();
     }
 
-    async runGameLoop() {
+    async runGameLoop():Promise<void> {
         for (let i = 0; i < this.rounds.length; i++) {
             this.currentRound = this.rounds[i];
             console.log('STARTING');
@@ -39,7 +46,7 @@ export default class GameEngine {
         }
     }
 
-    getViewData() {
+    getViewData():icebreakerViewData {
         return this.currentRound?.getViewData();
     }
 }

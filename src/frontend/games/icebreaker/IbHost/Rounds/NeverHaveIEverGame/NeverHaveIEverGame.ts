@@ -6,19 +6,27 @@ import GetPlayerPromptPromise from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetPl
 import TextPrompt from 'Icebreaker/IbHost/Rounds/HostAsksTextPromptToAllRound/TextPrompt';
 import MultipleChoicePrompt from 'Icebreaker/IbHost/Rounds/HostAsksMultipleChoicePromptToAllRound/MultipleChoicePrompt';
 import ReadOnlyTextPrompt from 'Icebreaker/IbHost/Rounds/HostSendsReadOnlyTextToAllRound/ReadOnlyTextPrompt';
+import GameWebSocket from 'Frontend/GameWebSocket';
+import Players from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Players';
+import Ib_GetPlayerPromptPromise from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_GetPlayerPromptPromise';
+import { NeverHaveIEverYesNoPrompt } from 'Icebreaker/IbHost/Rounds/NeverHaveIEverGame/NeverHaveIEverYesNoPrompt';
 
 // noinspection JSUnusedGlobalSymbols
 
 export default class NeverHaveIEverGame {
-    constructor(hostWs, players) {
+    private hostWs: GameWebSocket;
+    playersData: Players;
+    private timeLimit: number;
+    private playerAnswers: any[];
+    private endRound: { ():void };
+
+    constructor(hostWs: GameWebSocket, players: Players) {
         this.hostWs = hostWs;
         this.playersData = players;
 
-        this.timeLimit  = null;
+        this.timeLimit  = 0;
         this.playerAnswers = [];
         this.getViewData = this.getViewData.bind(this);
-
-        this.cleanUpFunctions = []; // run before ending round.
     }
 
     // play round
@@ -28,6 +36,8 @@ export default class NeverHaveIEverGame {
         await this.sendPromptsToAll();
         this.sendEndRound();
         await this.sendScoresToAll();
+
+        this.endRound();
     }
 
     async sendScoresToAll(){
@@ -63,7 +73,7 @@ export default class NeverHaveIEverGame {
             playerScores[playerId] = currentScore;
         }
 
-        const playerScorePromises = [];
+        const playerScorePromises: Ib_GetPlayerPromptPromise[] = [];
 
         for(let i = 0; i < this.playersData.length; i++){
             const playerId = this.playersData.players[i].id;
@@ -74,7 +84,7 @@ export default class NeverHaveIEverGame {
             scorePrompt.prompt = scoreMessage;
 
             playerScorePromises.push(new GetPlayerPromptPromise(this.hostWs, playerId,
-                CONSTANTS.PROMPT_TYPE.READ_ONLY_TEXT, scorePrompt, this.timeLimit ? this.timeLimit + 1500 : null,
+                CONSTANTS.PROMPT_TYPE.READ_ONLY_TEXT, scorePrompt, this.timeLimit ? this.timeLimit + 1500 : 0,
                 []));
         }
 
@@ -83,7 +93,7 @@ export default class NeverHaveIEverGame {
     async sendPromptsToAll() {
 
         const createNeverHaveIEverPrompt = (playerName, playerId)=>{
-            const newPrompt = new MultipleChoicePrompt();
+            const newPrompt = new NeverHaveIEverYesNoPrompt();
             if(playerName === "you"){
                 newPrompt.prompt = "Have " + playerName + " ever had a crush on someone in the workplace?";
             } else {
@@ -95,15 +105,13 @@ export default class NeverHaveIEverGame {
             return newPrompt;
         }
 
-        const allPlayerAnswerPromises = [];
+        const allPlayerAnswerPromises: Promise<GetPlayerPromptPromise>[] = [];
 
         for(let i = 0; i < this.playersData.players.length; i++) {
             const player = this.playersData.players[i];
             const playerId = player.id;
-            const playerName = player.name;
-            const playerWs = player.ws;
 
-            const promptsForPlayer = [];
+            const promptsForPlayer: NeverHaveIEverYesNoPrompt[] = [];
             promptsForPlayer.push(createNeverHaveIEverPrompt("you", playerId));
 
             for(let j = 0; j < this.playersData.players.length; j++) {
@@ -123,10 +131,11 @@ export default class NeverHaveIEverGame {
         this.playerAnswers = allPlayerAnswers;
     }
 
-    async sendPrompt(playerPromptData, playerIdToSendTo) {
-        return new GetPlayerPromptPromise(this.hostWs, playerIdToSendTo,
-            CONSTANTS.PROMPT_TYPE.MULTIPLE_CHOICE, playerPromptData, this.timeLimit ? this.timeLimit + 1500 : null,
+    async sendPrompt(playerPromptData, playerIdToSendTo): Promise<GetPlayerPromptPromise> {
+        const getPlayerPromptPromise = new GetPlayerPromptPromise(this.hostWs, playerIdToSendTo,
+            CONSTANTS.PROMPT_TYPE.MULTIPLE_CHOICE, playerPromptData, this.timeLimit ? this.timeLimit + 1500 : 0,
             []);
+        return getPlayerPromptPromise;
     }
 
     sendEndRound() {

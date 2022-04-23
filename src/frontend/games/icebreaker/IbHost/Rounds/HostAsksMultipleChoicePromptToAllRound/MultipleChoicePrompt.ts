@@ -17,4 +17,11 @@ export default class MultipleChoicePrompt {
         return mcP;
     }
 
+    protected static fromJsonChild<Type extends MultipleChoicePrompt>(jsonPrompt, mcP: Type): Type {
+        mcP.prompt = jsonPrompt.prompt;
+        mcP.choices = jsonPrompt.choices;
+        mcP.answer = jsonPrompt.answer;
+        return mcP;
+    }
+
 }

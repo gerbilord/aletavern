@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 
 import 'Icebreaker/icebreaker.css';
-import Button from 'Frontend/baseComponents/Button';
+import { ReactRoundViewProps } from 'Icebreaker/IbShared/IbRoundComponentLoader';
+import gameEngine from './NeverHaveIEverGame';
 
 export default function NeverHaveIEverGameView(props) {
     const {
         ws: { gameId },
         viewData,
-    } = props;
+    }: ReactRoundViewProps = props;
 
-    const roundEngine = viewData.getExtraData();
+    const roundEngine: gameEngine = viewData.getExtraData();
 
     return (
         <div className={"basic_col"}>

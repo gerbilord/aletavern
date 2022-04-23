@@ -2,7 +2,7 @@ import React from 'react';
 
 import CONSTANTS from 'Icebreaker/IbConstants';
 import '../icebreaker.css';
-
+import gameEngine from './Ib_HostGameEngine';
 // ROUND LOADER
 import IbRoundComponentLoader from 'Icebreaker/IbShared/IbRoundComponentLoader';
 
@@ -17,6 +17,7 @@ import HostAsksMatchingPromptToAllView
 import HostSendsReadOnlyTextToAllView
     from 'Icebreaker/IbHost/Rounds/HostSendsReadOnlyTextToAllRound/HostSendsReadOnlyTextToAllView';
 import NeverHaveIEverGameView from 'Icebreaker/IbHost/Rounds/NeverHaveIEverGame/NeverHaveIEverGameView';
+import icebreakerViewData from 'Icebreaker/IbShared/IbSharedViewData';
 
 
 // SET ROUND TO VIEW MAPPING
@@ -31,25 +32,29 @@ roundViews[CONSTANTS.ROUNDS.HOST_NEVER_HAVE_I_EVER_GAME] = NeverHaveIEverGameVie
 
 
 export default class IcebreakerView extends React.Component {
+    private intervalId: number;
+    private gameEngine: gameEngine;
+
     constructor(props) {
         super(props);
 
-        this.gameEngine = this.props.gameWrapper.gameEngine;
+        this.gameEngine = props.gameWrapper.gameEngine;
         this.state = { viewData: this.gameEngine.getViewData() };
     }
 
     componentDidMount() {
-        this.interval = setInterval(
+        this.intervalId = setInterval(
             () => this.setState({ viewData: this.gameEngine.getViewData() }),
             100
         );
     }
     componentWillUnmount() {
-        clearInterval(this.interval);
+        clearInterval(this.intervalId);
     }
 
     render() {
-        const { viewData } = this.state;
+        // @ts-ignore
+        const { viewData }:{viewData:icebreakerViewData} = this.state;
 
         return (
             <div className={"icebreaker"}>
