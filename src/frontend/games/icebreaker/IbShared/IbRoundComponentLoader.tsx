@@ -9,13 +9,13 @@ export type ReactRoundViewProps = {
 
 };
 
-export default function IbRoundComponentLoader(props) {
-    const { ws, viewData, roundViews, viewLevel }:{
-        ws: GameWebSocket;
-        viewData: icebreakerViewData;
-        roundViews: any[];
-        viewLevel: number;
-    } = props;
+export default function IbRoundComponentLoader(props:{
+    ws: GameWebSocket;
+    viewData: icebreakerViewData;
+    roundViews: any[];
+    viewLevel: number; }
+) {
+    const { ws, viewData, roundViews, viewLevel } = props;
 
     const viewTypes = viewData?.getViewTypes();
 

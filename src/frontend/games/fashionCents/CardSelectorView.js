@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import CONSTANTS from 'Games/fashionCents/fcConstants';
 import classNames from 'classnames';
-import CardView from 'Games/fashionCents/CardView';
 import './FashionCents.css';
 import Popup from 'reactjs-popup';
 import StackView from 'Games/fashionCents/StackView';

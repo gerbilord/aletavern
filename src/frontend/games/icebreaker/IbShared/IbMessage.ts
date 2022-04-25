@@ -1,22 +1,16 @@
 import CONSTANTS from '../IbConstants';
+import { onMessageGamePayload } from 'Frontend/GameWebSocket';
+
+export type messageObject = {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any};
 
 export default class icebreakerMessage {
-    // Accepts serverMessage and serverMessage.data
-    private messageObject: {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any};
+    private messageObject: messageObject;
     private sender: string | null;
 
-    constructor(messageData:any = null) {
-
+    constructor(messageData:onMessageGamePayload | null = null) {
         if (messageData) {
-            if (messageData.data) {
-                // If gameWebSocketMessage
                 this.messageObject = messageData.data;
                 this.sender = messageData.playerId;
-            } else {
-                // Else assume icebreakerMessage
-                this.messageObject = messageData;
-                this.sender = null;
-            }
         } else {
             this.messageObject = {[CONSTANTS.MESSAGE_TYPE_KEY]: [], [CONSTANTS.ROUND_KEY]: [], data: {}};
         }
@@ -64,7 +58,7 @@ export default class icebreakerMessage {
         return this.messageObject[CONSTANTS.DATA_KEY];
     }
 
-    getMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
+    getMessage(): messageObject {
         return this.messageObject;
     }
 

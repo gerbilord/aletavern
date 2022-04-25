@@ -9,7 +9,11 @@ import 'Icebreaker/icebreaker.css';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import Ib_DroppableChoiceList from 'Icebreaker/IbPlayer/Ib_DraggableComponents/Ib_DroppableChoiceList';
 
-export default function Ib_RankPromptView(props) {
+import { PlayerPromptExtraViewData } from '../Ib_AnswerPromptEngine';
+import RankPrompt from 'Icebreaker/IbHost/Rounds/HostAsksRankPromptToAllRound/RankPrompt';
+import { ReactRoundViewProps } from 'Icebreaker/IbShared/IbRoundComponentLoader';
+
+export default function Ib_RankPromptView(props: ReactRoundViewProps) {
     const { viewData } = props;
 
     const {
@@ -17,7 +21,7 @@ export default function Ib_RankPromptView(props) {
         answerSent,
         updateAnswer,
         sendAnswer,
-    } = viewData?.getExtraData();
+    }: PlayerPromptExtraViewData<RankPrompt> = viewData?.getExtraData();
 
     const [userOrder, setUserOrder] = useState(Array.from(promptData.choices));
 
@@ -27,7 +31,7 @@ export default function Ib_RankPromptView(props) {
 
     const handleSendMessage = () => {
         updateAnswer(userOrder);
-        sendAnswer(userOrder);
+        sendAnswer();
     };
 
     const onDragEnd = (result) => {

@@ -3,12 +3,16 @@
  */
 
 import React, { useState } from 'react';
+import 'Icebreaker/icebreaker.css';
+
 import Button from 'Frontend/baseComponents/Button'; //TODO make own components for game
 
-import styles from 'Icebreaker/icebreaker.css';
 import classNames from 'classnames';
+import { ReactRoundViewProps } from 'Icebreaker/IbShared/IbRoundComponentLoader';
+import { PlayerPromptExtraViewData } from 'Icebreaker/IbPlayer/Ib_Rounds/Ib_PlayerAnswerPromptRound/Ib_AnswerPromptEngine';
+import MultipleChoicePrompt from 'Icebreaker/IbHost/Rounds/HostAsksMultipleChoicePromptToAllRound/MultipleChoicePrompt';
 
-export default function IbTextPromptView(props) {
+export default function IbTextPromptView(props: ReactRoundViewProps) {
     const { viewData } = props;
 
     const {
@@ -16,7 +20,7 @@ export default function IbTextPromptView(props) {
         answerSent,
         updateAnswer,
         sendAnswer,
-    } = viewData?.getExtraData();
+    }: PlayerPromptExtraViewData<MultipleChoicePrompt> = viewData?.getExtraData();
 
     const [selectedChoice, setSelectedChoice] = useState('');
     const choices = Array.from(promptData.choices);
@@ -39,7 +43,7 @@ export default function IbTextPromptView(props) {
     }
 
     return (
-        <div className={styles.basic_col}>
+        <div className="basic_col">
             <h2>{promptText}</h2>
 
             {choices.map((choice, index) => (

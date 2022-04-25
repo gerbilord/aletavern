@@ -1,11 +1,7 @@
-import React, { memo, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import CONSTANTS from 'Games/fashionCents/fcConstants';
 import classNames from 'classnames';
 import './FashionCents.css';
-import Command from 'Games/fashionCents/Command';
-import Stack from './Stack';
-import CardView from 'Games/fashionCents/CardView';
 import Popup from 'reactjs-popup';
 import ImageStackView from 'Games/fashionCents/ImageStackView';
 

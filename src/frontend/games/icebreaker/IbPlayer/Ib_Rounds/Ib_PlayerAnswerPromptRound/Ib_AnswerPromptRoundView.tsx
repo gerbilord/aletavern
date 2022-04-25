@@ -3,7 +3,7 @@ import React from 'react';
 import CONSTANTS from 'Icebreaker/IbConstants';
 
 // ROUND LOADER
-import IbRoundComponentLoader from 'Icebreaker/IbShared/IbRoundComponentLoader';
+import IbRoundComponentLoader, { ReactRoundViewProps } from 'Icebreaker/IbShared/IbRoundComponentLoader';
 
 // PROMPT IMPORTS
 import TextRoundView from 'Icebreaker/IbPlayer/Ib_Rounds/Ib_PlayerAnswerPromptRound/Ib_Prompts/Ib_TextPromptView';
@@ -21,7 +21,7 @@ promptViews[CONSTANTS.PROMPT_TYPE.MATCHING] = MatchingPromptView;
 promptViews[CONSTANTS.PROMPT_TYPE.READ_ONLY_TEXT] = ReadOnlyTextPromptView;
 
 export default (props) => {
-        const { viewLevel, viewData, ws} = props;
+        const { viewLevel, viewData, ws}: ReactRoundViewProps = props;
 
         return (
             <div>

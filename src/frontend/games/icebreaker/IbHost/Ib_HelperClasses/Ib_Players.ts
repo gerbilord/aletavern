@@ -9,7 +9,6 @@ export default class Players {
     constructor(ws: GameWebSocket) {
         this.hostWs = ws;
         this.players = [];
-        this.vip = null;
     }
 
     // Adds player if it doesn't already exist. Returns player added to list. Null if not added.

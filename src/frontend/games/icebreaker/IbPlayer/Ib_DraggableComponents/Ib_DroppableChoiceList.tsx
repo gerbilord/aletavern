@@ -1,7 +1,7 @@
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import Ib_DraggableText from 'Icebreaker/IbPlayer/Ib_DraggableComponents/Ib_DraggableText';
-export default function Ib_DroppableChoiceList(props) {
+export default function Ib_DroppableChoiceList(props:{choices:string[], droppableId:string}) {
     const {choices, droppableId} = props;
 
     return (<Droppable droppableId={droppableId}>

@@ -3,7 +3,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import 'Icebreaker/icebreaker.css';
 import classNames from 'classnames';
 
-export default function Ib_DraggableText(props) {
+export default function Ib_DraggableText(props:{text:string, index:number}) {
     const {text, index} = props;
 
     return (

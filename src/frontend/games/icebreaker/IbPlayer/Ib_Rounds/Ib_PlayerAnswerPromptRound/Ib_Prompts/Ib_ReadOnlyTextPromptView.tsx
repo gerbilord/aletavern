@@ -4,8 +4,11 @@
 
 import 'Icebreaker/icebreaker.css';
 import React from 'react';
+import { ReactRoundViewProps } from 'Icebreaker/IbShared/IbRoundComponentLoader';
+import { PlayerPromptExtraViewData } from 'Icebreaker/IbPlayer/Ib_Rounds/Ib_PlayerAnswerPromptRound/Ib_AnswerPromptEngine';
+import ReadOnlyTextPrompt from 'Icebreaker/IbHost/Rounds/HostSendsReadOnlyTextToAllRound/ReadOnlyTextPrompt';
 
-export default function Ib_ReadOnlyTextPromptView(props: { viewData: any }) {
+export default function Ib_ReadOnlyTextPromptView(props: ReactRoundViewProps) {
     const { viewData } = props;
 
     const {
@@ -13,7 +16,7 @@ export default function Ib_ReadOnlyTextPromptView(props: { viewData: any }) {
         answerSent,
         updateAnswer,
         sendAnswer,
-    } = viewData?.getExtraData();
+    }: PlayerPromptExtraViewData<ReadOnlyTextPrompt> = viewData?.getExtraData();
 
     return (
         <div className={'basic_col'}>

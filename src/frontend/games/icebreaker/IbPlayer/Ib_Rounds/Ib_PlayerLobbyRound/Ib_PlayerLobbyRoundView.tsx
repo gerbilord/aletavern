@@ -2,8 +2,9 @@ import React from 'react';
 import Button from 'Frontend/baseComponents/Button'; //TODO make own components for game
 
 import 'Icebreaker/icebreaker.css';
+import { ReactRoundViewProps } from 'Icebreaker/IbShared/IbRoundComponentLoader';
 
-export default function Lobby(props) {
+export default function Lobby(props:ReactRoundViewProps) {
     const {
         ws,
         viewData,

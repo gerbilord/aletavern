@@ -2,20 +2,23 @@
  * @prettier
  */
 
-import React, { useState } from 'react';
-import Button from 'Frontend/baseComponents/Button';
-
 import 'Icebreaker/icebreaker.css';
+import React, { useState } from 'react';
 
-export default function Ib_TextPromptView(props) {
+import Button from 'Frontend/baseComponents/Button';
+import { PlayerPromptExtraViewData } from '../Ib_AnswerPromptEngine';
+import TextPrompt from 'Icebreaker/IbHost/Rounds/HostAsksTextPromptToAllRound/TextPrompt';
+import { ReactRoundViewProps } from 'Icebreaker/IbShared/IbRoundComponentLoader';
+
+export default function Ib_TextPromptView(props: ReactRoundViewProps) {
     const { viewData } = props;
 
     const {
-        promptData, // TextPrompt.js
+        promptData,
         answerSent,
         updateAnswer,
         sendAnswer,
-    } = viewData?.getExtraData();
+    }: PlayerPromptExtraViewData<TextPrompt> = viewData?.getExtraData();
 
     const [userInput, updateUserInput] = useState('');
 

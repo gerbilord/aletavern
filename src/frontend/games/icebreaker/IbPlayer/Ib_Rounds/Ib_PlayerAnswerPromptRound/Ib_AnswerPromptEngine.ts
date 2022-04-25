@@ -2,7 +2,11 @@ import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
-import GameWebSocket from 'Frontend/GameWebSocket';
+import GameWebSocket, { onMessageGamePayload } from 'Frontend/GameWebSocket';
+
+export type PlayerPromptExtraViewData<promptDataType> = {
+    promptData: promptDataType, answerSent:boolean, updateAnswer:{(newAnswer):void}, sendAnswer:{():void},
+};
 
 export default class AnswerPromptRound {
     private playerWs: GameWebSocket;
@@ -55,7 +59,7 @@ export default class AnswerPromptRound {
     }
 
     listenForRoundEnding(): void {
-        const endRoundListener = (msgObj) => {
+        const endRoundListener = (msgObj:onMessageGamePayload) => {
             const message = new MessageObject(msgObj);
             if (message.getSender() === this.playerWs.hostId
                 && message.getSpecificMessageType() === CONSTANTS.MESSAGE_TYPE.END_ROUND
@@ -77,7 +81,7 @@ export default class AnswerPromptRound {
         const viewData = new ViewData();
         viewData.addViewType(CONSTANTS.ROUNDS.PROMPT);
         viewData.addViewType(this.hostStartRoundMessage.getSpecificRound())
-        const extraData = {promptData: this.promptData[this.currentPromptIndex], answerSent: this.answerSent, updateAnswer: this.updateAnswer.bind(this), sendAnswer: this.sendAnswer.bind(this)};
+        const extraData:PlayerPromptExtraViewData<any> = {promptData: this.promptData[this.currentPromptIndex], answerSent: this.answerSent, updateAnswer: this.updateAnswer.bind(this), sendAnswer: this.sendAnswer.bind(this)};
         viewData.setExtraData(extraData);
 
         return viewData;

@@ -24,7 +24,7 @@ export default class gameEngine {
         let updatePlayerCountListener = (msgObj) => {
             if (
                 this.isMessageFromHost(msgObj) &&
-                msgObj.data.type == 'playerCount'
+                msgObj.data.type === 'playerCount'
             ) {
                 // TODO check if message is valid.
                 this.stateData.numPlayers = msgObj.data.numPlayers;

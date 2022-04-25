@@ -8,10 +8,13 @@ import Button from 'Frontend/baseComponents/Button';
 import 'Icebreaker/icebreaker.css';
 import { DragDropContext } from 'react-beautiful-dnd';
 import Ib_DroppableChoiceList from 'Icebreaker/IbPlayer/Ib_DraggableComponents/Ib_DroppableChoiceList';
+import { ReactRoundViewProps } from 'Icebreaker/IbShared/IbRoundComponentLoader';
+import { PlayerPromptExtraViewData } from 'Icebreaker/IbPlayer/Ib_Rounds/Ib_PlayerAnswerPromptRound/Ib_AnswerPromptEngine';
+import MatchingPrompt from 'Icebreaker/IbHost/Rounds/HostAsksMatchingPromptToAll/MatchingPrompt';
 
 const DEFAULT_DROPPABLE_ID = 'UNMATCHED-DEFAULT';
 
-export default function Ib_MatchingPromptView(props) {
+export default function Ib_MatchingPromptView(props: ReactRoundViewProps) {
     const { viewData } = props;
 
     const {
@@ -19,7 +22,7 @@ export default function Ib_MatchingPromptView(props) {
         answerSent,
         updateAnswer,
         sendAnswer,
-    } = viewData?.getExtraData();
+    }: PlayerPromptExtraViewData<MatchingPrompt> = viewData?.getExtraData();
 
     const [unmatchedItems, setUnmatchedItems] = useState([
         ...promptData.matchables,

@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import Popup from 'reactjs-popup';
 import Stack from 'Games/fashionCents/StackView';
-import Card from './CardView';
-import CardObject from './Card'
 import StackObject from 'Games/fashionCents/Stack'
 import CONSTANTS from 'Games/fashionCents/fcConstants';
 import Command from 'Games/fashionCents/Command';

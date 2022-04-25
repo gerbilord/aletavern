@@ -3,7 +3,7 @@ import * as ListUtils from 'Utils/listUtils';
 import MessageObject from 'Icebreaker/IbShared/IbMessage';
 import PlayerPromptResponse from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_PlayerPromptResponse';
 import Ib_PlayerPromptResponse from 'Icebreaker/IbHost/Ib_PromptPromises/Ib_PlayerPromptResponse';
-import GameWebSocket from 'Frontend/GameWebSocket';
+import GameWebSocket, { onMessageGamePayload } from 'Frontend/GameWebSocket';
 
 export default class Ib_GetPlayerPromptPromise {
     private hostWs: GameWebSocket;
@@ -52,7 +52,7 @@ export default class Ib_GetPlayerPromptPromise {
     }
 
     listenForPlayerAnswer(): void {
-        const updatePlayerAnswer = (msgObj) => {
+        const updatePlayerAnswer = (msgObj:onMessageGamePayload) => {
             const message = new MessageObject(msgObj);
             if (
                 message.getSpecificRound() ===

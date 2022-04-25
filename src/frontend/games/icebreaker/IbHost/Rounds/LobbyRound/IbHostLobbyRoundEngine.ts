@@ -1,8 +1,8 @@
 import CONSTANTS from 'Icebreaker/IbConstants';
 import * as ListUtils from 'Utils/listUtils';
-import MessageObject from 'Icebreaker/IbShared/IbMessage';
+import MessageObject, { messageObject } from 'Icebreaker/IbShared/IbMessage';
 import ViewData from 'Icebreaker/IbShared/IbSharedViewData';
-import GameWebSocket from 'Frontend/GameWebSocket';
+import GameWebSocket, { onMessageGamePayload } from 'Frontend/GameWebSocket';
 import Players from 'Icebreaker/IbHost/Ib_HelperClasses/Ib_Players';
 
 export default class LobbyRound {
@@ -31,7 +31,7 @@ export default class LobbyRound {
     }
 
     listenForPlayerEndingLobby(): void {
-        const endWhenPlayerAsks = (msgObj) => {
+        const endWhenPlayerAsks = (msgObj:onMessageGamePayload) => {
             const message = new MessageObject(msgObj);
             if (
                 message.getMainRound() === CONSTANTS.ROUNDS.LOBBY
@@ -72,21 +72,21 @@ export default class LobbyRound {
         this.endRound(); // End the round. (resolve promise)
     }
 
-    createStartRoundMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
+    createStartRoundMessage(): messageObject {
         const startRoundMessage = new MessageObject();
         startRoundMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
         startRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.START_ROUND);
         return startRoundMessage.getMessage();
     }
 
-    createEndRoundMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
+    createEndRoundMessage(): messageObject {
         const endRoundMessage = new MessageObject();
         endRoundMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
         endRoundMessage.addMessageType(CONSTANTS.MESSAGE_TYPE.END_ROUND);
         return endRoundMessage.getMessage();
     }
 
-    createNumberOfPlayersUpdateMessage(): {[CONSTANTS.MESSAGE_TYPE_KEY]: string[], [CONSTANTS.ROUND_KEY]: string[], data: any} {
+    createNumberOfPlayersUpdateMessage(): messageObject {
         const playerUpdateMessage = new MessageObject();
         playerUpdateMessage.addRound(CONSTANTS.ROUNDS.LOBBY);
         playerUpdateMessage.addMessageType(
