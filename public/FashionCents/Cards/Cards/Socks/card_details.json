@@ -1,0 +1,78 @@
+[
+    {
+        "location": "default",
+        "count": 2
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock1.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock10.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock11.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock12.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock13.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock14.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock15.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock16.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock17.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock18.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock19.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock2.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock20.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock21.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock22.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock23.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock24.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock3.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock4.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock5.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock6.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock7.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock8.png"
+    },
+    {
+        "location": "./FashionCents/Cards/Socks/Sock9.png"
+    }
+]
