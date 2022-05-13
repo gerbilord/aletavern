@@ -120,3 +120,5 @@ commands.txt
 .dist/
 /.vs
 .idea
+/.idea/
+/.idea/*
