@@ -41,6 +41,16 @@
     width: 100px;
 }
 
+.fc-card-player-large {
+    height: 210px;
+    width: 150px;
+}
+
+.fc-card-player-small {
+    height: 105px;
+    width: 75px;
+}
+
 .fc-stack-placeholder-color {
     background: rgba(255, 255, 255, .7);
 }

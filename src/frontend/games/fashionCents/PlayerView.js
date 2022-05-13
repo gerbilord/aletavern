@@ -409,46 +409,85 @@ export default (props) => {
                 <div>
                     <div className={"fc-flex-container"}>
                         <div className={"fc-flex-container"}>
-                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_GUY, "", "fc-card-large")}
+                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_GUY, "", "fc-card-player-large")}
                             <div>
                                 <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_HAND, "HAND", "fc-card-half-large", false)}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_DECK, "DECK", "fc-card-half-large", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_HAND, "HAND", "fc-card-player-small", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_DECK, "DECK", "fc-card-player-small", false)}
                                 </div>
                                 <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_DISCARD, "DISCARD", "fc-card-half-large")}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_SPONSOR, "SPONSOR", "fc-card-half-large")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_DISCARD, "DISCARD", "fc-card-player-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_SPONSOR, "SPONSOR", "fc-card-player-small")}
                                 </div>
                             </div>
                         </div>
                         <div className={"fc-flex-container"}>
-                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_GUY, "", "fc-card-large")}
+                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_GUY, "", "fc-card-player-large")}
                             <div>
                                 <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_HAND, "HAND","fc-card-half-large", false)}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_DECK, "DECK", "fc-card-half-large", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_HAND, "HAND","fc-card-player-small", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_DECK, "DECK", "fc-card-player-small", false)}
                                 </div>
                                 <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_DISCARD, "DISCARD", "fc-card-half-large")}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_SPONSOR, "SPONSOR", "fc-card-half-large")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_DISCARD, "DISCARD", "fc-card-player-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_SPONSOR, "SPONSOR", "fc-card-player-small")}
                                 </div>
                             </div>
                         </div>
                         <div className={"fc-flex-container"}>
-                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_GUY, "", "fc-card-large")}
+                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_GUY, "", "fc-card-player-large")}
                             <div>
                                 <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_HAND, "HAND", "fc-card-half-large", false)}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_DECK, "DECK", "fc-card-half-large", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_HAND, "HAND", "fc-card-player-small", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_DECK, "DECK", "fc-card-player-small", false)}
                                 </div>
                                 <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_DISCARD, "DISCARD", "fc-card-half-large")}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_SPONSOR, "SPONSOR", "fc-card-half-large")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_DISCARD, "DISCARD", "fc-card-player-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_SPONSOR, "SPONSOR", "fc-card-player-small")}
+                                </div>
+                            </div>
+                        </div>
+                        <div className={"fc-flex-container"}>
+                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER4_GUY, "", "fc-card-player-large")}
+                            <div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER4_HAND, "HAND", "fc-card-player-small", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER4_DECK, "DECK", "fc-card-player-small", false)}
+                                </div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER4_DISCARD, "DISCARD", "fc-card-player-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER4_SPONSOR, "SPONSOR", "fc-card-player-small")}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className={"fc-flex-container fc-flex-container-center fc-div-max-width-screen"}>
+                        <div className={"fc-flex-container"}>
+                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_GUY, "", "fc-card-player-large")}
+                            <div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_HAND, "HAND", "fc-card-player-small", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_DECK, "DECK", "fc-card-player-small", false)}
+                                </div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_DISCARD, "DISCARD", "fc-card-player-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_SPONSOR, "SPONSOR", "fc-card-player-small")}
+                                </div>
+                            </div>
+                        </div>
+                        <div className={"fc-flex-container"}>
+                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_GUY, "", "fc-card-player-large")}
+                            <div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_HAND, "HAND", "fc-card-player-small", false)}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_DECK, "DECK", "fc-card-player-small", false)}
+                                </div>
+                                <div className={"fc-flex-container"}>
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_DISCARD, "DISCARD", "fc-card-player-small")}
+                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_SPONSOR, "SPONSOR", "fc-card-player-small")}
+                                </div>
+                            </div>
+                        </div>
                         <div className={"fc-flex-container"}>
                             <div>
                                 <div className={"fc-flex-container"}>
