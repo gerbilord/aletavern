@@ -119,3 +119,4 @@ dist
 commands.txt
 .dist/
 /.vs
+.idea
