@@ -461,7 +461,7 @@ export default (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className={"fc-flex-container fc-flex-container-center fc-div-max-width-screen"}>
+                    <div className={"fc-flex-container fc-div-max-width-screen"}>
                         <div className={"fc-flex-container"}>
                             {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_GUY, "", "fc-card-player-large")}
                             <div>
