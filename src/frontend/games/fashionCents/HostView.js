@@ -19,6 +19,11 @@ export default (props) => {
         <div>
             <h1>Fashion Cents</h1>
             <h2>Game Id: {gameEngine.ws.gameId}</h2>
+            <button style={{margin:"2px", background:"LightGreen", cursor: "pointer"}} onClick={()=>{navigator.clipboard.writeText(gameEngine.exportGameToJson());}}>Copy game to clipboard</button>
+            <button style={{margin:"2px", background:"Gold", cursor: "pointer"}} onClick={()=>{navigator.clipboard.readText().then(clipboardValue=> gameEngine.importGameFromJson(clipboardValue))}}>Read game from clipboard</button>
+            <button style={{margin:"2px", background:"Crimson", cursor: "pointer"}} onClick={()=>{gameEngine.attemptRecovery()}}>Attempt recovery of previous game</button>
+            <button style={{margin:"2px", background:"DodgerBlue", cursor: "pointer"}} onClick={()=>{gameEngine.undoCommand()}}>Attempt Undo</button>
+
             <h3>Logs</h3>
             {logs.map((log, index)=><p key={log+index}>{log.toString()}</p>)}
         </div>

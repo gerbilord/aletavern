@@ -16,6 +16,11 @@ export default class HostGameEngine {
         this.logs = [];
         this.stacks = {};
         this.totalCards = 0;
+        this.historicalStacks = [];
+        this.MAX_HISTORY = 15;
+        this.CURRENT_GAME_KEY = "fc-current-game"
+        this.RECOVERY_GAME_KEY = "fc-recovery-game"
+        this.movePreviousGameToRecoveryGame();
         this.setupStacks();
     }
 
@@ -155,6 +160,8 @@ export default class HostGameEngine {
         // this.dealCards(); TODO implement and run these methods.
         // this.shuffleCards();
 
+        this.updateStackHistory(this.stacks);
+
         this.log("Syncing player stacks.")
         this.updatePlayerStacks();
 
@@ -234,6 +241,9 @@ export default class HostGameEngine {
         } else {
             this.log("" + command.type +" unknown");
         }
+
+        this.updateStackHistory();
+        this.updateLocalStorageGame();
     }
 
     executeMoveCommand(command){
@@ -289,7 +299,64 @@ export default class HostGameEngine {
         return removedCards;
     }
 
+    exportGameToJson(){
+        this.log("Exporting game to clipboard");
+        return JSON.stringify(this.stacks);
+    }
+
+    importGameFromJson(jsonStacks){
+        let importedStacks = JSON.parse(jsonStacks);
+
+        // Save current game in case importing goes poorly
+        localStorage.setItem(this.RECOVERY_GAME_KEY, localStorage.getItem(this.CURRENT_GAME_KEY));
+
+        this.replaceCurrentStacks(importedStacks);
+        localStorage.setItem(this.CURRENT_GAME_KEY, jsonStacks);
+
+        this.log("Successfully imported game");
+        this.updatePlayerStacks();
+    }
+
     addCardsToList(cardsToAdd, listToAddTo){
         listToAddTo.unshift(...cardsToAdd);
     };
+
+    movePreviousGameToRecoveryGame() {
+        // When we closed the browser last time, we kept that game in "CURRENT_GAME_KEY".
+        // We need to save it before we start using "CURRENT_GAME_KEY" for our new game.
+        localStorage.setItem(this.RECOVERY_GAME_KEY, localStorage.getItem(this.CURRENT_GAME_KEY));
+    }
+
+    attemptRecovery(){
+        let recoveryStacks = localStorage.getItem(this.RECOVERY_GAME_KEY);
+
+        if(recoveryStacks){
+            this.importGameFromJson(recoveryStacks)
+        }
+    }
+
+    updateLocalStorageGame() {
+        localStorage.setItem(this.CURRENT_GAME_KEY, JSON.stringify(this.stacks));
+    }
+
+    updateStackHistory() {
+        this.historicalStacks.push(JSON.stringify(this.stacks))
+        if(this.historicalStacks.length > this.MAX_HISTORY){
+            this.historicalStacks.shift();
+        }
+    }
+
+    undoCommand(){
+        this.historicalStacks.pop(); // Top of the stack is current.
+        if(this.historicalStacks.length > 0){
+            this.stacks = JSON.parse(this.historicalStacks[this.historicalStacks.length - 1]);
+            this.log("Undid last move. Amount of history remaining: " + this.historicalStacks.length);
+            this.updatePlayerStacks();
+        }
+    }
+
+    replaceCurrentStacks(newStacks){
+        this.stacks = newStacks;
+        this.updateStackHistory();
+    }
 }
