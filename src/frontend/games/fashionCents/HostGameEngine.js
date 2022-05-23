@@ -53,9 +53,11 @@ export default class HostGameEngine {
             return this.stacks;
         }
 
+        let stacksToUpdateNoDuplicates = new Set(stacksToUpdate);
+
         const stackObjectsToUpdate = {};
 
-        stacksToUpdate.forEach((stackToUpdate)=>{
+        stacksToUpdateNoDuplicates.forEach((stackToUpdate)=>{
             stackObjectsToUpdate[stackToUpdate] = this.stacks[stackToUpdate];
         });
 
@@ -154,11 +156,9 @@ export default class HostGameEngine {
     setupGame(){
         this.log("Json Data loaded.");
 
-        this.log("Running specific game logic");
         this.setupEmptyStacks();
 
-        // this.dealCards(); TODO implement and run these methods.
-        // this.shuffleCards();
+        this.runSetupGameLogic();
 
         this.updateStackHistory(this.stacks);
 
@@ -232,18 +232,24 @@ export default class HostGameEngine {
 
     executeCommand(jsonCommand){
         const command = Command.fromJson(jsonCommand);
+        const stacksToUpdate = [];
         this.log("Executing: " + command.toString());
 
         if(command.type === CONSTANTS.COMMAND_TYPE.MOVE){
-            this.executeMoveCommand(command);
+            stacksToUpdate.push(...this.executeMoveCommand(command));
         } else if (command.type === CONSTANTS.COMMAND_TYPE.SHUFFLE){
-            this.executeShuffleCommand(command);
+            stacksToUpdate.push(...this.executeShuffleCommand(command));
         } else {
-            this.log("" + command.type +" unknown");
+            this.log("" + command.type + " unknown");
         }
 
+        stacksToUpdate.push(...this.runPostCommandGameLogic());
         this.updateStackHistory();
         this.updateLocalStorageGame();
+
+        if(stacksToUpdate.length > 0){
+            this.updatePlayerStacks(stacksToUpdate);
+        }
     }
 
     executeMoveCommand(command){
@@ -255,10 +261,11 @@ export default class HostGameEngine {
             this.addCardsToList(
                 this.removeCardsFromList(cardsToMove, fromStack.cards),
                 toStack.cards);
-            this.updatePlayerStacks([fromStack.name, toStack.name]);
+            return [fromStack.name, toStack.name];
         } else {
             this.log("Move command failed. Missing argument.");
         }
+        return [];
     }
 
 
@@ -266,8 +273,9 @@ export default class HostGameEngine {
         const stackToShuffle = this.stacks[command.fromStack];
         if(stackToShuffle!=null){
             listUtils.shuffleList(stackToShuffle.cards);
-            this.updatePlayerStacks([stackToShuffle.name]);
+            return [stackToShuffle.name];
         }
+        return [];
     }
 
     // In place removes any card in cardsToRemove from listToRemoveFrom.
@@ -358,5 +366,99 @@ export default class HostGameEngine {
     replaceCurrentStacks(newStacks){
         this.stacks = newStacks;
         this.updateStackHistory();
+    }
+
+    runSetupGameLogic() {
+        this.log("Running specific game logic");
+
+        this.executeShuffleCommand(Command.fromJson({fromStack:CONSTANTS.STACK_NAMES.STOREFRONT}));
+        this.dealPlayerCards();
+        this.dealSocksToPlayers();
+        this.dealPlayerHands();
+        this.runPostCommandGameLogic();
+    }
+
+    runPostCommandGameLogic() {
+        let stacksToUpdate = [];
+        stacksToUpdate.push(...this.updateStores());
+        return stacksToUpdate;
+    }
+
+    updateStores(){
+        let stacksToUpdate = [];
+        stacksToUpdate.push(...this.addCardToStoreIfEmpty());
+        return stacksToUpdate;
+    }
+
+    addCardToStoreIfEmpty(){
+        let stacksToUpdate = [];
+
+        // Consider doing this with execute move command
+        let updateStoreFront = (toStack)=>{
+            if(this.stacks[CONSTANTS.STACK_NAMES.STOREFRONT].cards.length > 0 && toStack.cards.length === 0){
+                return this.moveTopCardFromStackToStack(this.stacks[CONSTANTS.STACK_NAMES.STOREFRONT], toStack);
+            }
+            return [];
+        }
+
+        stacksToUpdate.push(...updateStoreFront(this.stacks[CONSTANTS.STACK_NAMES.STORE_SPOT1]));
+        stacksToUpdate.push(...updateStoreFront(this.stacks[CONSTANTS.STACK_NAMES.STORE_SPOT2]));
+        stacksToUpdate.push(...updateStoreFront(this.stacks[CONSTANTS.STACK_NAMES.STORE_SPOT3]));
+        stacksToUpdate.push(...updateStoreFront(this.stacks[CONSTANTS.STACK_NAMES.STORE_SPOT4]));
+        stacksToUpdate.push(...updateStoreFront(this.stacks[CONSTANTS.STACK_NAMES.STORE_SPOT5]));
+
+        return stacksToUpdate;
+    }
+
+    dealPlayerCards() {
+        this.executeShuffleCommand(Command.fromJson({fromStack:CONSTANTS.STACK_NAMES.GUYS}));
+        this.moveTopCardFromStackToStack(this.stacks[CONSTANTS.STACK_NAMES.GUYS], this.stacks[CONSTANTS.STACK_NAMES.PLAYER1_GUY]);
+        this.moveTopCardFromStackToStack(this.stacks[CONSTANTS.STACK_NAMES.GUYS], this.stacks[CONSTANTS.STACK_NAMES.PLAYER2_GUY]);
+        this.moveTopCardFromStackToStack(this.stacks[CONSTANTS.STACK_NAMES.GUYS], this.stacks[CONSTANTS.STACK_NAMES.PLAYER3_GUY]);
+        this.moveTopCardFromStackToStack(this.stacks[CONSTANTS.STACK_NAMES.GUYS], this.stacks[CONSTANTS.STACK_NAMES.PLAYER4_GUY]);
+        this.moveTopCardFromStackToStack(this.stacks[CONSTANTS.STACK_NAMES.GUYS], this.stacks[CONSTANTS.STACK_NAMES.PLAYER5_GUY]);
+        this.moveTopCardFromStackToStack(this.stacks[CONSTANTS.STACK_NAMES.GUYS], this.stacks[CONSTANTS.STACK_NAMES.PLAYER6_GUY]);
+    }
+
+    moveTopCardFromStackToStack(fromStack, toStack){
+        let cardsToMove = [Card.fromJson(fromStack.cards[0])];
+
+        this.addCardsToList(
+            this.removeCardsFromList(cardsToMove, fromStack.cards),
+            toStack.cards);
+        return [fromStack.name, toStack.name];
+    }
+
+    moveNTopCardsFromStackToStack(nCards, fromStack, toStack){
+        for(let i = 0; i < nCards; i++){
+            this.moveTopCardFromStackToStack(fromStack, toStack);
+        }
+    }
+
+    dealSocksToPlayers() {
+        let fromStack = this.stacks[CONSTANTS.STACK_NAMES.SOCKS];
+        this.moveNTopCardsFromStackToStack(8, fromStack, this.stacks[CONSTANTS.STACK_NAMES.PLAYER1_DECK]);
+        this.moveNTopCardsFromStackToStack(8, fromStack, this.stacks[CONSTANTS.STACK_NAMES.PLAYER2_DECK]);
+        this.moveNTopCardsFromStackToStack(8, fromStack, this.stacks[CONSTANTS.STACK_NAMES.PLAYER3_DECK]);
+        this.moveNTopCardsFromStackToStack(8, fromStack, this.stacks[CONSTANTS.STACK_NAMES.PLAYER4_DECK]);
+        this.moveNTopCardsFromStackToStack(8, fromStack, this.stacks[CONSTANTS.STACK_NAMES.PLAYER5_DECK]);
+        this.moveNTopCardsFromStackToStack(8, fromStack, this.stacks[CONSTANTS.STACK_NAMES.PLAYER6_DECK]);
+
+    }
+
+    dealPlayerHands() {
+        this.executeShuffleCommand(Command.fromJson({fromStack:CONSTANTS.STACK_NAMES.PLAYER1_DECK}));
+        this.executeShuffleCommand(Command.fromJson({fromStack:CONSTANTS.STACK_NAMES.PLAYER2_DECK}));
+        this.executeShuffleCommand(Command.fromJson({fromStack:CONSTANTS.STACK_NAMES.PLAYER3_DECK}));
+        this.executeShuffleCommand(Command.fromJson({fromStack:CONSTANTS.STACK_NAMES.PLAYER4_DECK}));
+        this.executeShuffleCommand(Command.fromJson({fromStack:CONSTANTS.STACK_NAMES.PLAYER5_DECK}));
+        this.executeShuffleCommand(Command.fromJson({fromStack:CONSTANTS.STACK_NAMES.PLAYER6_DECK}));
+
+        this.moveNTopCardsFromStackToStack(5, this.stacks[CONSTANTS.STACK_NAMES.PLAYER1_DECK], this.stacks[CONSTANTS.STACK_NAMES.PLAYER1_HAND]);
+        this.moveNTopCardsFromStackToStack(5, this.stacks[CONSTANTS.STACK_NAMES.PLAYER2_DECK], this.stacks[CONSTANTS.STACK_NAMES.PLAYER2_HAND]);
+        this.moveNTopCardsFromStackToStack(5, this.stacks[CONSTANTS.STACK_NAMES.PLAYER3_DECK], this.stacks[CONSTANTS.STACK_NAMES.PLAYER3_HAND]);
+        this.moveNTopCardsFromStackToStack(5, this.stacks[CONSTANTS.STACK_NAMES.PLAYER4_DECK], this.stacks[CONSTANTS.STACK_NAMES.PLAYER4_HAND]);
+        this.moveNTopCardsFromStackToStack(5, this.stacks[CONSTANTS.STACK_NAMES.PLAYER5_DECK], this.stacks[CONSTANTS.STACK_NAMES.PLAYER5_HAND]);
+        this.moveNTopCardsFromStackToStack(5, this.stacks[CONSTANTS.STACK_NAMES.PLAYER6_DECK], this.stacks[CONSTANTS.STACK_NAMES.PLAYER6_HAND]);
     }
 }
