@@ -240,7 +240,7 @@ export default class HostGameEngine {
         } else if (command.type === CONSTANTS.COMMAND_TYPE.SHUFFLE){
             stacksToUpdate.push(...this.executeShuffleCommand(command));
         } else {
-            this.log("" + command.type + " unknown");
+            this.log("Command type: '" + command.type + "' is unknown");
         }
 
         stacksToUpdate.push(...this.runPostCommandGameLogic());

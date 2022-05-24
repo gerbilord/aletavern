@@ -164,6 +164,29 @@
     top: 10px;
 }
 
+.fc-guy-button-flex-container {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.fc-strip-button {
+    background: rgba(255, 255, 255, .7);
+    border-color: rgba(230, 230, 230, .7);
+    border-width: 2px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+.fc-strip-button:hover{
+    background: rgba(180, 180, 180, .7);
+}
+
+.fc-strip-button:active{
+    background: rgba(100, 100, 100, .7);
+}
+
 .fc-label{
     font-family: Arial, Helvetica, sans-serif;
     background: rgb(0,0,0);
