@@ -72,6 +72,15 @@ const CONSTANTS = Object.freeze({
         STREET_SPOT4: "street_spot4",
         STREET_SPOT5: "street_spot5",
 
+        EXTRA_SPOT1: "extra_spot1",
+        EXTRA_SPOT2: "extra_spot2",
+        EXTRA_SPOT3: "extra_spot3",
+        EXTRA_SPOT4: "extra_spot4",
+        EXTRA_SPOT5: "extra_spot5",
+        EXTRA_SPOT6: "extra_spot6",
+        EXTRA_SPOT7: "extra_spot7",
+        EXTRA_SPOT8: "extra_spot8",
+
         GUYS: "guys",
         SOCKS: "socks",
         SPONSORS: "sponsors",

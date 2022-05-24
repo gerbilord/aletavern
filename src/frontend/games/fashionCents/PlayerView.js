@@ -394,6 +394,31 @@ export default (props) => {
         );
     };
 
+    const createGuyStack = (stackName, stackLabel, sizeClass, isFaceUp=true, labelSizeClass="")=>{
+        const stack = stackNameToStack[stackName];
+
+        let isClickable = false;
+        if(stack?.cards?.length > 0 || (command?.fromStack !== stack?.name && command?.selectedCards.length > 0)){
+            isClickable = true;
+        }
+        const isSelected = stack?.isAnyCardInStack?.(command?.selectedCards) || false;
+
+        return (
+            <Stack
+                stack={stackNameToStack[stackName]}
+                label={stackLabel}
+                isFaceUp={isFaceUp}
+                onClick={onStackClick}
+                onRightClick={onStackRightClick}
+                onMouseEnter={onStackMouseEnter}
+                sizeClass={sizeClass}
+                labelSizeClass={labelSizeClass}
+                isClickable={isClickable}
+                isSelected={isSelected}
+            />
+        );
+    };
+
     const createStripClothesButton = (guyStackName, discardStackName) => {
         let onStripClick = () => {
             command.type = CONSTANTS.COMMAND_TYPE.MOVE;
@@ -439,8 +464,8 @@ export default (props) => {
                 <div>
                     <div className={"fc-flex-container"}>
                         <div className={"fc-flex-container"}>
-                            <div className={"fc-guy-button-flex-container"}>
-                                {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER1_GUY, "", "fc-card-player-large")}
+                            <div className={"fc-column-flex-container"}>
+                                {createGuyStack(CONSTANTS.STACK_NAMES.PLAYER1_GUY, "", "fc-card-player-large")}
                                 <div className={"fc-flex-container"}>
                                     {createStripClothesButton(CONSTANTS.STACK_NAMES.PLAYER1_GUY, CONSTANTS.STACK_NAMES.PLAYER1_DISCARD)}
                                     {createDraw5Button(CONSTANTS.STACK_NAMES.PLAYER1_DECK, CONSTANTS.STACK_NAMES.PLAYER1_HAND)}
@@ -458,8 +483,8 @@ export default (props) => {
                             </div>
                         </div>
                         <div className={"fc-flex-container"}>
-                            <div className={"fc-guy-button-flex-container"}>
-                                {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER2_GUY, "", "fc-card-player-large")}
+                            <div className={"fc-column-flex-container"}>
+                                {createGuyStack(CONSTANTS.STACK_NAMES.PLAYER2_GUY, "", "fc-card-player-large")}
                                 <div className={"fc-flex-container"}>
                                     {createStripClothesButton(CONSTANTS.STACK_NAMES.PLAYER2_GUY, CONSTANTS.STACK_NAMES.PLAYER2_DISCARD)}
                                     {createDraw5Button(CONSTANTS.STACK_NAMES.PLAYER2_DECK, CONSTANTS.STACK_NAMES.PLAYER2_HAND)}
@@ -478,8 +503,8 @@ export default (props) => {
                             </div>
                         </div>
                         <div className={"fc-flex-container"}>
-                            <div className={"fc-guy-button-flex-container"}>
-                                {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER3_GUY, "", "fc-card-player-large")}
+                            <div className={"fc-column-flex-container"}>
+                                {createGuyStack(CONSTANTS.STACK_NAMES.PLAYER3_GUY, "", "fc-card-player-large")}
                                 <div className={"fc-flex-container"}>
                                     {createStripClothesButton(CONSTANTS.STACK_NAMES.PLAYER3_GUY, CONSTANTS.STACK_NAMES.PLAYER3_DISCARD)}
                                     {createDraw5Button(CONSTANTS.STACK_NAMES.PLAYER3_DECK, CONSTANTS.STACK_NAMES.PLAYER3_HAND)}
@@ -498,8 +523,8 @@ export default (props) => {
                             </div>
                         </div>
                         <div className={"fc-flex-container"}>
-                            <div className={"fc-guy-button-flex-container"}>
-                                {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER4_GUY, "", "fc-card-player-large")}
+                            <div className={"fc-column-flex-container"}>
+                                {createGuyStack(CONSTANTS.STACK_NAMES.PLAYER4_GUY, "", "fc-card-player-large")}
                                 <div className={"fc-flex-container"}>
                                     {createStripClothesButton(CONSTANTS.STACK_NAMES.PLAYER4_GUY, CONSTANTS.STACK_NAMES.PLAYER4_DISCARD)}
                                     {createDraw5Button(CONSTANTS.STACK_NAMES.PLAYER4_DECK, CONSTANTS.STACK_NAMES.PLAYER4_HAND)}
@@ -519,43 +544,57 @@ export default (props) => {
                         </div>
                     </div>
                     <div className={"fc-flex-container fc-div-max-width-screen"}>
-                        <div className={"fc-flex-container"}>
-                            <div className={"fc-guy-button-flex-container"}>
-                                {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_GUY, "", "fc-card-player-large")}
+                        <div className={"fc-column-flex-container fc-extra-flex-fix"}>
+                            <div className={"fc-flex-container"}>
                                 <div className={"fc-flex-container"}>
-                                    {createStripClothesButton(CONSTANTS.STACK_NAMES.PLAYER5_GUY, CONSTANTS.STACK_NAMES.PLAYER5_DISCARD)}
-                                    {createDraw5Button(CONSTANTS.STACK_NAMES.PLAYER5_DECK, CONSTANTS.STACK_NAMES.PLAYER5_HAND)}
-                                </div>
+                                    <div className={"fc-column-flex-container"}>
+                                        {createGuyStack(CONSTANTS.STACK_NAMES.PLAYER5_GUY, "", "fc-card-player-large")}
+                                        <div className={"fc-flex-container"}>
+                                            {createStripClothesButton(CONSTANTS.STACK_NAMES.PLAYER5_GUY, CONSTANTS.STACK_NAMES.PLAYER5_DISCARD)}
+                                            {createDraw5Button(CONSTANTS.STACK_NAMES.PLAYER5_DECK, CONSTANTS.STACK_NAMES.PLAYER5_HAND)}
+                                        </div>
 
+                                    </div>
+                                    <div>
+                                        <div className={"fc-flex-container"}>
+                                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_HAND, "HAND", "fc-card-player-small", false)}
+                                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_DECK, "DECK", "fc-card-player-small", false)}
+                                        </div>
+                                        <div className={"fc-flex-container"}>
+                                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_DISCARD, "DISCARD", "fc-card-player-small")}
+                                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_SPONSOR, "SPONSOR", "fc-card-player-small")}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={"fc-flex-container"}>
+                                    <div className={"fc-column-flex-container"}>
+                                        {createGuyStack(CONSTANTS.STACK_NAMES.PLAYER6_GUY, "", "fc-card-player-large")}
+                                        <div className={"fc-flex-container"}>
+                                            {createStripClothesButton(CONSTANTS.STACK_NAMES.PLAYER6_GUY, CONSTANTS.STACK_NAMES.PLAYER6_DISCARD)}
+                                            {createDraw5Button(CONSTANTS.STACK_NAMES.PLAYER6_DECK, CONSTANTS.STACK_NAMES.PLAYER6_HAND)}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className={"fc-flex-container"}>
+                                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_HAND, "HAND", "fc-card-player-small", false)}
+                                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_DECK, "DECK", "fc-card-player-small", false)}
+                                        </div>
+                                        <div className={"fc-flex-container"}>
+                                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_DISCARD, "DISCARD", "fc-card-player-small")}
+                                            {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_SPONSOR, "SPONSOR", "fc-card-player-small")}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_HAND, "HAND", "fc-card-player-small", false)}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_DECK, "DECK", "fc-card-player-small", false)}
-                                </div>
-                                <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_DISCARD, "DISCARD", "fc-card-player-small")}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER5_SPONSOR, "SPONSOR", "fc-card-player-small")}
-                                </div>
-                            </div>
-                        </div>
-                        <div className={"fc-flex-container"}>
-                            <div className={"fc-guy-button-flex-container"}>
-                                {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_GUY, "", "fc-card-player-large")}
-                                <div className={"fc-flex-container"}>
-                                    {createStripClothesButton(CONSTANTS.STACK_NAMES.PLAYER6_GUY, CONSTANTS.STACK_NAMES.PLAYER6_DISCARD)}
-                                    {createDraw5Button(CONSTANTS.STACK_NAMES.PLAYER6_DECK, CONSTANTS.STACK_NAMES.PLAYER6_HAND)}
-                                </div>
-                            </div>
-                            <div>
-                                <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_HAND, "HAND", "fc-card-player-small", false)}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_DECK, "DECK", "fc-card-player-small", false)}
-                                </div>
-                                <div className={"fc-flex-container"}>
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_DISCARD, "DISCARD", "fc-card-player-small")}
-                                    {createBasicStack(CONSTANTS.STACK_NAMES.PLAYER6_SPONSOR, "SPONSOR", "fc-card-player-small")}
-                                </div>
+                            <div className={"fc-flex-container"}>
+                                {createBasicStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT1, "", "fc-card-small")}
+                                {createBasicStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT2, "", "fc-card-small")}
+                                {createBasicStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT3, "", "fc-card-small")}
+                                {createBasicStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT4, "", "fc-card-small")}
+                                {createBasicStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT5, "", "fc-card-small")}
+                                {createBasicStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT6, "", "fc-card-small")}
+                                {createBasicStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT7, "", "fc-card-small")}
+                                {createBasicStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT8, "", "fc-card-small")}
                             </div>
                         </div>
                         <div className={"fc-flex-container"}>

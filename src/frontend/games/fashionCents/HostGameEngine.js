@@ -212,6 +212,15 @@ export default class HostGameEngine {
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.STREET_SPOT5);
 
         this.setupEmptyStack(CONSTANTS.STACK_NAMES.DONATION_BIN);
+
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT1);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT2);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT3);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT4);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT5);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT6);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT7);
+        this.setupEmptyStack(CONSTANTS.STACK_NAMES.EXTRA_SPOT8);
     }
 
     setupEmptyStack(stackName){

@@ -164,7 +164,7 @@
     top: 10px;
 }
 
-.fc-guy-button-flex-container {
+.fc-column-flex-container {
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
@@ -177,6 +177,10 @@
     border-width: 2px;
     border-radius: 10px;
     margin: 5px;
+}
+
+.fc-extra-flex-fix.fc-column-flex-container{
+    margin: 0;
 }
 
 .fc-strip-button:hover{
