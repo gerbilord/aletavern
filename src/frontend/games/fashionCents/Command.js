@@ -5,6 +5,7 @@ export default class Command {
         this.type = "";
         this.fromStack = "";
         this.toStack = "";
+        this.extraData = {};
         this.selectedCards  = [];
     }
 
@@ -23,6 +24,7 @@ export default class Command {
         newCommand.type = jsonCommand?.type;
         newCommand.fromStack = jsonCommand?.fromStack;
         newCommand.toStack = jsonCommand?.toStack;
+        newCommand.extraData = jsonCommand?.extraData;
         newCommand.selectedCards  = jsonCommand?.selectedCards == null ? []: jsonCommand.selectedCards.map(jsonCard=>Card.fromJson(jsonCard));
         return newCommand;
     }

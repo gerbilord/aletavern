@@ -12,7 +12,16 @@ const CONSTANTS = Object.freeze({
     COMMAND: 'command',
     COMMAND_TYPE: {
         MOVE: "move",
-        SHUFFLE: "shuffle"
+        SHUFFLE: "shuffle",
+        GAME_LOGIC: {
+            DRAW5:"draw5"
+        }
+    },
+
+    COMMAND_EXTRA_DATA: {
+        HAND: "hand",
+        DECK: "deck",
+        DISCARD: "discard"
     },
 
     STACK_NAMES: {

@@ -248,6 +248,8 @@ export default class HostGameEngine {
             stacksToUpdate.push(...this.executeMoveCommand(command));
         } else if (command.type === CONSTANTS.COMMAND_TYPE.SHUFFLE){
             stacksToUpdate.push(...this.executeShuffleCommand(command));
+        } else if (command.type === CONSTANTS.COMMAND_TYPE.GAME_LOGIC.DRAW5) {
+            stacksToUpdate.push(...this.executeDraw5Command(command));
         } else {
             this.log("Command type: '" + command.type + "' is unknown");
         }
@@ -285,6 +287,51 @@ export default class HostGameEngine {
             return [stackToShuffle.name];
         }
         return [];
+    }
+
+    executeDraw5Command(command) {
+        let stacksToUpdate = [];
+
+        const playerHand = this.stacks[command.extraData[CONSTANTS.COMMAND_EXTRA_DATA.HAND]];
+        const playerDiscard = this.stacks[command.extraData[CONSTANTS.COMMAND_EXTRA_DATA.DISCARD]];
+        const playerDeck = this.stacks[command.extraData[CONSTANTS.COMMAND_EXTRA_DATA.DECK]];
+
+        if(playerDiscard != null && playerHand != null && playerDeck != null){
+            let extraCardsNeeded = 0;
+            let drawInitialCardsCommand = new Command();
+            drawInitialCardsCommand.type = CONSTANTS.COMMAND_TYPE.MOVE;
+            drawInitialCardsCommand.fromStack = playerDeck.name;
+            drawInitialCardsCommand.toStack = playerHand.name;
+            drawInitialCardsCommand.selectedCards = playerDeck.cards.slice(0, 5);
+            extraCardsNeeded = 5 - drawInitialCardsCommand.selectedCards.length;
+
+            if(drawInitialCardsCommand.selectedCards.length > 0){
+                stacksToUpdate.push(...this.executeMoveCommand(Command.fromJson(drawInitialCardsCommand))); // fromJson selected cards to first class object. Not sure why they aren't object in stacks.
+            }
+
+            if (extraCardsNeeded > 0){
+                let moveDiscardToDeckCommand = new Command();
+                moveDiscardToDeckCommand.type = CONSTANTS.COMMAND_TYPE.MOVE;
+                moveDiscardToDeckCommand.fromStack = playerDiscard.name;
+                moveDiscardToDeckCommand.toStack = playerDeck.name;
+                moveDiscardToDeckCommand.selectedCards = playerDiscard.cards;
+                stacksToUpdate.push(...this.executeMoveCommand(Command.fromJson(moveDiscardToDeckCommand)));  // fromJson selected cards to first class object. Not sure why they aren't object in stacks.
+
+                let shuffleDeckCommand = new Command();
+                shuffleDeckCommand.type = CONSTANTS.COMMAND_TYPE.SHUFFLE;
+                shuffleDeckCommand.fromStack = playerDeck.name;
+                stacksToUpdate.push(...this.executeShuffleCommand(shuffleDeckCommand));
+
+                let drawOtherCardsCommand = new Command();
+                drawOtherCardsCommand.type = CONSTANTS.COMMAND_TYPE.MOVE;
+                drawOtherCardsCommand.fromStack = playerDeck.name;
+                drawOtherCardsCommand.toStack = playerHand.name;
+                drawOtherCardsCommand.selectedCards = playerDeck.cards.slice(0, extraCardsNeeded);
+                stacksToUpdate.push(...this.executeMoveCommand(Command.fromJson(drawOtherCardsCommand)));  // fromJson selected cards to first class object. Not sure why they aren't object in stacks.
+            }
+        }
+
+        return stacksToUpdate;
     }
 
     // In place removes any card in cardsToRemove from listToRemoveFrom.
