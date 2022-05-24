@@ -74,6 +74,10 @@ export default (props) => {
     stackNameToStack[CONSTANTS.STACK_NAMES.STORE_SPOT1] = storeSpot1;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STORE_SPOT1] = setStoreSpot1;
 
+    const [extraSpot1, setExtraSpot1] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.EXTRA_SPOT1] = extraSpot1;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.EXTRA_SPOT1] = setExtraSpot1;
+
 
 
     // 2
@@ -105,6 +109,10 @@ export default (props) => {
     stackNameToStack[CONSTANTS.STACK_NAMES.STORE_SPOT2] = storeSpot2;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STORE_SPOT2] = setStoreSpot2;
 
+    const [extraSpot2, setExtraSpot2] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.EXTRA_SPOT2] = extraSpot2;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.EXTRA_SPOT2] = setExtraSpot2;
+
     // 3
 
     const [player3Discard, setPlayer3Discard] = useState({});
@@ -134,6 +142,10 @@ export default (props) => {
     const [storeSpot3, setStoreSpot3] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.STORE_SPOT3] = storeSpot3;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STORE_SPOT3] = setStoreSpot3;
+
+    const [extraSpot3, setExtraSpot3] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.EXTRA_SPOT3] = extraSpot3;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.EXTRA_SPOT3] = setExtraSpot3;
 
     // 4
 
@@ -165,6 +177,10 @@ export default (props) => {
     stackNameToStack[CONSTANTS.STACK_NAMES.STORE_SPOT4] = storeSpot4;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STORE_SPOT4] = setStoreSpot4;
 
+    const [extraSpot4, setExtraSpot4] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.EXTRA_SPOT4] = extraSpot4;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.EXTRA_SPOT4] = setExtraSpot4;
+
     // 5
     const [player5Discard, setPlayer5Discard] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER5_DISCARD] = player5Discard;
@@ -194,6 +210,10 @@ export default (props) => {
     stackNameToStack[CONSTANTS.STACK_NAMES.STORE_SPOT5] = storeSpot5;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STORE_SPOT5] = setStoreSpot5;
 
+    const [extraSpot5, setExtraSpot5] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.EXTRA_SPOT5] = extraSpot5;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.EXTRA_SPOT5] = setExtraSpot5;
+
     // 6
     const [player6Discard, setPlayer6Discard] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.PLAYER6_DISCARD] = player6Discard;
@@ -216,16 +236,28 @@ export default (props) => {
     stackNameToStack[CONSTANTS.STACK_NAMES.STREET_VENDOR6] = streetVendor6;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STREET_VENDOR6] = setStreetVendor6;
 
+    const [extraSpot6, setExtraSpot6] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.EXTRA_SPOT6] = extraSpot6;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.EXTRA_SPOT6] = setExtraSpot6;
+
     // 7
     const [streetVendor7, setStreetVendor7] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.STREET_VENDOR7] = streetVendor7;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STREET_VENDOR7] = setStreetVendor7;
+
+    const [extraSpot7, setExtraSpot7] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.EXTRA_SPOT7] = extraSpot7;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.EXTRA_SPOT7] = setExtraSpot7;
 
     // 8
 
     const [streetVendor8, setStreetVendor8] = useState({});
     stackNameToStack[CONSTANTS.STACK_NAMES.STREET_VENDOR8] = streetVendor8;
     stackNameToStackUpdater[CONSTANTS.STACK_NAMES.STREET_VENDOR8] = setStreetVendor8;
+
+    const [extraSpot8, setExtraSpot8] = useState({});
+    stackNameToStack[CONSTANTS.STACK_NAMES.EXTRA_SPOT8] = extraSpot8;
+    stackNameToStackUpdater[CONSTANTS.STACK_NAMES.EXTRA_SPOT8] = setExtraSpot8;
 
 
     // ########################################################################################
