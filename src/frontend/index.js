@@ -11,7 +11,8 @@ import GameWebSocket from './GameWebSocket';
 // import Quiplash from './games/quiplash/quiplashWrapper';
 // import Santorini from './games/santorini/santoriniWrapper';
 // import Tomfoag from './games/tomfoag/tomfoagWrapper';
-import Icebreaker from 'Icebreaker/icebreakerWrapper.js';
+// import Icebreaker from 'Icebreaker/icebreakerWrapper.js';
+import ActNormal from 'Games/actNormal/actNormalWrapper';
 import FashionCents from 'Games/fashionCents/fashionCentsWrapper';
 
 // Variables
@@ -22,7 +23,8 @@ const games = [];
 // games['Quiplash'] = { game: Quiplash };
 // games['Santorini'] = { game: Santorini };
 // games['Tomfoag'] = { game: Tomfoag };
-games['Icebreaker'] = { game: Icebreaker };
+//games['Icebreaker'] = { game: Icebreaker };
+games['Act Normal'] = {game: ActNormal}
 games['FashionCents'] = {game: FashionCents};
 
 
