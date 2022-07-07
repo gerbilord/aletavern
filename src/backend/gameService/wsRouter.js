@@ -1,4 +1,5 @@
 const gameService = require('./currentGames');
+const logging = false;
 
 // TODO make sending messages a queue. That way if someone is disconnected temorarily, we can send them the message when they reconncect, instead of just failing
 /*
@@ -259,7 +260,7 @@ function messageAllPlayers(msg) {
             status: 'SUCCESS',
             data: data,
         };
-        console.log(msgObj);
+        if(logging){console.log(msgObj)};
 
         emitToGame(sender.gameId, msgObj);
     } else {
@@ -284,7 +285,7 @@ function messageAllOtherPlayers(msg) {
             status: 'SUCCESS',
             data: data,
         };
-        console.log(msgObj);
+        if(logging){console.log(msgObj)};
 
         emitToOthersInGame(sender, msgObj);
     } else {
@@ -340,7 +341,7 @@ function messageOnePlayer(msg) {
                 status: 'SUCCESS',
                 data: message,
             };
-            console.log(msgObj);
+            if(logging){console.log(msgObj);}
             receiver.send(msgObj);
         } else {
             console.debug('Message sent to non-existant player. Msg:' + msg);
@@ -402,7 +403,7 @@ function routeMessageType(ws, msg) {
         msg.type = "PONG"
         sendToRawWs(ws, msg); // Don't route or log, send back a pong.
     } else {
-        console.log('Entering switch with: ' + msg.type);
+        if(logging){console.log('Entering switch with: ' + msg.type);}
         switch (msg.type) {
             case 'JOINGAME': // Implemented. Needs msg verification. Consider not using destructuring, and verify in func.
                 joinGame(ws, msg);

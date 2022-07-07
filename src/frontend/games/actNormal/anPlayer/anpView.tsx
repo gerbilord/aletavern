@@ -38,7 +38,7 @@ export default class anpView extends React.Component {
             <div className={"actNormal"}>
                 Player View
                 <div>
-                    <Joystick size={100} sticky={false} baseColor="gray" stickColor="black" move={onMove} stop={onMove}/>
+                    <Joystick throttle={50} size={100} sticky={false} baseColor="gray" stickColor="black" move={onMove} stop={onMove}/>
                 </div>
             </div>
         );
