@@ -7,10 +7,6 @@ export default class anhEngine {
     constructor(gameWebSocket:GameWebSocket) {
         this.ws = gameWebSocket;
 
-        document.addEventListener("touchstart", function(e){
-            e.preventDefault();
-        },{passive: false});
-
     }
 
 

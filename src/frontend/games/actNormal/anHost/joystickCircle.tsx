@@ -3,6 +3,7 @@ import { Joystick } from 'react-joystick-component';
 import Canvas from "Games/actNormal/anHost/anhCanvas";
 import gameEngine from "./anhEngine";
 
+const bubblePopSound = new Audio("http://www.myinstants.com/media/sounds/bubble-pop.mp3");
 export default (props)=>{
 
     let [x, setX] = useState(50);
@@ -40,6 +41,10 @@ export default (props)=>{
                     }
                     else if(data.data.type === 'color'){
                         setColor(data.data.color)
+
+                        if(data.data.color === 'red'){
+                            bubblePopSound.play();
+                        }
                     }
                 }
             }
