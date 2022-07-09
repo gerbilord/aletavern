@@ -2,12 +2,12 @@ import React, { useRef, useEffect } from 'react'
 
 const Canvas = props => {
 
-    const { x, y, ...rest } = props
+    const { x, y, color, ...rest } = props
     const canvasRef = useRef(null)
 
     const draw = (ctx, frameCount) => {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-        ctx.fillStyle = '#000000'
+        ctx.fillStyle = color;
         ctx.beginPath()
         ctx.arc(x, y, 10, 0, 2*Math.PI)
         ctx.fill()

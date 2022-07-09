@@ -1,0 +1,10 @@
+.actNormal {
+    padding: 50px;
+}
+
+.actNormal .flexRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+}

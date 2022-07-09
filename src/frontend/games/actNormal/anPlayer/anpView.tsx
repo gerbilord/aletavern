@@ -2,7 +2,10 @@ import React from 'react';
 
 import gameEngine from './anpEngine';
 import anpViewData from "./anpViewData";
+import TouchableButton from "Games/actNormal/anPlayer/touchableButton";
 import {Joystick} from "react-joystick-component";
+
+import "Games/actNormal/an.css";
 
 export default class anpView extends React.Component {
     private intervalId: number;
@@ -34,11 +37,12 @@ export default class anpView extends React.Component {
             this.gameEngine.ws.sendMessageToHost(data)
         }
 
+        // @ts-ignore
         return (
             <div className={"actNormal"}>
-                Player View
-                <div>
-                    <Joystick throttle={50} size={100} sticky={false} baseColor="gray" stickColor="black" move={onMove} stop={onMove}/>
+                <div className={"flexRow"}>
+                    <Joystick throttle={50} size={200} sticky={false} baseColor="gray" stickColor="black" move={onMove} stop={onMove}/>
+                    <TouchableButton gameEngine={this.gameEngine}/>
                 </div>
             </div>
         );

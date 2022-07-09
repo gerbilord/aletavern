@@ -5,11 +5,13 @@ import gameEngine from "./anhEngine";
 
 export default (props)=>{
 
-    let [x, setX] = useState(50)
-    let [y, setY] = useState(100)
+    let [x, setX] = useState(50);
+    let [y, setY] = useState(100);
 
-    let [xDir, setXDir] = useState(0)
-    let [yDir, setYDir] = useState(0)
+    let [xDir, setXDir] = useState(0);
+    let [yDir, setYDir] = useState(0);
+
+    let [color, setColor] = useState("green");
 
     useEffect(() => {
 
@@ -36,6 +38,9 @@ export default (props)=>{
                     } else if(data.data.type === 'stop'){
                         onStop(data.data)
                     }
+                    else if(data.data.type === 'color'){
+                        setColor(data.data.color)
+                    }
                 }
             }
         }
@@ -61,7 +66,7 @@ export default (props)=>{
     return (
         <div className={"actNormal"}>
             <div>
-                <Canvas x={x} y={y} width={1000} height={1000}/>
+                <Canvas x={x} y={y} width={1000} height={1000} color={color}/>
             </div>
         </div>
     );
