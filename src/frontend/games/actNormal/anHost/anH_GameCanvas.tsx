@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import GameEngine from "Games/actNormal/anHost/anH_Engine";
 import Shape from "Games/actNormal/anHost/anH_Shape";
+import {Circle, Rectangle} from "Games/actNormal/anHost/anH_ShapeProperties";
 
 const GameCanvas = props => {
 
@@ -13,10 +14,15 @@ const GameCanvas = props => {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
         shapesToDraw.forEach((shape)=>{
-            ctx.fillStyle = shape.color.curColor;
-            ctx.beginPath()
-            ctx.arc(shape.position.x, shape.position.y, shape.size, 0, 2*Math.PI)
-            ctx.fill()
+            if(shape.shapeProperties instanceof Circle){
+                ctx.fillStyle = shape.color.curColor;
+                ctx.beginPath();
+                ctx.arc(shape.position.x, shape.position.y, shape.shapeProperties.radius, 0, 2*Math.PI);
+                ctx.fill();
+            } else if (shape.shapeProperties instanceof Rectangle){
+                ctx.fillStyle = shape.color.curColor;
+                ctx.fillRect(shape.position.x-shape.shapeProperties.width/2, shape.position.y-shape.shapeProperties.height/2, shape.shapeProperties.width, shape.shapeProperties.height);
+            }
         });
     }
 

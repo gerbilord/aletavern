@@ -1,6 +1,7 @@
 import Color from "Games/actNormal/anHost/anH_Color";
 import Direction from "Games/actNormal/anHost/anH_Direction";
 import Position from "Games/actNormal/anHost/anH_Position";
+import {ShapeProperties} from "Games/actNormal/anHost/anH_ShapeProperties";
 
 export default class Shape {
     public id : number;
@@ -8,10 +9,9 @@ export default class Shape {
     public teamId : number;
 
     public position : Position;
-    public direction : Direction
+    public direction : Direction;
     public speed : number;
 
-    public type : String;
+    public shapeProperties : ShapeProperties;
     public color : Color;
-    public size : number;
 }

@@ -12,6 +12,7 @@ import Color from "Games/actNormal/anHost/anH_Color";
 import {IJoystickUpdateEvent} from "react-joystick-component/build/lib/Joystick";
 import anP_WsData from "Games/actNormal/anPlayer/anP_WsData";
 import {shape} from "prop-types";
+import {Circle, Rectangle, ShapeTypes} from "Games/actNormal/anHost/anH_ShapeProperties";
 
 const bubblePopSound = new Audio("http://www.myinstants.com/media/sounds/bubble-pop.mp3");
 
@@ -120,16 +121,20 @@ export default class anH_Engine {
         newPlayerColor.curColor = newPlayerColor.mainColor;
 
         let newPlayerShape = new Shape();
-        newPlayerShape.size = 10;
         newPlayerShape.isPlayer = true;
         newPlayerShape.teamId = teamId;
-        newPlayerShape.type = 'circle';
         newPlayerShape.speed = .2;
+
+        let newPlayerShapeProperties = new Circle();
+        newPlayerShapeProperties.radius = 10;
+
+        // let newPlayerShapeProperties = new Rectangle();
 
 
         newPlayerShape.position  = newPlayerPos;
         newPlayerShape.direction  = newPlayerDirection;
         newPlayerShape.color = newPlayerColor;
+        newPlayerShape.shapeProperties = newPlayerShapeProperties;
 
         newPlayer.shape = newPlayerShape;
 
@@ -137,7 +142,7 @@ export default class anH_Engine {
         this.allShapes.push(newPlayerShape)
     }
 
-    private addNewShape(){
+    private addNewCircle(){
         let teamId = -1;
 
         let newPos = new Position();
@@ -153,24 +158,62 @@ export default class anH_Engine {
         newColor.altColor = 'red';
         newColor.curColor = newColor.mainColor;
 
-        let newShape = new Shape();
-        newShape.size = 10;
+        let newShape : Shape = new Shape();
         newShape.isPlayer = false;
         newShape.teamId = teamId;
-        newShape.type = 'circle';
         newShape.speed = .2;
 
-        newShape.position  = newPos;
-        newShape.direction  = newDirection;
+
+        let newShapeProperties : Circle = new Circle();
+        newShapeProperties.radius = 10;
+
+        newShape.position = newPos;
+        newShape.direction = newDirection;
         newShape.color = newColor;
+        newShape.shapeProperties = newShapeProperties;
+
+        this.allShapes.push(newShape)
+    }
+
+    private addNewSquare(){
+        let teamId = -1;
+
+        let newPos = new Position();
+        newPos.x = Math.floor(Math.random() * this.boardSize);
+        newPos.y = Math.floor(Math.random() * this.boardSize);
+
+        let newDirection = new Direction();
+        newDirection.x = 0;
+        newDirection.y = 0;
+
+        let newColor = new Color();
+        newColor.mainColor = 'green';
+        newColor.altColor = 'red';
+        newColor.curColor = newColor.mainColor;
+
+        let newShape : Shape = new Shape();
+        newShape.isPlayer = false;
+        newShape.teamId = teamId;
+        newShape.speed = .2;
+
+
+        let newShapeProperties : Rectangle = new Rectangle();
+        newShapeProperties.width = 20;
+        newShapeProperties.height = 20;
+
+        newShape.position = newPos;
+        newShape.direction = newDirection;
+        newShape.color = newColor;
+        newShape.shapeProperties = newShapeProperties;
 
         this.allShapes.push(newShape)
     }
 
     private addAiShapes() {
-        let numOfAi = 50;
+        let numOfAi = 25;
         for (let i = 0; i < numOfAi; i++) {
-            this.addNewShape()
+            this.addNewCircle();
+            this.addNewSquare();
         }
     }
 
@@ -203,6 +246,7 @@ export default class anH_Engine {
         this.setAiMovement(highResTimeStamp, deltaTime);
         this.handleAllMovement(deltaTime);
         this.clampAllPositions(deltaTime);
+        this.spreadPlague();
     }
 
     public getViewData() : anH_ViewData {
@@ -215,17 +259,57 @@ export default class anH_Engine {
         });
     }
 
-    private areShapesTouching(shape1: Shape, shape2: Shape):boolean{
+    private areShapesTouching(shape1: Shape, shape2: Shape) : boolean {
         if(shape1===shape2){ // Same shape cannot touch itself.
             return false;
         }
-
-        let addedSize = shape1.size + shape2.size;
-        return addedSize >= this.getDistance(shape1, shape2);
-
+        if(shape1.shapeProperties instanceof Circle && shape2.shapeProperties instanceof Circle){
+            return this.areCirclesTouching(shape1, shape2);
+        } else if(shape1.shapeProperties instanceof Rectangle && shape2.shapeProperties instanceof Rectangle){
+            return this.areRectanglesTouching(shape1, shape2);
+        } else { // Assume rectangle and circle
+            if(shape1.shapeProperties instanceof Circle && shape2.shapeProperties instanceof Rectangle){
+                return this.isCircleAndRectangleColliding(shape1, shape2);
+            } else if(shape2.shapeProperties instanceof Circle && shape1.shapeProperties instanceof Rectangle){
+                return this.isCircleAndRectangleColliding(shape2, shape1);
+            }
+            return false;
+        }
     }
 
-    private getDistance(shape1: Shape, shape2: Shape) : number {
+    private areCirclesTouching(circle1: Shape, circle2: Shape) {
+        let circleProps1 = circle1.shapeProperties as Circle;
+        let circleProps2 = circle2.shapeProperties as Circle;
+
+        let addedSize = circleProps1.radius + circleProps2.radius;
+        return addedSize >= this.getCenterDistances(circle1, circle2);
+    }
+
+    private areRectanglesTouching(rect1 : Shape, rect2 : Shape) : boolean {
+        let rectProps1 = rect1.shapeProperties as Rectangle;
+        let rectProps2 = rect2.shapeProperties as Rectangle;
+
+        let rect1width = rectProps1.width;
+        let rect1height = rectProps1.height;
+
+        let rect2width = rectProps2.width;
+        let rect2height = rectProps2.height;
+
+        let rect1x = rect1.position.x - rectProps1.width/2;
+        let rect1y = rect1.position.y- rectProps1.height/2;
+
+        let rect2x = rect2.position.x - rectProps2.width/2;
+        let rect2y = rect2.position.y- rectProps2.height/2;
+
+        return !(
+            ((rect1y + rect1height) < (rect2y)) ||
+            (rect1y > (rect2y + rect2height)) ||
+            ((rect1x + rect1width) < rect2x) ||
+            (rect1x > (rect2x + rect2width))
+        );
+    }
+
+    private getCenterDistances(shape1: Shape, shape2: Shape) : number {
         let y = shape1.position.y - shape2.position.y;
         let x = shape1.position.x - shape2.position.x;
 
@@ -258,12 +342,48 @@ export default class anH_Engine {
 
     private clampAllPositions(deltaTime: number) {
         this.allShapes.forEach(shape=>{
-            shape.position.x = this.clamp(shape.position.x, shape.size, this.boardSize - shape.size)
-            shape.position.y = this.clamp(shape.position.y, shape.size, this.boardSize - shape.size)
-        })
+            if(shape.shapeProperties instanceof Circle){
+                shape.position.x = this.clamp(shape.position.x, shape.shapeProperties.radius, this.boardSize - shape.shapeProperties.radius);
+                shape.position.y = this.clamp(shape.position.y, shape.shapeProperties.radius, this.boardSize - shape.shapeProperties.radius);
+            } else if(shape.shapeProperties instanceof Rectangle){
+                shape.position.x = this.clamp(shape.position.x, shape.shapeProperties.width/2, this.boardSize - shape.shapeProperties.width/2);
+                shape.position.y = this.clamp(shape.position.y, shape.shapeProperties.height/2, this.boardSize - shape.shapeProperties.height/2);
+            }
+        });
     }
 
     private clamp(number, min, max) {
         return Math.max(min, Math.min(number, max));
+    }
+
+    private spreadPlague() {
+        this.allShapes.forEach(shape=>{
+            if (shape.color.mainColor == 'black'){
+                this.getTouchingShapes(shape).filter(touchingShape=>!touchingShape.isPlayer).forEach(touchingShape=>{
+                    touchingShape.color.mainColor = 'black';
+                    touchingShape.color.curColor = 'black';
+                })
+            }
+        });
+    }
+
+    // return true if the rectangle and circle are colliding
+    private isCircleAndRectangleColliding(circleShape : Shape, rectangleShape : Shape){
+
+        let circleProperties = circleShape.shapeProperties as Circle;
+        let rectangleProperties = rectangleShape.shapeProperties as Rectangle;
+
+        let distX = Math.abs(circleShape.position.x - rectangleShape.position.x);
+        let distY = Math.abs(circleShape.position.y - rectangleShape.position.y);
+
+        if (distX > (rectangleProperties.width/2 + circleProperties.radius)) { return false; }
+        if (distY > (rectangleProperties.height/2 + circleProperties.radius)) { return false; }
+
+        if (distX <= (rectangleProperties.width/2)) { return true; }
+        if (distY <= (rectangleProperties.height/2)) { return true; }
+
+        let dx=distX-rectangleProperties.width/2;
+        let dy=distY-rectangleProperties.height/2;
+        return (dx*dx+dy*dy<=(circleProperties.radius*circleProperties.radius));
     }
 }
