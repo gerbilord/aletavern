@@ -26,6 +26,17 @@ const GameCanvas = props => {
         });
     }
 
+    const drawBorder = (ctx:CanvasRenderingContext2D) => {
+        ctx.strokeStyle = 'white';
+        let borderWidth = 12;
+        ctx.lineWidth = borderWidth;
+        ctx.strokeRect(borderWidth/2,borderWidth/2, ctx.canvas.width-borderWidth, ctx.canvas.height-borderWidth);
+
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(borderWidth, borderWidth, ctx.canvas.width-borderWidth*2, ctx.canvas.height-borderWidth*2);
+    }
+
 
     useEffect(() => {
 
@@ -35,7 +46,8 @@ const GameCanvas = props => {
         let animationFrameId
 
         const render = () => {
-            drawAllShapes(context)
+            drawAllShapes(context);
+            drawBorder(context);
             animationFrameId = window.requestAnimationFrame(render)
         }
 

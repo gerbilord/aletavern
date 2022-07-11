@@ -214,7 +214,7 @@ export default class anH_Engine {
     }
 
     private addAiShapes() {
-        let numOfAi = 25;
+        let numOfAi = 40/2;
         for (let i = 0; i < numOfAi; i++) {
             this.addNewCircle();
             this.addNewSquare();
@@ -226,7 +226,7 @@ export default class anH_Engine {
             (shape) => {
                 let xDir = shape.direction.x;
                 let yDir = shape.direction.y;
-                let magnitude : number = Math.sqrt(Math.pow(xDir,2)+ Math.pow(yDir,2))
+                let magnitude : number = Math.sqrt(Math.pow(xDir,2)+ Math.pow(yDir,2));
 
                 if (magnitude !== 0){
                     shape.position.x = shape.position.x + xDir/magnitude* shape.speed * deltaTime;
@@ -237,20 +237,26 @@ export default class anH_Engine {
     }
 
     private mainLoop(highResTimeStamp){  // time in ms accurate to 1 micro second 1/1,000,000th second
+        let deltaTime = this.getDeltaTimeAndSetFrames(highResTimeStamp);
+        requestAnimationFrame(this.mainLoop.bind(this));
+
+        this.setAiMovement(highResTimeStamp, deltaTime);
+        this.handleAllMovement(deltaTime);
+        // this.clampAllPositions(deltaTime);
+        this.wrapAllPositions(deltaTime);
+        this.spreadPlague();
+    }
+
+    private getDeltaTimeAndSetFrames(highResTimeStamp) {
         let deltaTime = 0
-        if(this.startTime === -1) {
+        if (this.startTime === -1) {
             this.startTime = highResTimeStamp;
         } else {
             this.currentFrame = Math.round((highResTimeStamp - this.startTime) / this.frameRate);
             deltaTime = (this.currentFrame - this.lastFrame) * this.frameRate;
         }
         this.lastFrame = this.currentFrame;
-        requestAnimationFrame(this.mainLoop.bind(this));
-
-        this.setAiMovement(highResTimeStamp, deltaTime);
-        this.handleAllMovement(deltaTime);
-        this.clampAllPositions(deltaTime);
-        this.spreadPlague();
+        return deltaTime;
     }
 
     public getViewData() : anH_ViewData {
@@ -356,17 +362,45 @@ export default class anH_Engine {
         });
     }
 
+    private wrapAllPositions(deltaTime: number) {
+        this.allShapes.forEach(shape=>{
+            if(shape.shapeProperties instanceof Circle){
+                shape.position.x = this.wrap(shape.position.x, shape.shapeProperties.radius, this.boardSize - shape.shapeProperties.radius);
+                shape.position.y = this.wrap(shape.position.y, shape.shapeProperties.radius, this.boardSize - shape.shapeProperties.radius);
+            } else if(shape.shapeProperties instanceof Rectangle){
+                shape.position.x = this.wrap(shape.position.x, shape.shapeProperties.width/2, this.boardSize - shape.shapeProperties.width/2);
+                shape.position.y = this.wrap(shape.position.y, shape.shapeProperties.height/2, this.boardSize - shape.shapeProperties.height/2);
+            }
+        });
+    }
+
     private clamp(number, min, max) {
         return Math.max(min, Math.min(number, max));
     }
 
+    private wrap(number, min, max) {
+
+        return ((number % max) + max) % max;
+        /*if(number> max){
+            return min;
+        } else if (number < min){
+            return max;
+        } else {
+            return number;
+        }*/
+    }
+
     private spreadPlague() {
-        this.allShapes.forEach(shape=>{
+        this.allShapes.forEach((shape, index)=>{
             if (shape.color.mainColor == 'black'){
-                this.getTouchingShapes(shape).filter(touchingShape=>!touchingShape.isPlayer).forEach(touchingShape=>{
-                    touchingShape.color.mainColor = 'black';
-                    touchingShape.color.curColor = 'black';
-                })
+                this.allShapes
+                    .filter(aShape=>aShape.color.mainColor!='black')
+                    .filter(aShape=>{return this.areShapesTouching(aShape, shape)})
+                    .filter((touchingShape)=> !touchingShape.isPlayer && touchingShape.color.mainColor != 'black')
+                    .forEach(touchingShape=>{
+                        touchingShape.color.mainColor = 'black';
+                        touchingShape.color.curColor = 'black';
+                    });
             }
         });
     }
