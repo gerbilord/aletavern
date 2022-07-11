@@ -108,8 +108,8 @@ export default class anH_Engine {
         newPlayer.wsId = playerId;
 
         let newPlayerPos = new Position();
-        newPlayerPos.x = 100;
-        newPlayerPos.y = 100;
+        newPlayerPos.x = Math.floor(Math.random() * this.boardSize);
+        newPlayerPos.y = Math.floor(Math.random() * this.boardSize);
 
         let newPlayerDirection = new Direction();
         newPlayerDirection.x = 0;
@@ -125,11 +125,15 @@ export default class anH_Engine {
         newPlayerShape.teamId = teamId;
         newPlayerShape.speed = .2;
 
-        let newPlayerShapeProperties = new Circle();
-        newPlayerShapeProperties.radius = 10;
+        let typeNum = Math.floor(Math.random() * 2);
+        let newPlayerShapeProperties;
 
-        // let newPlayerShapeProperties = new Rectangle();
-
+        if (typeNum === 0){
+            newPlayerShapeProperties = new Circle();
+            newPlayerShapeProperties.radius = 10;
+        } else {
+            newPlayerShapeProperties = new Rectangle();
+        }
 
         newPlayerShape.position  = newPlayerPos;
         newPlayerShape.direction  = newPlayerDirection;
