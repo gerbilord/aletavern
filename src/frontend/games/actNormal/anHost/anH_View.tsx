@@ -1,12 +1,11 @@
 import React from 'react';
-import JoystickCircle from "Games/actNormal/anHost/joystickCircle";
+import GameCanvas from "Games/actNormal/anHost/anH_GameCanvas";
+
+import gameEngine from './anH_Engine';
+import anH_ViewData from "./anH_ViewData";
 
 
-import gameEngine from './anhEngine';
-import anhViewData from "./anhViewData";
-import Canvas from "Games/actNormal/anHost/anhCanvas";
-
-export default class anhView extends React.Component {
+export default class anH_View extends React.Component {
     private gameEngine: gameEngine;
 
 
@@ -19,7 +18,7 @@ export default class anhView extends React.Component {
 
     render() {
         // @ts-ignore
-        const { viewData }:{viewData:anhViewData} = this.state;
+        const { viewData }:{viewData:anH_ViewData} = this.state;
 
 return (
             <div className={"actNormal"}>
@@ -28,7 +27,7 @@ return (
                     Game Id: {this.gameEngine.ws.gameId}
                 </div>
                 <div>
-                    <JoystickCircle gameEngine = {this.gameEngine}/>
+                    <GameCanvas gameEngine = {this.gameEngine}/>
                 </div>
             </div>
         );

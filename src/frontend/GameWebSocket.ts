@@ -63,8 +63,8 @@ export type onOtherReconnectGamePayload = {
     type: "OTHERRECONNECTGAME";
 }
 
-export type onMessageGamePayload = {
-    data: any; // This is the data that was sent (by other GameWebSocket, not by the server)
+export type onMessageGamePayload<DataType=any> = {
+    data: DataType; // This is the data that was sent (by other GameWebSocket, not by the server)
     playerId: string; // The websocket id of the player who sent this message
     status: "SUCCESS";
     type: "MESSAGEGAME";

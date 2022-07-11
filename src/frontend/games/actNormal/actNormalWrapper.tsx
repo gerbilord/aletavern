@@ -1,10 +1,10 @@
 import GameWebSocket from 'Frontend/GameWebSocket';
 
-import HostView from './anHost/anhView';
-import HostGameEngine from './anHost/anhEngine';
+import HostView from './anHost/anH_View';
+import HostGameEngine from './anHost/anH_Engine';
 
-import PlayerView from './anPlayer/anpView';
-import PlayerGameEngine from './anPlayer/anpEngine';
+import PlayerView from './anPlayer/anP_View';
+import PlayerGameEngine from './anPlayer/anP_Engine';
 
 export default class actNormalWrapper {
     // REQUIRED
