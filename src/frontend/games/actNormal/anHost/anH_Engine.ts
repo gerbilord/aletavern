@@ -405,7 +405,7 @@ export default class anH_Engine {
         });
     }
 
-    // return true if the rectangle and circle are colliding
+    // return true if the rectangle and circle are colliding //
     private isCircleAndRectangleColliding(circleShape : Shape, rectangleShape : Shape){
 
         let circleProperties = circleShape.shapeProperties as Circle;
