@@ -2,7 +2,7 @@ import React from 'react';
 
 import gameEngine from './anP_Engine';
 import anP_ViewData from "./anP_ViewData";
-import TouchableButton from "Games/actNormal/anPlayer/anP_touchableButton";
+import TouchableButton from "./anP_touchableButton";
 import {Joystick} from "react-joystick-component";
 
 import "Games/actNormal/an.css";
