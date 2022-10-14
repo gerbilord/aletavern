@@ -14,7 +14,7 @@ import anP_WsData from "Games/actNormal/anPlayer/anP_WsData";
 import {shape} from "prop-types";
 import {Circle, Rectangle, ShapeTypes} from "Games/actNormal/anHost/anH_ShapeProperties";
 
-const bubblePopSound = new Audio("http://www.myinstants.com/media/sounds/bubble-pop.mp3");
+const bubblePopSound = new Audio("https://www.myinstants.com/media/sounds/bubble-pop.mp3");
 
 export default class anH_Engine {
     public ws : GameWebSocket;

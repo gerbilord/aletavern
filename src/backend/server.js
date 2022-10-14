@@ -1,6 +1,6 @@
 // ************************ Server Setup ******************************
 
-const http = require('http');
+const https = require('https');
 const express = require('express');
 const path = require('path');
 
@@ -17,5 +17,5 @@ app.use(express.json());
 const port = process.env.PORT || 5656;
 
 app.listen(port, () => {
-    console.log(`http://localhost:${port}`);
+    console.log(`https://localhost:${port}`);
 });
