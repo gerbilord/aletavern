@@ -33,7 +33,7 @@
         "express-ws": "^4.0.0",
         "file-loader": "^6.0.0",
         "moment": "^2.27.0",
-        "nodemon": "^2.0.4",
+        "nodemon": "^2.0.20",
         "postcss-loader": "^3.0.0",
         "prettier": "^2.0.5",
         "prop-types": "^15.7.2",
