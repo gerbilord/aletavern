@@ -123,7 +123,8 @@ export default class GameWebSocket {
 
     constructor(logging:boolean = false) {
         this.wsOpenedBefore = false; // Used to tell if open event is the inital open event or a reconnect.
-        const wsPath = 'wss://' + window.location.host + '/game';
+        const isLocalhost: boolean = window.location.hostname === 'localhost';
+        const wsPath = isLocalhost ? 'ws://' + window.location.host + '/game' : 'wss://' + window.location.host + '/game'; // use ws: if local because we have no local certs.
         this.ws = new ReconnectingWebSocket(wsPath);
         this.ws.addEventListener('open', this.openHandler.bind(this))
         this.ws.addEventListener('message', this.messageHandler.bind(this));
