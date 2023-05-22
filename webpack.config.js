@@ -55,6 +55,10 @@ module.exports = {
                 __dirname,
                 './src/frontend/games/icebreaker'
             ),
+            Tomfoag: path.resolve(
+                __dirname,
+                './src/frontend/games/tomfoag'
+            ),
         },
     },
 

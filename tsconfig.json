@@ -13,7 +13,8 @@
       "Frontend/*": ["src/frontend/*"],
       "Utils/*": ["src/frontend/utils/*"],
       "Games/*": ["src/frontend/games/*"],
-      "Icebreaker/*": ["src/frontend/games/Icebreaker/*"]
+      "Icebreaker/*": ["src/frontend/games/Icebreaker/*"],
+      "Tomfoag/*": ["src/frontend/games/tomfoag/*"]
     },
     "jsx": "react",
     "allowSyntheticDefaultImports": true

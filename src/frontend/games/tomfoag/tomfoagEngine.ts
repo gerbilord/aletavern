@@ -1,6 +1,23 @@
-import TomfoagView from './tomfoagView.js'
+import GameWebSocket from "Frontend/GameWebSocket";
 
-var dirMap = {
+export type BoardState = {
+    board: Graph,
+    glacier: { [key: string]: number; },
+    players: [IPlayer, IPlayer],
+    validMoves: any,
+    turn: any,
+    canMove: boolean,
+    winner: number,
+};
+
+export type IPlayer = [number, number, number];
+
+export type IMoveType = "take" | "place" | "move";
+
+export type IValidMove = [IMoveType, [number, number]];
+
+
+const dirMap = {
     0: [0, -1],
     1: [1, -1],
     2: [1,  0],
@@ -8,6 +25,15 @@ var dirMap = {
     4: [-1, 1],
     5: [-1, 0]
 };
+
+export const dirList = [
+    [0, -1],
+    [1, -1],
+    [1,  0],
+    [0,  1],
+    [-1, 1],
+    [-1, 0]
+];
 
 var game1 = [
     "T6m1",
@@ -72,6 +98,8 @@ var game2 = [
 
 // Graph representation of hexagon grid
 class Graph {
+    private size: number;
+    neighbors: any;
 
     constructor() {
         this.size = 0;
@@ -81,6 +109,7 @@ class Graph {
     // v: vertex
     addVertex(v) {
         if (!(this.neighbors.hasOwnProperty(v))) {
+            // @ts-ignore
             this.neighbors[[v]] = [];
             this.size++;
         }
@@ -91,13 +120,17 @@ class Graph {
     addEdge(v, w) {
         // Forwards
         if (this.neighbors.hasOwnProperty(v)) {
+            // @ts-ignore
             this.neighbors[[v]].push(w);
+            // @ts-ignore
             this.neighbors[[v]] = Object.values(this.neighbors[[v]].reduce((p,c) => (p[JSON.stringify(c)] = c,p),{}));
         }
 
         // Backwards
         if (this.neighbors.hasOwnProperty(w)) {
+            // @ts-ignore
             this.neighbors[[w]].push(v);
+            // @ts-ignore
             this.neighbors[[w]] = Object.values(this.neighbors[[w]].reduce((p,c) => (p[JSON.stringify(c)] = c,p),{}));
         }
     }
@@ -106,12 +139,26 @@ class Graph {
         console.log(this.size);
 
         for (const property in this.neighbors) {
+            // @ts-ignore
             console.log(`${property} ==> ${JSON.stringify(this.neighbors[[property]])}`);
         }
     }
 }
 
 export default class TomfoagEngine {
+    private ws: GameWebSocket;
+    private boardLevel: number;
+    private gridLevel: number;
+    private hexNumbers: number[];
+    private playerWhite: IPlayer;
+    private playerBlack: IPlayer;
+    private players: [IPlayer, IPlayer];
+    private winner: number;
+    private validMoves: any[];
+    private turn: 0 | 1;
+    private board: Graph;
+    private glacier: { [key: string]: number; };
+    private canMove: boolean;
 
     constructor(gameWebSocket) {
         this.ws = gameWebSocket;
@@ -142,7 +189,7 @@ export default class TomfoagEngine {
         // have to take or place first, then move
         this.canMove = false;
 
-        this.playGameFromFile(game1);
+        // this.playGameFromFile(game1);
 
         console.log(this.glacier);
     }
@@ -164,6 +211,7 @@ export default class TomfoagEngine {
 
             // Remove duplicates from vertices array
             // https://stackoverflow.com/questions/57562611/how-to-get-distinct-values-from-an-array-of-arrays-in-javascript-using-the-filte/57562822#57562822
+            // @ts-ignore
             vertices = Object.values(vertices.reduce((p,c) => (p[JSON.stringify(c)] = c,p),{}));
             i++;
         }
@@ -187,12 +235,15 @@ export default class TomfoagEngine {
 
     setupGlacier(level) {
         let i = 0;
+        // @ts-ignore
         for (const [key, value] of Object.entries(this.board.neighbors)) {
             if (!(this.glacier.hasOwnProperty(key))) {
                 if (i >= this.hexNumbers[level]) {
+                    // @ts-ignore
                     this.glacier[[key]] = 0;
                 }
                 else {
+                    // @ts-ignore
                     this.glacier[[key]] = 1;
                 }
             }
@@ -223,6 +274,7 @@ export default class TomfoagEngine {
         let arr = str.split(',');
         let ret = [];
         for (let i = 0; i < arr.length; i++) {
+            // @ts-ignore
             ret.push(parseInt(arr[i]));
         }
         return ret;
@@ -238,15 +290,17 @@ export default class TomfoagEngine {
 
     // player: list of hex coords and ice collected ==> [q, r]
     // moveType: take, place, or move
-    getValidMoves(player, moveType) {
+    getValidMoves(player: IPlayer, moveType: IMoveType) {
         let playerPos = [player[0], player[1]];
 
+        // @ts-ignore
         let neighbors = this.board.neighbors[[playerPos]];
 
-        if (this.canMove === false) {
+        if (!this.canMove) {
             if (moveType === 'take') {
                 // take ice in a direction that has ice already
                 for (let nbr of neighbors) {
+                    // @ts-ignore
                     if (JSON.stringify(nbr) !== JSON.stringify([this.players[this.turn ^ 1][0], this.players[this.turn ^ 1][1]]) && this.glacier[[nbr]] > 0) {
                         this.validMoves.push(nbr);
                     }
@@ -260,9 +314,11 @@ export default class TomfoagEngine {
                     for (let nbr of neighbors) {
                         let neighboringIce = 0;
                         if (JSON.stringify(nbr) !== JSON.stringify([this.players[this.turn ^ 1][0], this.players[this.turn ^ 1][1]])) {
+                            // @ts-ignore
                             let nbrs2 = this.board.neighbors[[nbr]];
                             if (nbrs2 != undefined) {
                                 for (let nbr2 of nbrs2) {
+                                    // @ts-ignore
                                     if (this.glacier.hasOwnProperty(nbr2) && this.glacier[[nbr2]] > 0) {
                                         neighboringIce++;
                                     }
@@ -281,6 +337,7 @@ export default class TomfoagEngine {
         else {
             // move in a direction that has ice, but no more than 1 more than the stack you are on
             for (let nbr of neighbors) {
+                // @ts-ignore
                 if (JSON.stringify(nbr) !== JSON.stringify([this.players[this.turn ^ 1][0], this.players[this.turn ^ 1][1]]) && this.glacier.hasOwnProperty(nbr) && this.glacier[[nbr]] > 0 && this.glacier[[nbr]] < this.glacier[[playerPos]] + 2) {
                     this.validMoves.push(nbr);
                 }
@@ -291,17 +348,39 @@ export default class TomfoagEngine {
     // player: list of hex coords and ice collected
     // moveType: take, place, or move
     // dir: direction or index that the player clicked on
-    playMove(player, moveType, dir) {
-        if (this.canMove === false) {
+    // return if move was valid.
+    playMove(player:IPlayer, moveType:IMoveType, dir:[number, number]): [boolean, string] {
+        let didSuccess = false;
+        let delta = [dir[0] - player[0], dir[1] - player[1]];
+
+        if(delta[0] > 1 || delta[0]<-1 || delta[1] > 1 || delta[1] < -1 ){
+            return [false, "hex not adjacent to player"]; // move was too far
+        }
+
+        if (!this.canMove) {
             this.getValidMoves(player, moveType);
-            let delta = [dir[0] - player[0], dir[1] - player[1]];
+
 
             if (moveType === 'take') {
-                while (this.includesHex(this.validMoves, dir) === true) {
+                while (this.includesHex(this.validMoves, dir)) {
+                    // @ts-ignore
                     this.glacier[[dir]]--;
+/* // TODO consider fixing performance, here and graph.
+                    // @ts-ignore
+                    if(this.glacier[[dir]] < 1){
+                        // @ts-ignore
+                        delete this.glacier[[dir]];
+                    }
+*/
+
                     this.players[this.turn][2]++;
                     this.getValidMoves([dir[0], dir[1], this.players[this.turn][2]], moveType);
                     dir = [dir[0] + delta[0], dir[1] + delta[1]];
+                    didSuccess = true;
+                }
+
+                if(!didSuccess){
+                    return [false, "nothing to take"];
                 }
 
                 this.findSeparatedGlaciers(player);
@@ -309,7 +388,8 @@ export default class TomfoagEngine {
             }
 
             else if (moveType === 'place') {
-                while (this.includesHex(this.validMoves, dir) === true) {
+                while (this.includesHex(this.validMoves, dir)) {
+                    // @ts-ignore
                     this.glacier[[dir]]++;
                     this.players[this.turn][2]--;
                     this.getValidMoves([dir[0], dir[1], this.players[this.turn][2]], moveType);
@@ -317,14 +397,29 @@ export default class TomfoagEngine {
                     if (dir[0] + dir[1] > this.gridLevel) {
                         this.addLayer();
                     }
+                    didSuccess = true;
+                }
+
+                if(!didSuccess){
+                    return [false, "Could not place any tiles there"];
                 }
 
                 this.canMove = true;
             }
         }
-
         else {
+            // @ts-ignore
             if (this.indexOfHex(this.board.neighbors[[[player[0], player[1]]]], dir) > -1) {
+
+                if((dir[0] == this.players[0][0] && dir[1] == this.players[0][1]) || (dir[0] == this.players[1][0] && dir[1] == this.players[1][1])){
+                    return [false, "cannot move into tile with other player."]
+                }
+
+                // @ts-ignore
+                if(this.glacier[dir] == null || this.glacier[dir] < 1){
+                    return [false, "cannot move into tile with no ice."]
+                }
+
                 this.players[this.turn][0] = dir[0];
                 this.players[this.turn][1] = dir[1];
                 this.turn ^= 1;
@@ -332,6 +427,7 @@ export default class TomfoagEngine {
             }
         }
         this.validMoves = [];
+        return [true, "success"];
     }
 
     dfs(hex, visited, glacier) {
@@ -341,7 +437,9 @@ export default class TomfoagEngine {
 
         let end = false;
 
+        // @ts-ignore
         for (let nbr of this.board.neighbors[[hex]]) {
+            // @ts-ignore
             if (this.indexOfHex(visited, nbr) !== -1 && this.glacier[[nbr]] === 0) {
                 end = true;
             }
@@ -350,11 +448,13 @@ export default class TomfoagEngine {
             }
         }
 
-        if (end === true) {
+        if (end) {
             return glacier;
         }
 
+        // @ts-ignore
         for (let nbr of this.board.neighbors[[hex]]) {
+            // @ts-ignore
             if (this.indexOfHex(visited, nbr) === -1 && this.glacier[[nbr]] > 0) {
                 this.dfs(nbr, visited, glacier);
             }
@@ -369,8 +469,11 @@ export default class TomfoagEngine {
         // DFS from player positions to find what glaciers they are on
         this.dfs([player[0], player[1]], visited, glacier_1);
         for (let key in this.glacier) {
+            // @ts-ignore
             key = this.strToArr(key);
+            // @ts-ignore
             if (this.indexOfHex(glacier_1, key) === -1 && this.glacier[[key]] > 0) {
+                // @ts-ignore
                 glacier_2.push(key);
             }
         }
@@ -406,9 +509,11 @@ export default class TomfoagEngine {
             let volume_1 = 0;
             let volume_2 = 0;
             for (let ice of glacier_1) {
+                // @ts-ignore
                 volume_1 += this.glacier[[ice]];
             }
             for (let ice of glacier_2) {
+                // @ts-ignore
                 volume_2 += this.glacier[[ice]];
             }
 
@@ -465,7 +570,9 @@ export default class TomfoagEngine {
         // if both players are on the same final glacier, give the lost part to the current player
         else {
             for (let ice of glacier_2) {
+                // @ts-ignore
                 player[2] += this.glacier[[ice]];
+                // @ts-ignore
                 this.glacier[[ice]] = 0;
             }
         }
@@ -493,13 +600,15 @@ export default class TomfoagEngine {
         }
     }
 
-    getBoardState() {
+    getBoardState() : BoardState {
         return {
             board: this.board,
             glacier: this.glacier,
             players: this.players,
             validMoves: this.validMoves,
-            turn: this.turn
+            turn: this.turn,
+            canMove: this.canMove,
+            winner: this.winner,
         };
     }
 }

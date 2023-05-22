@@ -1,0 +1,52 @@
+/*
+ * @prettier
+ */
+.tomfoag-grid-fill svg g text {
+    user-select: none; /* Standard */
+    fill: white;
+}
+
+.tomfoag .bigText {
+    font-size: 50px;
+}
+
+.tomfoag .player1 polygon {
+    fill: red;
+}
+
+.tomfoag .current-turn polygon {
+    animation: blinkBlack 1.5s infinite;
+    animation-direction: alternate;
+    animation-timing-function: linear;
+}
+@keyframes blinkBlack {
+    100% {
+        fill: lightgray;
+    }
+}
+
+.tomfoag .player2 polygon {
+    fill: blue;
+}
+
+.tomfoag .emptyHex polygon {
+    fill: #d8d8d8;
+}
+
+.tomfoag .place-take-item {
+    user-select: none; /* Standard */
+    cursor: pointer;
+}
+
+.tomfoag .place-take-item-selected {
+    border: solid red 10px;
+}
+
+.tomfoag .place-take-item:hover {
+    background-color: #ccc;
+}
+
+.tomfoag .tomfoag-grid{
+
+}
+
