@@ -1,6 +1,10 @@
 {
     "name": "aletavern",
     "version": "1.0.0",
+    "engines": {
+        "node": "16.20.0",
+        "npm": "8.19.4"
+    },
     "description": "",
     "main": "./src/backend/server.js",
     "scripts": {
