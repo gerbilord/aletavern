@@ -11,6 +11,8 @@ npm run webpackDev
 # backend
 npm run dev
 
+edit wss -> ws in src/frontend/GameWebSocket.ts if having websocket issues.
+
 goto:  http://localhost:5656
 
 ########################
