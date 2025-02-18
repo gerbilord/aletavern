@@ -1,0 +1,21 @@
+############################
+# dev stuff
+############################
+https://github.com/nvm-sh/nvm
+nvm install 16
+nvm use 16
+
+npm install
+# frontend
+npm run webpackDev
+# backend
+npm run dev
+
+goto:  http://localhost:5656
+
+########################
+# deployment info 
+########################
+npm start
+
+https://aletavern.app/
